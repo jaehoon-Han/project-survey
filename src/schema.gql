@@ -1,0 +1,130 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type User {
+  id: Int!
+  name: String!
+  surveyResponse: [SurveyResponse!]!
+}
+
+type SurveyResponse {
+  id: Int!
+  surveyId: Int!
+  userId: Int!
+  totalScore: Int!
+  survey: Survey!
+  user: User!
+  answer: [Answer!]!
+}
+
+type Answer {
+  id: Int!
+  surveyResponseId: Int!
+  questionOptionId: Int!
+  surveyResponse: SurveyResponse!
+  questionOption: QuestionOption!
+}
+
+type QuestionOption {
+  id: Int!
+  questionId: Int!
+  content: String!
+  score: Int!
+  question: Question!
+  answer: Answer!
+}
+
+type Question {
+  id: Int!
+  surveyId: Int!
+  content: String!
+  survey: Survey!
+  questionOption: [QuestionOption!]!
+}
+
+type SurveyStatus {
+  id: Int!
+  surveyId: Int!
+  status: String!
+  survey: Survey!
+}
+
+type Survey {
+  """ID"""
+  id: Int!
+
+  """title list의 id """
+  title: String!
+
+  """description"""
+  description: String!
+
+  """question amount"""
+  amountQuestion: Int!
+  question: [Question!]
+  surveyStatus: [SurveyStatus!]
+  surveyResponse: [SurveyResponse!]
+}
+
+type Query {
+  user(id: Int!): User!
+  getUserWithResponse: [User!]!
+  findAllSurvey: [Survey!]!
+  findOneSurvey(id: Int!): Survey!
+  findDetail(id: Int!): [Survey!]!
+  surveyStatus(id: Int!): SurveyStatus!
+  surveyResponse(id: Int!): SurveyResponse!
+}
+
+type Mutation {
+  createUser(createUserInput: CreateUserInput!): User!
+  updateUser(updateUserInput: UpdateUserInput!): User!
+  removeUser(id: Int!): User!
+  createSurvey(createSurveyInput: CreateSurveyInput!): Survey!
+  createSurveyStatus(createSurveyStatusInput: CreateSurveyStatusInput!): SurveyStatus!
+  updateSurveyStatus(updateSurveyStatusInput: UpdateSurveyStatusInput!): SurveyStatus!
+  removeSurveyStatus(id: Int!): SurveyStatus!
+  createSurveyResponse(createSurveyResponseInput: CreateSurveyResponseInput!): SurveyResponse!
+  updateSurveyResponse(updateSurveyResponseInput: UpdateSurveyResponseInput!): SurveyResponse!
+  removeSurveyResponse(id: Int!): SurveyResponse!
+}
+
+input CreateUserInput {
+  name: String!
+}
+
+input UpdateUserInput {
+  name: String
+  id: Int!
+}
+
+input CreateSurveyInput {
+  title: String!
+  description: String!
+  amountQuestion: Int!
+}
+
+input CreateSurveyStatusInput {
+  status: String!
+  surveyId: Int!
+}
+
+input UpdateSurveyStatusInput {
+  status: String
+  surveyId: Int
+  id: Int!
+}
+
+input CreateSurveyResponseInput {
+  surveyId: Int!
+  userId: Int!
+  totalScore: Int!
+}
+
+input UpdateSurveyResponseInput {
+  surveyId: Int
+  userId: Int
+  totalScore: Int
+  id: Int!
+}
