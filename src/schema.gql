@@ -44,13 +44,12 @@ type Question {
 }
 
 type Survey {
-  """ID"""
   id: Int!
 
-  """title list의 id """
+  """survey title"""
   title: String!
 
-  """description"""
+  """survey description"""
   description: String!
 
   """question amount"""

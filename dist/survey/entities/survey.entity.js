@@ -11,23 +11,19 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Survey = void 0;
 const graphql_1 = require("@nestjs/graphql");
+const commonentity_interface_1 = require("../../common/commonentity.interface");
 const question_entity_1 = require("../../question/entities/question.entity");
 const survey_response_entity_1 = require("../../survey-response/entities/survey-response.entity");
 const typeorm_1 = require("typeorm");
-let Survey = class Survey {
+let Survey = class Survey extends commonentity_interface_1.CommonEntity {
 };
 __decorate([
-    (0, graphql_1.Field)(() => graphql_1.Int, { description: 'ID' }),
-    (0, typeorm_1.PrimaryGeneratedColumn)(),
-    __metadata("design:type", Number)
-], Survey.prototype, "id", void 0);
-__decorate([
-    (0, graphql_1.Field)(() => String, { description: 'title list의 id ' }),
+    (0, graphql_1.Field)(() => String, { description: 'survey title' }),
     (0, typeorm_1.Column)(),
     __metadata("design:type", String)
 ], Survey.prototype, "title", void 0);
 __decorate([
-    (0, graphql_1.Field)(() => String, { description: 'description' }),
+    (0, graphql_1.Field)(() => String, { description: 'survey description' }),
     (0, typeorm_1.Column)(),
     __metadata("design:type", String)
 ], Survey.prototype, "description", void 0);
@@ -36,18 +32,6 @@ __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", Number)
 ], Survey.prototype, "amountQuestion", void 0);
-__decorate([
-    (0, typeorm_1.CreateDateColumn)(),
-    __metadata("design:type", Date)
-], Survey.prototype, "createdAt", void 0);
-__decorate([
-    (0, typeorm_1.UpdateDateColumn)(),
-    __metadata("design:type", Date)
-], Survey.prototype, "updatedAt", void 0);
-__decorate([
-    (0, typeorm_1.DeleteDateColumn)(),
-    __metadata("design:type", Date)
-], Survey.prototype, "deletedAt", void 0);
 __decorate([
     (0, graphql_1.Field)(() => [question_entity_1.Question], { nullable: true }),
     (0, typeorm_1.OneToMany)(() => question_entity_1.Question, (question) => question.survey, { eager: true }),
