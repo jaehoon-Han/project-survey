@@ -40,10 +40,6 @@ __decorate([
     __metadata("design:type", Date)
 ], Question.prototype, "updatedAt", void 0);
 __decorate([
-    (0, typeorm_1.DeleteDateColumn)(),
-    __metadata("design:type", Date)
-], Question.prototype, "deletedAt", void 0);
-__decorate([
     (0, graphql_1.Field)(() => survey_entity_1.Survey),
     (0, typeorm_1.ManyToOne)(() => survey_entity_1.Survey, (survey) => survey.question),
     __metadata("design:type", survey_entity_1.Survey)

@@ -33,9 +33,6 @@ export class Question {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @DeleteDateColumn()
-  deletedAt: Date;
-
   @Field(() => Survey)
   @ManyToOne(() => Survey, (survey) => survey.question)
   survey: Survey;

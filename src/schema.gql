@@ -54,6 +54,7 @@ type Survey {
 
   """question amount"""
   amountQuestion: Int!
+  question: [Question!]!
 }
 
 type SurveyStatus {
@@ -88,6 +89,7 @@ type Mutation {
   updateAnswer(updateAnswerInput: UpdateAnswerInput!): Answer!
   removeAnswer(id: Int!): Answer!
   createSurvey(createSurveyInput: CreateSurveyInput!): Survey!
+  updateSurvey(updateSurveyInput: UpdateSurveyInput!): Survey!
   createSurveyStatus(createSurveyStatusInput: CreateSurveyStatusInput!): SurveyStatus!
   updateSurveyStatus(updateSurveyStatusInput: UpdateSurveyStatusInput!): SurveyStatus!
   removeSurveyStatus(id: Int!): SurveyStatus!
@@ -136,6 +138,13 @@ input CreateSurveyInput {
   title: String!
   description: String!
   amountQuestion: Int!
+}
+
+input UpdateSurveyInput {
+  title: String
+  description: String
+  amountQuestion: Int
+  id: Int!
 }
 
 input CreateSurveyStatusInput {

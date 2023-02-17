@@ -31,20 +31,21 @@ let SurveyService = class SurveyService {
         return surveys;
     }
     async findOne(id) {
-        const survey = await this.surveyRepository.findOne({
-            where: { id },
-        });
+        const survey = await this.surveyRepository.findOneBy({ id });
         return survey;
     }
     async findDetail(id) {
         const result = await this.surveyRepository
-            .createQueryBuilder()
-            .select('survey')
-            .from(survey_entity_1.Survey, 'survey')
-            .where('survey.id= :id', { id: id })
+            .createQueryBuilder('survey')
             .leftJoinAndSelect('survey.question', 'question')
+            .where('survey.id= :id', { id: id })
             .getMany();
         return result;
+    }
+    async update(id, updateSurveyInput) {
+        const survey = await this.findOne(id);
+        this.surveyRepository.merge(survey, updateSurveyInput);
+        return this.surveyRepository.update(id, survey);
     }
 };
 SurveyService = __decorate([

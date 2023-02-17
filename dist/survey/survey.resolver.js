@@ -17,6 +17,7 @@ const graphql_1 = require("@nestjs/graphql");
 const survey_service_1 = require("./survey.service");
 const survey_entity_1 = require("./entities/survey.entity");
 const create_survey_input_1 = require("./dto/create-survey.input");
+const update_survey_input_1 = require("./dto/update-survey.input");
 let SurveyResolver = class SurveyResolver {
     constructor(surveyService) {
         this.surveyService = surveyService;
@@ -33,6 +34,9 @@ let SurveyResolver = class SurveyResolver {
     }
     findDetail(id) {
         return this.surveyService.findDetail(id);
+    }
+    updateSurvey(updateSurveyInput) {
+        return this.surveyService.update(updateSurveyInput.id, updateSurveyInput);
     }
 };
 __decorate([
@@ -62,6 +66,13 @@ __decorate([
     __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", void 0)
 ], SurveyResolver.prototype, "findDetail", null);
+__decorate([
+    (0, graphql_1.Mutation)(() => survey_entity_1.Survey),
+    __param(0, (0, graphql_1.Args)('updateSurveyInput')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [update_survey_input_1.UpdateSurveyInput]),
+    __metadata("design:returntype", void 0)
+], SurveyResolver.prototype, "updateSurvey", null);
 SurveyResolver = __decorate([
     (0, graphql_1.Resolver)(() => survey_entity_1.Survey),
     __metadata("design:paramtypes", [survey_service_1.SurveyService])

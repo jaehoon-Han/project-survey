@@ -6,7 +6,6 @@ export declare class Question {
     content: string;
     createdAt: Date;
     updatedAt: Date;
-    deletedAt: Date;
     survey: Survey;
     questionOption: QuestionOption[];
 }

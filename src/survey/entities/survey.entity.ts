@@ -2,7 +2,7 @@ import { ObjectType, Field, Int, InputType } from '@nestjs/graphql';
 import { CommonEntity } from 'src/common/commonentity.interface';
 import { Question } from 'src/question/entities/question.entity';
 import { SurveyResponse } from 'src/survey-response/entities/survey-response.entity';
-import { Column, Entity, JoinColumn, OneToMany } from 'typeorm';
+import { Column, Entity, JoinColumn, JoinTable, OneToMany } from 'typeorm';
 
 @InputType('SurveyInputType', { isAbstract: true })
 @ObjectType()
@@ -20,11 +20,10 @@ export class Survey extends CommonEntity {
   @Column()
   amountQuestion: number;
 
-  @OneToMany(() => Question, () => Question)
-  @JoinColumn({ name: 'questionId' })
+  @OneToMany(() => Question, (question) => question.survey)
+  @Field(() => [Question])
   question: Question[];
 
-  @OneToMany(() => SurveyResponse, () => SurveyResponse)
-  @JoinColumn({ name: 'surveyResponseId' })
+  @OneToMany(() => SurveyResponse, (k) => k.survey)
   surveyResponse: SurveyResponse[];
 }

@@ -1,5 +1,6 @@
 import { Repository } from 'typeorm';
 import { CreateSurveyInput } from './dto/create-survey.input';
+import { UpdateSurveyInput } from './dto/update-survey.input';
 import { Survey } from './entities/survey.entity';
 export declare class SurveyService {
     private surveyRepository;
@@ -8,4 +9,5 @@ export declare class SurveyService {
     findAll(): Promise<Survey[]>;
     findOne(id: number): Promise<Survey>;
     findDetail(id: number): Promise<Survey[]>;
+    update(id: number, updateSurveyInput: UpdateSurveyInput): Promise<import("typeorm").UpdateResult>;
 }
