@@ -34,8 +34,4 @@ export class SurveyStatus {
 
   @DeleteDateColumn()
   deletedAt: Date;
-
-  @Field(() => Survey)
-  @ManyToOne(() => Survey, (survey) => survey.surveyStatus)
-  survey: Survey;
 }

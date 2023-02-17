@@ -45,16 +45,9 @@ export class Survey {
   @OneToMany(() => Question, (question) => question.survey, { eager: true })
   question: Question[];
 
-  @Field(() => [SurveyStatus], { nullable: true })
-  @OneToMany(() => SurveyStatus, (surveyStatus) => surveyStatus.survey, {
-    eager: true,
-  })
-  surveyStatus: SurveyStatus[];
-
   @Field(() => [SurveyResponse], { nullable: true })
   @OneToMany(() => SurveyResponse, (surveyResponse) => surveyResponse.survey, {
     eager: true,
   })
   surveyResponse: SurveyResponse[];
-  // one to many > survey_status, survey_response 둘다 필요
 }

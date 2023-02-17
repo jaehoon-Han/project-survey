@@ -43,13 +43,6 @@ type Question {
   questionOption: [QuestionOption!]!
 }
 
-type SurveyStatus {
-  id: Int!
-  surveyId: Int!
-  status: String!
-  survey: Survey!
-}
-
 type Survey {
   """ID"""
   id: Int!
@@ -63,8 +56,13 @@ type Survey {
   """question amount"""
   amountQuestion: Int!
   question: [Question!]
-  surveyStatus: [SurveyStatus!]
   surveyResponse: [SurveyResponse!]
+}
+
+type SurveyStatus {
+  id: Int!
+  surveyId: Int!
+  status: String!
 }
 
 type Query {

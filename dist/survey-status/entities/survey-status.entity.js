@@ -11,7 +11,6 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SurveyStatus = void 0;
 const graphql_1 = require("@nestjs/graphql");
-const survey_entity_1 = require("../../survey/entities/survey.entity");
 const typeorm_1 = require("typeorm");
 let SurveyStatus = class SurveyStatus {
 };
@@ -42,11 +41,6 @@ __decorate([
     (0, typeorm_1.DeleteDateColumn)(),
     __metadata("design:type", Date)
 ], SurveyStatus.prototype, "deletedAt", void 0);
-__decorate([
-    (0, graphql_1.Field)(() => survey_entity_1.Survey),
-    (0, typeorm_1.ManyToOne)(() => survey_entity_1.Survey, (survey) => survey.surveyStatus),
-    __metadata("design:type", survey_entity_1.Survey)
-], SurveyStatus.prototype, "survey", void 0);
 SurveyStatus = __decorate([
     (0, graphql_1.ObjectType)(),
     (0, typeorm_1.Entity)()

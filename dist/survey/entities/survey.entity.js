@@ -13,7 +13,6 @@ exports.Survey = void 0;
 const graphql_1 = require("@nestjs/graphql");
 const question_entity_1 = require("../../question/entities/question.entity");
 const survey_response_entity_1 = require("../../survey-response/entities/survey-response.entity");
-const survey_status_entity_1 = require("../../survey-status/entities/survey-status.entity");
 const typeorm_1 = require("typeorm");
 let Survey = class Survey {
 };
@@ -54,13 +53,6 @@ __decorate([
     (0, typeorm_1.OneToMany)(() => question_entity_1.Question, (question) => question.survey, { eager: true }),
     __metadata("design:type", Array)
 ], Survey.prototype, "question", void 0);
-__decorate([
-    (0, graphql_1.Field)(() => [survey_status_entity_1.SurveyStatus], { nullable: true }),
-    (0, typeorm_1.OneToMany)(() => survey_status_entity_1.SurveyStatus, (surveyStatus) => surveyStatus.survey, {
-        eager: true,
-    }),
-    __metadata("design:type", Array)
-], Survey.prototype, "surveyStatus", void 0);
 __decorate([
     (0, graphql_1.Field)(() => [survey_response_entity_1.SurveyResponse], { nullable: true }),
     (0, typeorm_1.OneToMany)(() => survey_response_entity_1.SurveyResponse, (surveyResponse) => surveyResponse.survey, {
