@@ -3,27 +3,18 @@ import { SurveyService } from './survey.service';
 import { SurveyResolver } from './survey.resolver';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Survey } from './entities/survey.entity';
-import { SurveyResponse } from 'src/survey-response/entities/survey-response.entity';
-import { Question } from 'src/question/entities/question.entity';
-import { SurveyStatus } from 'src/survey-status/entities/survey-status.entity';
-import { SurveyResponseService } from 'src/survey-response/survey-response.service';
-import { QuestionService } from 'src/question/question.service';
-import { SurveyStatusService } from 'src/survey-status/survey-status.service';
+import { SurveyResponseModule } from 'src/survey-response/survey-response.module';
+import { SurveyStatusModule } from 'src/survey-status/survey-status.module';
+import { QuestionModule } from 'src/question/question.module';
 
 @Module({
   imports: [
-    // TypeOrmModule.forFeature([SurveyResponse]),
     TypeOrmModule.forFeature([Survey]),
-    TypeOrmModule.forFeature([Question]),
-    TypeOrmModule.forFeature([SurveyStatus]),
+    SurveyResponseModule,
+    SurveyStatusModule,
+    QuestionModule,
   ],
   exports: [SurveyService],
-  providers: [
-    SurveyResolver,
-    SurveyService,
-    // SurveyResponseService,
-    QuestionService,
-    SurveyStatusService,
-  ],
+  providers: [SurveyResolver, SurveyService],
 })
 export class SurveyModule {}

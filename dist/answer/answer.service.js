@@ -15,13 +15,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AnswerService = void 0;
 const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
-const question_option_service_1 = require("../question-option/question-option.service");
 const typeorm_2 = require("typeorm");
 const answer_entity_1 = require("./entities/answer.entity");
 let AnswerService = class AnswerService {
-    constructor(answerRepository, questionOptionService) {
+    constructor(answerRepository) {
         this.answerRepository = answerRepository;
-        this.questionOptionService = questionOptionService;
     }
     async create(createAnswerInput) {
         const newAnswer = this.answerRepository.create(createAnswerInput);
@@ -48,8 +46,7 @@ let AnswerService = class AnswerService {
 AnswerService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(answer_entity_1.Answer)),
-    __metadata("design:paramtypes", [typeorm_2.Repository,
-        question_option_service_1.QuestionOptionService])
+    __metadata("design:paramtypes", [typeorm_2.Repository])
 ], AnswerService);
 exports.AnswerService = AnswerService;
 //# sourceMappingURL=answer.service.js.map

@@ -12,25 +12,12 @@ const answer_service_1 = require("./answer.service");
 const answer_resolver_1 = require("./answer.resolver");
 const typeorm_1 = require("@nestjs/typeorm");
 const answer_entity_1 = require("./entities/answer.entity");
-const survey_response_entity_1 = require("../survey-response/entities/survey-response.entity");
-const question_option_entity_1 = require("../question-option/entities/question-option.entity");
-const question_option_service_1 = require("../question-option/question-option.service");
-const survey_response_service_1 = require("../survey-response/survey-response.service");
 let AnswerModule = class AnswerModule {
 };
 AnswerModule = __decorate([
     (0, common_1.Module)({
-        imports: [
-            typeorm_1.TypeOrmModule.forFeature([question_option_entity_1.QuestionOption]),
-            typeorm_1.TypeOrmModule.forFeature([survey_response_entity_1.SurveyResponse]),
-            typeorm_1.TypeOrmModule.forFeature([answer_entity_1.Answer]),
-        ],
-        providers: [
-            answer_resolver_1.AnswerResolver,
-            answer_service_1.AnswerService,
-            question_option_service_1.QuestionOptionService,
-            survey_response_service_1.SurveyResponseService,
-        ],
+        imports: [typeorm_1.TypeOrmModule.forFeature([answer_entity_1.Answer])],
+        providers: [answer_resolver_1.AnswerResolver, answer_service_1.AnswerService],
     })
 ], AnswerModule);
 exports.AnswerModule = AnswerModule;

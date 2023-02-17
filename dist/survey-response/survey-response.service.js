@@ -15,13 +15,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.SurveyResponseService = void 0;
 const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
-const answer_service_1 = require("../answer/answer.service");
 const typeorm_2 = require("typeorm");
 const survey_response_entity_1 = require("./entities/survey-response.entity");
 let SurveyResponseService = class SurveyResponseService {
-    constructor(surveyResponseRepository, answerService) {
+    constructor(surveyResponseRepository) {
         this.surveyResponseRepository = surveyResponseRepository;
-        this.answerService = answerService;
     }
     async create(createSurveyResponseInput) {
         const newSurveyResponse = this.surveyResponseRepository.create(createSurveyResponseInput);
@@ -48,8 +46,7 @@ let SurveyResponseService = class SurveyResponseService {
 SurveyResponseService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(survey_response_entity_1.SurveyResponse)),
-    __metadata("design:paramtypes", [typeorm_2.Repository,
-        answer_service_1.AnswerService])
+    __metadata("design:paramtypes", [typeorm_2.Repository])
 ], SurveyResponseService);
 exports.SurveyResponseService = SurveyResponseService;
 //# sourceMappingURL=survey-response.service.js.map

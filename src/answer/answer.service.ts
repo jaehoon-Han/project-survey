@@ -11,7 +11,6 @@ export class AnswerService {
   constructor(
     @InjectRepository(Answer)
     private answerRepository: Repository<Answer>,
-    private questionOptionService: QuestionOptionService,
   ) {}
 
   async create(createAnswerInput: CreateAnswerInput): Promise<Answer> {
