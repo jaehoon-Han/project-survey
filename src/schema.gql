@@ -71,6 +71,8 @@ type Query {
   user(id: Int!): User!
   getUserWithResponse: [User!]!
   surveyResponse(id: Int!): SurveyResponse!
+  findAll: [Answer!]!
+  findOne(id: Int!): Answer!
   findAllSurvey: [Survey!]!
   findOneSurvey(id: Int!): Survey!
   findDetail(id: Int!): [Survey!]!
@@ -84,6 +86,9 @@ type Mutation {
   createSurveyResponse(createSurveyResponseInput: CreateSurveyResponseInput!): SurveyResponse!
   updateSurveyResponse(updateSurveyResponseInput: UpdateSurveyResponseInput!): SurveyResponse!
   removeSurveyResponse(id: Int!): SurveyResponse!
+  createAnswer(createAnswerInput: CreateAnswerInput!): Answer!
+  updateAnswer(updateAnswerInput: UpdateAnswerInput!): Answer!
+  removeAnswer(id: Int!): Answer!
   createSurvey(createSurveyInput: CreateSurveyInput!): Survey!
   createSurveyStatus(createSurveyStatusInput: CreateSurveyStatusInput!): SurveyStatus!
   updateSurveyStatus(updateSurveyStatusInput: UpdateSurveyStatusInput!): SurveyStatus!
@@ -109,6 +114,17 @@ input UpdateSurveyResponseInput {
   surveyId: Int
   userId: Int
   totalScore: Int
+  id: Int!
+}
+
+input CreateAnswerInput {
+  surveyResponseId: Int!
+  questionOptionId: Int!
+}
+
+input UpdateAnswerInput {
+  surveyResponseId: Int
+  questionOptionId: Int
   id: Int!
 }
 

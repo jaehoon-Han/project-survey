@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { AnswerService } from 'src/answer/answer.service';
 import { Repository } from 'typeorm';
 import { CreateSurveyResponseInput } from './dto/create-survey-response.input';
 import { UpdateSurveyResponseInput } from './dto/update-survey-response.input';
@@ -11,7 +10,6 @@ export class SurveyResponseService {
   constructor(
     @InjectRepository(SurveyResponse)
     private surveyResponseRepository: Repository<SurveyResponse>,
-    private answerService: AnswerService,
   ) {}
 
   async create(
