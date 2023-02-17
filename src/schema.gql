@@ -77,6 +77,8 @@ type Query {
   findOneSurvey(id: Int!): Survey!
   findDetail(id: Int!): [Survey!]!
   surveyStatus(id: Int!): SurveyStatus!
+  findAllQuestion: [Question!]!
+  question(id: Int!): Question!
 }
 
 type Mutation {
@@ -93,6 +95,9 @@ type Mutation {
   createSurveyStatus(createSurveyStatusInput: CreateSurveyStatusInput!): SurveyStatus!
   updateSurveyStatus(updateSurveyStatusInput: UpdateSurveyStatusInput!): SurveyStatus!
   removeSurveyStatus(id: Int!): SurveyStatus!
+  createQuestion(createQuestionInput: CreateQuestionInput!): Question!
+  updateQuestion(updateQuestionInput: UpdateQuestionInput!): Question!
+  removeQuestion(id: Int!): Question!
 }
 
 input CreateUserInput {
@@ -142,5 +147,16 @@ input CreateSurveyStatusInput {
 input UpdateSurveyStatusInput {
   status: String
   surveyId: Int
+  id: Int!
+}
+
+input CreateQuestionInput {
+  surveyId: Int!
+  content: String!
+}
+
+input UpdateQuestionInput {
+  surveyId: Int
+  content: String
   id: Int!
 }
