@@ -7,7 +7,7 @@ exports.typeORMConfig = {
     port: 5432,
     username: 'postgres',
     password: 'postgres',
-    database: 'JHpostgres',
+    database: 'postgres3',
     entities: [__dirname + '/../**/*.entity.{js,ts}'],
     synchronize: true,
 };
