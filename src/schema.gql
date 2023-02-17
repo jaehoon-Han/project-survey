@@ -79,6 +79,7 @@ type Query {
   surveyStatus(id: Int!): SurveyStatus!
   findAllQuestion: [Question!]!
   question(id: Int!): Question!
+  questionOption(id: Int!): QuestionOption!
 }
 
 type Mutation {
@@ -98,6 +99,9 @@ type Mutation {
   createQuestion(createQuestionInput: CreateQuestionInput!): Question!
   updateQuestion(updateQuestionInput: UpdateQuestionInput!): Question!
   removeQuestion(id: Int!): Question!
+  createQuestionOption(createQuestionOptionInput: CreateQuestionOptionInput!): QuestionOption!
+  updateQuestionOption(updateQuestionOptionInput: UpdateQuestionOptionInput!): QuestionOption!
+  removeQuestionOption(id: Int!): QuestionOption!
 }
 
 input CreateUserInput {
@@ -157,6 +161,19 @@ input CreateQuestionInput {
 
 input UpdateQuestionInput {
   surveyId: Int
+  content: String
+  id: Int!
+}
+
+input CreateQuestionOptionInput {
+  questionId: Int!
+  score: Int!
+  content: String!
+}
+
+input UpdateQuestionOptionInput {
+  questionId: Int
+  score: Int
   content: String
   id: Int!
 }
