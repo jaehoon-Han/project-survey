@@ -54,8 +54,6 @@ type Survey {
 
   """question amount"""
   amountQuestion: Int!
-  question: [Question!]
-  surveyResponse: [SurveyResponse!]
 }
 
 type SurveyStatus {
