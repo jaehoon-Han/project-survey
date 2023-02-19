@@ -34,9 +34,10 @@ export class QuestionOptionService {
   }
 
   async findOne(id: number): Promise<QuestionOption> {
-    const questionOption = await this.questionOptionRepository.findOne({
-      where: { id },
+    const questionOption = await this.questionOptionRepository.findOneBy({
+      id,
     });
+
     return questionOption;
   }
 

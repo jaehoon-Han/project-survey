@@ -34,8 +34,8 @@ let QuestionOptionService = class QuestionOptionService {
         return questionOption;
     }
     async findOne(id) {
-        const questionOption = await this.questionOptionRepository.findOne({
-            where: { id },
+        const questionOption = await this.questionOptionRepository.findOneBy({
+            id,
         });
         return questionOption;
     }
