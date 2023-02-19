@@ -10,6 +10,6 @@ export declare class QuestionService {
     findAll(): Promise<Question[]>;
     findOne(id: number): Promise<Question>;
     findDetail(id: number): Promise<Question[]>;
-    update(id: number, updateQuestionInput: UpdateQuestionInput): string;
+    update(id: number, updateQuestionInput: UpdateQuestionInput): Promise<import("typeorm").UpdateResult>;
     remove(id: number): string;
 }

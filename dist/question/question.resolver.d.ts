@@ -9,6 +9,6 @@ export declare class QuestionResolver {
     findAllQuestion(): Promise<Question[]>;
     findOne(id: number): Promise<Question>;
     findDetail(id: number): Promise<Question[]>;
-    updateQuestion(updateQuestionInput: UpdateQuestionInput): string;
+    updateQuestion(updateQuestionInput: UpdateQuestionInput): Promise<import("typeorm").UpdateResult>;
     removeQuestion(id: number): string;
 }

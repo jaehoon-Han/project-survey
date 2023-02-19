@@ -50,8 +50,10 @@ export class QuestionService {
     return result;
   }
 
-  update(id: number, updateQuestionInput: UpdateQuestionInput) {
-    return `This action updates a #${id} question`;
+  async update(id: number, updateQuestionInput: UpdateQuestionInput) {
+    const question = await this.findOne(id);
+    this.questionRepository.merge(question, updateQuestionInput);
+    return this.questionRepository.update(id, question);
   }
 
   remove(id: number) {

@@ -46,8 +46,10 @@ let QuestionService = class QuestionService {
             .getMany();
         return result;
     }
-    update(id, updateQuestionInput) {
-        return `This action updates a #${id} question`;
+    async update(id, updateQuestionInput) {
+        const question = await this.findOne(id);
+        this.questionRepository.merge(question, updateQuestionInput);
+        return this.questionRepository.update(id, question);
     }
     remove(id) {
         return `This action removes a #${id} question`;
