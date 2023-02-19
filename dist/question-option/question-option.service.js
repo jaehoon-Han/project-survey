@@ -15,16 +15,19 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.QuestionOptionService = void 0;
 const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
+const question_entity_1 = require("../question/entities/question.entity");
 const typeorm_2 = require("typeorm");
 const question_option_entity_1 = require("./entities/question-option.entity");
 let QuestionOptionService = class QuestionOptionService {
-    constructor(questionOptionRepository) {
+    constructor(questionOptionRepository, entityManager, dataSource) {
         this.questionOptionRepository = questionOptionRepository;
+        this.entityManager = entityManager;
+        this.dataSource = dataSource;
     }
     async create(createQuestionOptionInput) {
         const newQuestionOption = this.questionOptionRepository.create(createQuestionOptionInput);
-        await this.questionOptionRepository.save(newQuestionOption);
-        return newQuestionOption;
+        newQuestionOption.question = await this.entityManager.findOneById(question_entity_1.Question, createQuestionOptionInput.questionId);
+        return this.entityManager.save(newQuestionOption);
     }
     async findAll() {
         const questionOption = await this.questionOptionRepository.find();
@@ -46,7 +49,9 @@ let QuestionOptionService = class QuestionOptionService {
 QuestionOptionService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(question_option_entity_1.QuestionOption)),
-    __metadata("design:paramtypes", [typeorm_2.Repository])
+    __metadata("design:paramtypes", [typeorm_2.Repository,
+        typeorm_2.EntityManager,
+        typeorm_2.DataSource])
 ], QuestionOptionService);
 exports.QuestionOptionService = QuestionOptionService;
 //# sourceMappingURL=question-option.service.js.map

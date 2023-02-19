@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Question } from 'src/question/entities/question.entity';
+import { DataSource, EntityManager, Repository } from 'typeorm';
 import { CreateQuestionOptionInput } from './dto/create-question-option.input';
 import { UpdateQuestionOptionInput } from './dto/update-question-option.input';
 import { QuestionOption } from './entities/question-option.entity';
@@ -10,6 +11,8 @@ export class QuestionOptionService {
   constructor(
     @InjectRepository(QuestionOption)
     private questionOptionRepository: Repository<QuestionOption>,
+    private entityManager: EntityManager,
+    private dataSource: DataSource,
   ) {}
 
   async create(
@@ -18,8 +21,11 @@ export class QuestionOptionService {
     const newQuestionOption = this.questionOptionRepository.create(
       createQuestionOptionInput,
     );
-    await this.questionOptionRepository.save(newQuestionOption);
-    return newQuestionOption;
+    newQuestionOption.question = await this.entityManager.findOneById(
+      Question,
+      createQuestionOptionInput.questionId,
+    );
+    return this.entityManager.save(newQuestionOption);
   }
 
   async findAll(): Promise<QuestionOption[]> {

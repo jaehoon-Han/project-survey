@@ -2,6 +2,33 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type QuestionOption {
+  id: Int!
+  questionId: Int!
+  content: String!
+  score: Int!
+  question: Question!
+}
+
+type User {
+  id: Int!
+  name: String!
+  surveyResponse: [SurveyResponse!]!
+}
+
+type Answer {
+  id: Int!
+  surveyResponseId: Int!
+  questionOptionId: Int!
+  surveyResponse: SurveyResponse!
+}
+
+type SurveyResponse {
+  id: Int!
+  totalScore: Int!
+  answer: [Answer!]!
+}
+
 type Survey {
   id: Int!
 
@@ -15,35 +42,6 @@ type Survey {
   amountQuestion: Int!
   question: [Question!]!
   surveyResponse: [SurveyResponse!]!
-}
-
-type User {
-  id: Int!
-  name: String!
-  surveyResponse: [SurveyResponse!]!
-}
-
-type SurveyResponse {
-  id: Int!
-  totalScore: Int!
-  answer: [Answer!]!
-}
-
-type Answer {
-  id: Int!
-  surveyResponseId: Int!
-  questionOptionId: Int!
-  surveyResponse: SurveyResponse!
-  questionOption: QuestionOption!
-}
-
-type QuestionOption {
-  id: Int!
-  questionId: Int!
-  content: String!
-  score: Int!
-  question: Question!
-  answer: Answer!
 }
 
 type Question {

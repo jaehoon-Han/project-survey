@@ -11,7 +11,6 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.QuestionOption = void 0;
 const graphql_1 = require("@nestjs/graphql");
-const answer_entity_1 = require("../../answer/entities/answer.entity");
 const question_entity_1 = require("../../question/entities/question.entity");
 const typeorm_1 = require("typeorm");
 let QuestionOption = class QuestionOption {
@@ -54,11 +53,6 @@ __decorate([
     (0, typeorm_1.JoinColumn)({ name: 'questionId' }),
     __metadata("design:type", question_entity_1.Question)
 ], QuestionOption.prototype, "question", void 0);
-__decorate([
-    (0, graphql_1.Field)(() => answer_entity_1.Answer),
-    (0, typeorm_1.OneToMany)(() => answer_entity_1.Answer, (answer) => answer.questionOption, { eager: true }),
-    __metadata("design:type", Array)
-], QuestionOption.prototype, "answer", void 0);
 QuestionOption = __decorate([
     (0, graphql_1.ObjectType)(),
     (0, typeorm_1.Entity)()

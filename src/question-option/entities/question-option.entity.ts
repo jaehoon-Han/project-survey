@@ -1,5 +1,4 @@
 import { ObjectType, Field, Int } from '@nestjs/graphql';
-import { Answer } from 'src/answer/entities/answer.entity';
 import { Question } from 'src/question/entities/question.entity';
 import {
   Column,
@@ -8,7 +7,6 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
-  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -45,10 +43,4 @@ export class QuestionOption {
   @ManyToOne(() => Question, (question) => question.questionOption)
   @JoinColumn({ name: 'questionId' })
   question: Question;
-
-  @Field(() => Answer)
-  @OneToMany(() => Answer, (answer) => answer.questionOption, { eager: true })
-  answer: Answer[];
-
-  // todo: 너도 question 이랑 manytoone 해주기
 }
