@@ -8,6 +8,7 @@ export declare class QuestionResolver {
     createQuestion(createQuestionInput: CreateQuestionInput): Promise<Question>;
     findAllQuestion(): Promise<Question[]>;
     findOne(id: number): Promise<Question>;
+    findDetail(id: number): Promise<Question[]>;
     updateQuestion(updateQuestionInput: UpdateQuestionInput): string;
     removeQuestion(id: number): string;
 }

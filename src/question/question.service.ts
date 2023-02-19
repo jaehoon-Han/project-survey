@@ -29,10 +29,25 @@ export class QuestionService {
   }
 
   async findOne(id: number): Promise<Question> {
-    const question = await this.questionRepository.findOne({
-      where: { id },
+    const question = await this.questionRepository.findOneBy({
+      id,
     });
     return question;
+  }
+
+  /**
+   * @description "선택한 질문의 답지 조회"
+   * @param id
+   * @returns
+   */
+  async findDetail(id: number) {
+    const result = await this.questionRepository
+      .createQueryBuilder('question')
+      .leftJoinAndSelect('question.questionOption', 'questionOption')
+      .where('question.id= :id', { id: id })
+      .getMany();
+
+    return result;
   }
 
   update(id: number, updateQuestionInput: UpdateQuestionInput) {

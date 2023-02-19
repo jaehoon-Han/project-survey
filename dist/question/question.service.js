@@ -33,10 +33,18 @@ let QuestionService = class QuestionService {
         return question;
     }
     async findOne(id) {
-        const question = await this.questionRepository.findOne({
-            where: { id },
+        const question = await this.questionRepository.findOneBy({
+            id,
         });
         return question;
+    }
+    async findDetail(id) {
+        const result = await this.questionRepository
+            .createQueryBuilder('question')
+            .leftJoinAndSelect('question.questionOption', 'questionOption')
+            .where('question.id= :id', { id: id })
+            .getMany();
+        return result;
     }
     update(id, updateQuestionInput) {
         return `This action updates a #${id} question`;

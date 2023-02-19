@@ -9,6 +9,7 @@ export declare class QuestionService {
     create(createQuestionInput: CreateQuestionInput): Promise<Question>;
     findAll(): Promise<Question[]>;
     findOne(id: number): Promise<Question>;
+    findDetail(id: number): Promise<Question[]>;
     update(id: number, updateQuestionInput: UpdateQuestionInput): string;
     remove(id: number): string;
 }
