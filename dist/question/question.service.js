@@ -15,38 +15,60 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.QuestionService = void 0;
 const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
+const question_option_entity_1 = require("../question-option/entities/question-option.entity");
+const survey_entity_1 = require("../survey/entities/survey.entity");
 const typeorm_2 = require("typeorm");
 const question_entity_1 = require("./entities/question.entity");
 let QuestionService = class QuestionService {
-    constructor(questionRepository) {
+    constructor(questionRepository, entityManager, dataSource) {
         this.questionRepository = questionRepository;
+        this.entityManager = entityManager;
+        this.dataSource = dataSource;
     }
     async create(createQuestionInput) {
         const newQuestion = this.questionRepository.create(createQuestionInput);
-        await this.questionRepository.save(newQuestion);
-        return newQuestion;
+        newQuestion.survey = await this.entityManager.findOneById(survey_entity_1.Survey, createQuestionInput.surveyId);
+        return this.entityManager.save(newQuestion);
     }
     async findAll() {
         const question = await this.questionRepository.find();
         return question;
     }
     async findOne(id) {
-        const question = await this.questionRepository.findOne({
-            where: { id },
+        const question = await this.questionRepository.findOneBy({
+            id,
         });
         return question;
     }
-    update(id, updateQuestionInput) {
-        return `This action updates a #${id} question`;
+    async findDetail(id) {
+        const result = await this.questionRepository
+            .createQueryBuilder('question')
+            .leftJoinAndSelect('question.questionOption', 'questionOption')
+            .where('question.id= :id', { id: id })
+            .getMany();
+        return result;
     }
-    remove(id) {
-        return `This action removes a #${id} question`;
+    async update(id, updateQuestionInput) {
+        const question = await this.findOne(id);
+        this.questionRepository.merge(question, updateQuestionInput);
+        return this.questionRepository.update(id, question);
+    }
+    async remove(id) {
+        await this.removeQuestionOption(id);
+        return await this.dataSource.manager.delete(question_entity_1.Question, id);
+    }
+    async removeQuestionOption(id) {
+        await this.dataSource.manager.delete(question_option_entity_1.QuestionOption, {
+            questionId: id,
+        });
     }
 };
 QuestionService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(question_entity_1.Question)),
-    __metadata("design:paramtypes", [typeorm_2.Repository])
+    __metadata("design:paramtypes", [typeorm_2.Repository,
+        typeorm_2.EntityManager,
+        typeorm_2.DataSource])
 ], QuestionService);
 exports.QuestionService = QuestionService;
 //# sourceMappingURL=question.service.js.map

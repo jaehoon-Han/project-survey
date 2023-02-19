@@ -25,6 +25,11 @@ export class QuestionResolver {
     return this.questionService.findOne(id);
   }
 
+  @Query(() => [Question])
+  findDetail(@Args('id', { type: () => Int }) id: number) {
+    return this.questionService.findDetail(id);
+  }
+
   @Mutation(() => Question)
   updateQuestion(
     @Args('updateQuestionInput') updateQuestionInput: UpdateQuestionInput,

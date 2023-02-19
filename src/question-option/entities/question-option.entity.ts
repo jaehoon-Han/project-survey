@@ -6,6 +6,7 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -42,6 +43,7 @@ export class QuestionOption {
 
   @Field(() => Question)
   @ManyToOne(() => Question, (question) => question.questionOption)
+  @JoinColumn({ name: 'questionId' })
   question: Question;
 
   @Field(() => Answer)

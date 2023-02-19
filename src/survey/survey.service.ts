@@ -57,8 +57,7 @@ export class SurveyService {
     await this.removeQuestion(id);
     return await this.dataSource.manager.delete(Survey, id);
   }
-
-  async removeQuestion(id: number): Promise<void> {
-    await this.dataSource.manager.delete(Question, { surveyId: id });
+  async removeQuestion(id: number) {
+    return await this.dataSource.manager.delete(Question, { surveyId: id });
   }
 }
