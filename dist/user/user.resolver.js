@@ -28,8 +28,8 @@ let UserResolver = class UserResolver {
     findAll() {
         return this.userService.findAll();
     }
-    getUserWithResponse() {
-        return this.userService.getUserWithResponse();
+    getUserWithResponse(id) {
+        return this.userService.getUserWithResponse(id);
     }
     findOne(id) {
         return this.userService.findOne(id);
@@ -56,8 +56,9 @@ __decorate([
 ], UserResolver.prototype, "findAll", null);
 __decorate([
     (0, graphql_1.Query)(() => [user_entity_1.User]),
+    __param(0, (0, graphql_1.Args)('id', { type: () => graphql_1.Int })),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", void 0)
 ], UserResolver.prototype, "getUserWithResponse", null);
 __decorate([

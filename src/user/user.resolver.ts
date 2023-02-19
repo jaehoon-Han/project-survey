@@ -19,8 +19,8 @@ export class UserResolver {
   }
 
   @Query(() => [User])
-  getUserWithResponse() {
-    return this.userService.getUserWithResponse();
+  getUserWithResponse(@Args('id', { type: () => Int }) id: number) {
+    return this.userService.getUserWithResponse(id);
   }
 
   @Query(() => User, { name: 'user' })

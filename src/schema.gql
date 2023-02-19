@@ -59,7 +59,7 @@ type SurveyStatus {
 
 type Query {
   user(id: Int!): User!
-  getUserWithResponse: [User!]!
+  getUserWithResponse(id: Int!): [User!]!
   surveyResponse(id: Int!): SurveyResponse!
   findAll: [Answer!]!
   findOne(id: Int!): Answer!
