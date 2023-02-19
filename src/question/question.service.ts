@@ -65,7 +65,7 @@ export class QuestionService {
   }
   async removeQuestionOption(id: number): Promise<void> {
     await this.dataSource.manager.delete(QuestionOption, {
-      questionOptionId: id,
+      questionId: id,
     });
   }
 }

@@ -59,7 +59,7 @@ let QuestionService = class QuestionService {
     }
     async removeQuestionOption(id) {
         await this.dataSource.manager.delete(question_option_entity_1.QuestionOption, {
-            questionOptionId: id,
+            questionId: id,
         });
     }
 };
