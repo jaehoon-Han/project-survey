@@ -40,13 +40,15 @@ let UserService = class UserService {
         return result;
     }
     async findOne(id) {
-        const user = await this.userRepository.findOne({
-            where: { id },
+        const user = await this.userRepository.findOneBy({
+            id,
         });
         return user;
     }
-    update(id, updateUserInput) {
-        return `This action updates a #${id} user`;
+    async update(id, updateUserInput) {
+        const user = await this.findOne(id);
+        this.userRepository.merge(user, updateUserInput);
+        return this.userRepository.update(id, user);
     }
     remove(id) {
         return `This action removes a #${id} user`;

@@ -40,14 +40,16 @@ export class UserService {
   }
 
   async findOne(id: number): Promise<User> {
-    const user = await this.userRepository.findOne({
-      where: { id },
+    const user = await this.userRepository.findOneBy({
+      id,
     });
     return user;
   }
 
-  update(id: number, updateUserInput: UpdateUserInput) {
-    return `This action updates a #${id} user`;
+  async update(id: number, updateUserInput: UpdateUserInput) {
+    const user = await this.findOne(id);
+    this.userRepository.merge(user, updateUserInput);
+    return this.userRepository.update(id, user);
   }
 
   remove(id: number) {

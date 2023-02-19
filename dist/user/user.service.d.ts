@@ -10,6 +10,6 @@ export declare class UserService {
     findAll(): Promise<User[]>;
     getUserWithResponse(id: number): Promise<User[]>;
     findOne(id: number): Promise<User>;
-    update(id: number, updateUserInput: UpdateUserInput): string;
+    update(id: number, updateUserInput: UpdateUserInput): Promise<import("typeorm").UpdateResult>;
     remove(id: number): string;
 }

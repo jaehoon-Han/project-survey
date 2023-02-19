@@ -9,6 +9,6 @@ export declare class UserResolver {
     findAll(): Promise<User[]>;
     getUserWithResponse(id: number): Promise<User[]>;
     findOne(id: number): Promise<User>;
-    updateUser(updateUserInput: UpdateUserInput): string;
+    updateUser(updateUserInput: UpdateUserInput): Promise<import("typeorm").UpdateResult>;
     removeUser(id: number): string;
 }
