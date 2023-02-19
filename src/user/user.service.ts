@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { SurveyResponse } from 'src/survey-response/entities/survey-response.entity';
 import { DataSource, Repository } from 'typeorm';
 import { CreateUserInput } from './dto/create-user.input';
 import { UpdateUserInput } from './dto/update-user.input';
@@ -52,7 +53,11 @@ export class UserService {
     return this.userRepository.update(id, user);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async remove(id: number) {
+    await this.removeUser(id);
+    return await this.dataSource.manager.delete(User, id);
+  }
+  async removeUser(id: number) {
+    return await this.dataSource.manager.delete(SurveyResponse, { userId: id });
   }
 }

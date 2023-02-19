@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserService = void 0;
 const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
+const survey_response_entity_1 = require("../survey-response/entities/survey-response.entity");
 const typeorm_2 = require("typeorm");
 const user_entity_1 = require("./entities/user.entity");
 let UserService = class UserService {
@@ -50,8 +51,12 @@ let UserService = class UserService {
         this.userRepository.merge(user, updateUserInput);
         return this.userRepository.update(id, user);
     }
-    remove(id) {
-        return `This action removes a #${id} user`;
+    async remove(id) {
+        await this.removeUser(id);
+        return await this.dataSource.manager.delete(user_entity_1.User, id);
+    }
+    async removeUser(id) {
+        return await this.dataSource.manager.delete(survey_response_entity_1.SurveyResponse, { userId: id });
     }
 };
 UserService = __decorate([
