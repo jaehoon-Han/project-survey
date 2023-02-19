@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Survey } from 'src/survey/entities/survey.entity';
+import { EntityManager, Repository } from 'typeorm';
 import { CreateQuestionInput } from './dto/create-question.input';
 import { UpdateQuestionInput } from './dto/update-question.input';
 import { Question } from './entities/question.entity';
@@ -10,12 +11,16 @@ export class QuestionService {
   constructor(
     @InjectRepository(Question)
     private questionRepository: Repository<Question>,
+    private entityManager: EntityManager,
   ) {}
 
-  async create(createQuestionInput: CreateQuestionInput): Promise<Question> {
+  async create(createQuestionInput: CreateQuestionInput) {
     const newQuestion = this.questionRepository.create(createQuestionInput);
-    await this.questionRepository.save(newQuestion);
-    return newQuestion;
+    newQuestion.survey = await this.entityManager.findOneById(
+      Survey,
+      createQuestionInput.surveyId,
+    );
+    return this.entityManager.save(newQuestion);
   }
 
   async findAll(): Promise<Question[]> {
