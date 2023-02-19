@@ -38,8 +38,4 @@ export class Answer {
   @Field(() => SurveyResponse)
   @ManyToOne(() => SurveyResponse, (surveyResponse) => surveyResponse.answer)
   surveyResponse: SurveyResponse;
-
-  @Field(() => QuestionOption)
-  @ManyToOne(() => QuestionOption, (questionOption) => questionOption.answer)
-  questionOption: QuestionOption;
 }

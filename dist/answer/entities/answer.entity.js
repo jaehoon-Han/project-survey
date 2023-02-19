@@ -11,7 +11,6 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Answer = void 0;
 const graphql_1 = require("@nestjs/graphql");
-const question_option_entity_1 = require("../../question-option/entities/question-option.entity");
 const survey_response_entity_1 = require("../../survey-response/entities/survey-response.entity");
 const typeorm_1 = require("typeorm");
 let Answer = class Answer {
@@ -48,11 +47,6 @@ __decorate([
     (0, typeorm_1.ManyToOne)(() => survey_response_entity_1.SurveyResponse, (surveyResponse) => surveyResponse.answer),
     __metadata("design:type", survey_response_entity_1.SurveyResponse)
 ], Answer.prototype, "surveyResponse", void 0);
-__decorate([
-    (0, graphql_1.Field)(() => question_option_entity_1.QuestionOption),
-    (0, typeorm_1.ManyToOne)(() => question_option_entity_1.QuestionOption, (questionOption) => questionOption.answer),
-    __metadata("design:type", question_option_entity_1.QuestionOption)
-], Answer.prototype, "questionOption", void 0);
 Answer = __decorate([
     (0, graphql_1.ObjectType)(),
     (0, typeorm_1.Entity)()
