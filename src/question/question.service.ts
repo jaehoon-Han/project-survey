@@ -1,7 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Answer } from 'src/answer/entities/answer.entity';
+import { QuestionOption } from 'src/question-option/entities/question-option.entity';
 import { Survey } from 'src/survey/entities/survey.entity';
-import { EntityManager, Repository } from 'typeorm';
+import { DataSource, EntityManager, Repository } from 'typeorm';
 import { CreateQuestionInput } from './dto/create-question.input';
 import { UpdateQuestionInput } from './dto/update-question.input';
 import { Question } from './entities/question.entity';
@@ -12,6 +14,7 @@ export class QuestionService {
     @InjectRepository(Question)
     private questionRepository: Repository<Question>,
     private entityManager: EntityManager,
+    private dataSource: DataSource,
   ) {}
 
   async create(createQuestionInput: CreateQuestionInput) {
@@ -56,7 +59,13 @@ export class QuestionService {
     return this.questionRepository.update(id, question);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} question`;
+  async remove(id: number) {
+    await this.removeQuestionOption(id);
+    return await this.dataSource.manager.delete(Question, id);
+  }
+  async removeQuestionOption(id: number): Promise<void> {
+    await this.dataSource.manager.delete(QuestionOption, {
+      questionOptionId: id,
+    });
   }
 }
