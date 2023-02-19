@@ -53,7 +53,7 @@ export class QuestionOptionService {
     return this.questionOptionRepository.update(id, questionOption);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} questionOption`;
+  async remove(id: number) {
+    return await this.dataSource.manager.delete(QuestionOption, id);
   }
 }

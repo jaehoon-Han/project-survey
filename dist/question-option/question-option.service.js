@@ -44,8 +44,8 @@ let QuestionOptionService = class QuestionOptionService {
         this.questionOptionRepository.merge(questionOption, updateQuestionOptionInput);
         return this.questionOptionRepository.update(id, questionOption);
     }
-    remove(id) {
-        return `This action removes a #${id} questionOption`;
+    async remove(id) {
+        return await this.dataSource.manager.delete(question_option_entity_1.QuestionOption, id);
     }
 };
 QuestionOptionService = __decorate([
