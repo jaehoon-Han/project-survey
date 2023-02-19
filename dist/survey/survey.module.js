@@ -25,8 +25,8 @@ SurveyModule = __decorate([
             survey_status_module_1.SurveyStatusModule,
             question_module_1.QuestionModule,
         ],
-        exports: [survey_service_1.SurveyService],
         providers: [survey_resolver_1.SurveyResolver, survey_service_1.SurveyService],
+        exports: [typeorm_1.TypeOrmModule],
     })
 ], SurveyModule);
 exports.SurveyModule = SurveyModule;

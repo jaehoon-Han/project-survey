@@ -6,5 +6,6 @@ export declare class Question {
     createdAt: Date;
     updatedAt: Date;
     survey: Survey;
+    surveyId: number;
     questionOption: QuestionOption[];
 }

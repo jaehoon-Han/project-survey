@@ -8,5 +8,6 @@ import { QuestionOptionModule } from 'src/question-option/question-option.module
 @Module({
   imports: [TypeOrmModule.forFeature([Question]), QuestionOptionModule],
   providers: [QuestionResolver, QuestionService],
+  exports: [TypeOrmModule],
 })
 export class QuestionModule {}

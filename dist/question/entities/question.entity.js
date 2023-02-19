@@ -41,6 +41,10 @@ __decorate([
     __metadata("design:type", survey_entity_1.Survey)
 ], Question.prototype, "survey", void 0);
 __decorate([
+    (0, typeorm_1.Column)(),
+    __metadata("design:type", Number)
+], Question.prototype, "surveyId", void 0);
+__decorate([
     (0, graphql_1.Field)(() => [question_option_entity_1.QuestionOption]),
     (0, typeorm_1.OneToMany)(() => question_option_entity_1.QuestionOption, (questionOption) => questionOption.question),
     __metadata("design:type", Array)

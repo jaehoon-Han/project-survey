@@ -35,6 +35,9 @@ export class Question {
   @JoinColumn({ name: 'surveyId' })
   survey: Survey;
 
+  @Column()
+  surveyId: number;
+
   @Field(() => [QuestionOption])
   @OneToMany(() => QuestionOption, (questionOption) => questionOption.question)
   questionOption: QuestionOption[];

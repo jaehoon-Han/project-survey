@@ -20,11 +20,8 @@ import { AnswerModule } from './answer/answer.module';
       driver: ApolloDriver,
       autoSchemaFile: 'src/schema.gql',
     }),
-
     UserModule,
     SurveyModule,
-    SurveyStatusModule,
-    SurveyResponseModule,
   ],
 
   controllers: [AppController],

@@ -2,6 +2,21 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Survey {
+  id: Int!
+
+  """survey title"""
+  title: String!
+
+  """survey description"""
+  description: String!
+
+  """question amount"""
+  amountQuestion: Int!
+  question: [Question!]!
+  surveyResponse: [SurveyResponse!]!
+}
+
 type User {
   id: Int!
   name: String!
@@ -36,21 +51,6 @@ type Question {
   content: String!
   survey: Survey!
   questionOption: [QuestionOption!]!
-}
-
-type Survey {
-  id: Int!
-
-  """survey title"""
-  title: String!
-
-  """survey description"""
-  description: String!
-
-  """question amount"""
-  amountQuestion: Int!
-  question: [Question!]!
-  surveyResponse: [SurveyResponse!]!
 }
 
 type SurveyStatus {
