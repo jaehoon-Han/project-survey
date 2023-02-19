@@ -2,6 +2,21 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Survey {
+  id: Int!
+
+  """survey title"""
+  title: String!
+
+  """survey description"""
+  description: String!
+
+  """question amount"""
+  amountQuestion: Int!
+  question: [Question!]!
+  surveyResponse: [SurveyResponse!]!
+}
+
 type User {
   id: Int!
   name: String!
@@ -10,11 +25,7 @@ type User {
 
 type SurveyResponse {
   id: Int!
-  surveyId: Int!
-  userId: Int!
   totalScore: Int!
-  survey: Survey!
-  user: User!
   answer: [Answer!]!
 }
 
@@ -37,7 +48,6 @@ type QuestionOption {
 
 type Question {
   id: Int!
-  surveyId: Int!
   content: String!
   survey: Survey!
   questionOption: [QuestionOption!]!
@@ -47,24 +57,6 @@ type SurveyStatus {
   id: Int!
   surveyId: Int!
   status: String!
-  survey: Survey!
-}
-
-type Survey {
-  """ID"""
-  id: Int!
-
-  """title list의 id """
-  title: String!
-
-  """description"""
-  description: String!
-
-  """question amount"""
-  amountQuestion: Int!
-  question: [Question!]
-  surveyStatus: [SurveyStatus!]
-  surveyResponse: [SurveyResponse!]
 }
 
 type Query {
@@ -93,6 +85,8 @@ type Mutation {
   updateAnswer(updateAnswerInput: UpdateAnswerInput!): Answer!
   removeAnswer(id: Int!): Answer!
   createSurvey(createSurveyInput: CreateSurveyInput!): Survey!
+  updateSurvey(updateSurveyInput: UpdateSurveyInput!): Survey!
+  removeSurvey(id: Int!): Survey!
   createSurveyStatus(createSurveyStatusInput: CreateSurveyStatusInput!): SurveyStatus!
   updateSurveyStatus(updateSurveyStatusInput: UpdateSurveyStatusInput!): SurveyStatus!
   removeSurveyStatus(id: Int!): SurveyStatus!
@@ -141,6 +135,13 @@ input CreateSurveyInput {
   title: String!
   description: String!
   amountQuestion: Int!
+}
+
+input UpdateSurveyInput {
+  title: String
+  description: String
+  amountQuestion: Int
+  id: Int!
 }
 
 input CreateSurveyStatusInput {

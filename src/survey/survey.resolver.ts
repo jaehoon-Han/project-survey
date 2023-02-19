@@ -31,15 +31,15 @@ export class SurveyResolver {
     return this.surveyService.findDetail(id);
   }
 
-  // @Mutation(() => Survey)
-  // updateSurvey(
-  //   @Args('updateSurveyInput') updateSurveyInput: UpdateSurveyInput,
-  // ) {
-  //   return this.surveyService.update(updateSurveyInput.id, updateSurveyInput);
-  // }
+  @Mutation(() => Survey)
+  updateSurvey(
+    @Args('updateSurveyInput') updateSurveyInput: UpdateSurveyInput,
+  ) {
+    return this.surveyService.update(updateSurveyInput.id, updateSurveyInput);
+  }
 
-  // @Mutation(() => Survey)
-  // removeSurvey(@Args('id', { type: () => Int }) id: number) {
-  //   return this.surveyService.remove(id);
-  // }
+  @Mutation(() => Survey)
+  removeSurvey(@Args('id', { type: () => Int }) id: number) {
+    return this.surveyService.remove(id);
+  }
 }

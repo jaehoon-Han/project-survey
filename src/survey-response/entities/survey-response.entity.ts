@@ -6,6 +6,7 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -22,14 +23,6 @@ export class SurveyResponse {
 
   @Field(() => Int)
   @Column()
-  surveyId: number;
-
-  @Field(() => Int)
-  @Column()
-  userId: number;
-
-  @Field(() => Int)
-  @Column()
   totalScore: number;
 
   @CreateDateColumn()
@@ -41,16 +34,16 @@ export class SurveyResponse {
   @DeleteDateColumn()
   deletedAt: Date;
 
-  @Field(() => Survey)
   @ManyToOne(() => Survey, (survey) => survey.surveyResponse)
+  @JoinColumn({ name: 'surveyId' })
   survey: Survey;
 
-  @Field(() => User)
   @ManyToOne(() => User, (user) => user.surveyResponse)
+  @JoinColumn({ name: 'userId' })
   user: User;
 
   @Field(() => [Answer])
-  @OneToMany(() => Answer, (answer) => answer.surveyResponse, { eager: true })
+  @OneToMany(() => Answer, (answer) => answer.surveyResponse)
   answer: Answer[];
 
   //todo: user와 manytoone 연결해주기

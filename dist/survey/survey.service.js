@@ -15,11 +15,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.SurveyService = void 0;
 const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
+const question_entity_1 = require("../question/entities/question.entity");
 const typeorm_2 = require("typeorm");
 const survey_entity_1 = require("./entities/survey.entity");
 let SurveyService = class SurveyService {
-    constructor(surveyRepository) {
+    constructor(surveyRepository, entityManager, dataSource) {
         this.surveyRepository = surveyRepository;
+        this.entityManager = entityManager;
+        this.dataSource = dataSource;
     }
     async create(createSurveyInput) {
         const newSurvey = this.surveyRepository.create(createSurveyInput);
@@ -31,26 +34,36 @@ let SurveyService = class SurveyService {
         return surveys;
     }
     async findOne(id) {
-        const survey = await this.surveyRepository.findOne({
-            where: { id },
-        });
+        const survey = await this.surveyRepository.findOneBy({ id });
         return survey;
     }
     async findDetail(id) {
         const result = await this.surveyRepository
-            .createQueryBuilder()
-            .select('survey')
-            .from(survey_entity_1.Survey, 'survey')
-            .where('survey.id= :id', { id: id })
+            .createQueryBuilder('survey')
             .leftJoinAndSelect('survey.question', 'question')
+            .where('survey.id= :id', { id: id })
             .getMany();
         return result;
+    }
+    async update(id, updateSurveyInput) {
+        const survey = await this.findOne(id);
+        this.surveyRepository.merge(survey, updateSurveyInput);
+        return this.surveyRepository.update(id, survey);
+    }
+    async remove(id) {
+        await this.removeQuestion(id);
+        return await this.dataSource.manager.delete(survey_entity_1.Survey, id);
+    }
+    async removeQuestion(id) {
+        return await this.dataSource.manager.delete(question_entity_1.Question, { surveyId: id });
     }
 };
 SurveyService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(survey_entity_1.Survey)),
-    __metadata("design:paramtypes", [typeorm_2.Repository])
+    __metadata("design:paramtypes", [typeorm_2.Repository,
+        typeorm_2.EntityManager,
+        typeorm_2.DataSource])
 ], SurveyService);
 exports.SurveyService = SurveyService;
 //# sourceMappingURL=survey.service.js.map

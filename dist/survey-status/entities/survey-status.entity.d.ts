@@ -1,4 +1,3 @@
-import { Survey } from 'src/survey/entities/survey.entity';
 export declare class SurveyStatus {
     id: number;
     surveyId: number;
@@ -6,5 +5,4 @@ export declare class SurveyStatus {
     createdAt: Date;
     updatedAt: Date;
     deletedAt: Date;
-    survey: Survey;
 }

@@ -2,11 +2,10 @@ import { QuestionOption } from 'src/question-option/entities/question-option.ent
 import { Survey } from 'src/survey/entities/survey.entity';
 export declare class Question {
     id: number;
-    surveyId: number;
     content: string;
     createdAt: Date;
     updatedAt: Date;
-    deletedAt: Date;
     survey: Survey;
+    surveyId: number;
     questionOption: QuestionOption[];
 }

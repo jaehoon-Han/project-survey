@@ -22,11 +22,6 @@ __decorate([
     __metadata("design:type", Number)
 ], Question.prototype, "id", void 0);
 __decorate([
-    (0, graphql_1.Field)(() => graphql_1.Int),
-    (0, typeorm_1.Column)(),
-    __metadata("design:type", Number)
-], Question.prototype, "surveyId", void 0);
-__decorate([
     (0, graphql_1.Field)(() => String),
     (0, typeorm_1.Column)(),
     __metadata("design:type", String)
@@ -40,17 +35,18 @@ __decorate([
     __metadata("design:type", Date)
 ], Question.prototype, "updatedAt", void 0);
 __decorate([
-    (0, typeorm_1.DeleteDateColumn)(),
-    __metadata("design:type", Date)
-], Question.prototype, "deletedAt", void 0);
-__decorate([
-    (0, graphql_1.Field)(() => survey_entity_1.Survey),
     (0, typeorm_1.ManyToOne)(() => survey_entity_1.Survey, (survey) => survey.question),
+    (0, graphql_1.Field)(() => survey_entity_1.Survey),
+    (0, typeorm_1.JoinColumn)({ name: 'surveyId' }),
     __metadata("design:type", survey_entity_1.Survey)
 ], Question.prototype, "survey", void 0);
 __decorate([
+    (0, typeorm_1.Column)(),
+    __metadata("design:type", Number)
+], Question.prototype, "surveyId", void 0);
+__decorate([
     (0, graphql_1.Field)(() => [question_option_entity_1.QuestionOption]),
-    (0, typeorm_1.OneToMany)(() => question_option_entity_1.QuestionOption, (questionOption) => questionOption.question, { eager: true }),
+    (0, typeorm_1.OneToMany)(() => question_option_entity_1.QuestionOption, (questionOption) => questionOption.question),
     __metadata("design:type", Array)
 ], Question.prototype, "questionOption", void 0);
 Question = __decorate([

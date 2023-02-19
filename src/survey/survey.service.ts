@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { async } from 'rxjs';
+import { Question } from 'src/question/entities/question.entity';
+import { DataSource, EntityManager, getManager, Repository } from 'typeorm';
 import { CreateSurveyInput } from './dto/create-survey.input';
 import { UpdateSurveyInput } from './dto/update-survey.input';
 import { Survey } from './entities/survey.entity';
@@ -10,6 +12,8 @@ export class SurveyService {
   constructor(
     @InjectRepository(Survey)
     private surveyRepository: Repository<Survey>,
+    private entityManager: EntityManager,
+    private dataSource: DataSource,
   ) {}
 
   async create(createSurveyInput: CreateSurveyInput): Promise<Survey> {
@@ -19,65 +23,42 @@ export class SurveyService {
   }
 
   async findAll(): Promise<Survey[]> {
-    // const result = await this.surveyRepository
-    //   .createQueryBuilder('Survey')
-    //   .innerJoin('survey.id', 'question')
-    //   .where('survey.id = :surveyId', { surveyId: 4 })
-    //   .getRawMany();
-
-    // return result;
-    // const result = await this.surveyRepository
-    //   .createQueryBuilder()
-    //   .select('survey')
-    //   .from(Survey, 'survey')
-    //   .where('survey.id= :id', { id: dataSource })
-    //   .leftJoinAndSelect('survey.question', 'question')
-    //   .getMany();
-
-    // return result;
-
     const surveys = await this.surveyRepository.find();
     return surveys;
   }
 
-  async findOne(id: number) {
-    // const result = await this.surveyRepository
-    //   .createQueryBuilder()
-    //   .select('survey')
-    //   .from(Survey, 'survey')
-    //   .where('survey.id = :id', { id: id })
-    //   .getOne();
-
-    // return result;
-    const survey = await this.surveyRepository.findOne({
-      where: { id },
-    });
+  async findOne(id: number): Promise<Survey> {
+    const survey = await this.surveyRepository.findOneBy({ id });
     return survey;
   }
 
+  /**
+   * @description "선택한 설문의 질문 조회"
+   * @param id
+   * @returns
+   */
   async findDetail(id: number) {
     const result = await this.surveyRepository
-      .createQueryBuilder()
-      .select('survey')
-      .from(Survey, 'survey')
-      .where('survey.id= :id', { id: id })
+      .createQueryBuilder('survey')
       .leftJoinAndSelect('survey.question', 'question')
+      .where('survey.id= :id', { id: id })
       .getMany();
 
     return result;
   }
 
-  // async findOneById(id: number) {
-  //   const qb = this.surveyRepository.createQueryBuilder('User')
-  //   .leftJoinAndSelect('User.id','id')
-  //   .leftJoinAndSelect('User.user')
-  // }
+  async update(id: number, updateSurveyInput: UpdateSurveyInput) {
+    const survey = await this.findOne(id);
+    this.surveyRepository.merge(survey, updateSurveyInput);
+    return this.surveyRepository.update(id, survey);
+  }
 
-  // update(id: number, updateSurveyInput: UpdateSurveyInput) {
-  //   this.surveyRepository.update(updateSurveyInput);
-  // }
+  async remove(id: number) {
+    await this.removeQuestion(id);
+    return await this.dataSource.manager.delete(Survey, id);
+  }
 
-  // remove(id: number) {
-  //   return `This action removes a #${id} survey`;
-  // }
+  async removeQuestion(id: number): Promise<void> {
+    await this.dataSource.manager.delete(Question, { surveyId: id });
+  }
 }

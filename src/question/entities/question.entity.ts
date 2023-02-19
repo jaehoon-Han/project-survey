@@ -6,6 +6,7 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -19,10 +20,6 @@ export class Question {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Field(() => Int)
-  @Column()
-  surveyId: number;
-
   @Field(() => String)
   @Column()
   content: string;
@@ -33,19 +30,16 @@ export class Question {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @DeleteDateColumn()
-  deletedAt: Date;
-
-  @Field(() => Survey)
   @ManyToOne(() => Survey, (survey) => survey.question)
+  @Field(() => Survey)
+  @JoinColumn({ name: 'surveyId' })
   survey: Survey;
 
+  @Column()
+  surveyId: number;
+
   @Field(() => [QuestionOption])
-  @OneToMany(
-    () => QuestionOption,
-    (questionOption) => questionOption.question,
-    { eager: true },
-  )
+  @OneToMany(() => QuestionOption, (questionOption) => questionOption.question)
   questionOption: QuestionOption[];
 
   // @OneToMany(() => Answer, (answer) => answer.question)
