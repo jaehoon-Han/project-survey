@@ -8,6 +8,6 @@ export declare class QuestionOptionResolver {
     createQuestionOption(createQuestionOptionInput: CreateQuestionOptionInput): Promise<QuestionOption>;
     findAll(): Promise<QuestionOption[]>;
     findOne(id: number): Promise<QuestionOption>;
-    updateQuestionOption(updateQuestionOptionInput: UpdateQuestionOptionInput): string;
+    updateQuestionOption(updateQuestionOptionInput: UpdateQuestionOptionInput): Promise<import("typeorm").UpdateResult>;
     removeQuestionOption(id: number): string;
 }

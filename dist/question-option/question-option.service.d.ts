@@ -10,6 +10,6 @@ export declare class QuestionOptionService {
     create(createQuestionOptionInput: CreateQuestionOptionInput): Promise<QuestionOption>;
     findAll(): Promise<QuestionOption[]>;
     findOne(id: number): Promise<QuestionOption>;
-    update(id: number, updateQuestionOptionInput: UpdateQuestionOptionInput): string;
+    update(id: number, updateQuestionOptionInput: UpdateQuestionOptionInput): Promise<import("typeorm").UpdateResult>;
     remove(id: number): string;
 }

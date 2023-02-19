@@ -39,8 +39,10 @@ let QuestionOptionService = class QuestionOptionService {
         });
         return questionOption;
     }
-    update(id, updateQuestionOptionInput) {
-        return `This action updates a #${id} questionOption`;
+    async update(id, updateQuestionOptionInput) {
+        const questionOption = await this.findOne(id);
+        this.questionOptionRepository.merge(questionOption, updateQuestionOptionInput);
+        return this.questionOptionRepository.update(id, questionOption);
     }
     remove(id) {
         return `This action removes a #${id} questionOption`;

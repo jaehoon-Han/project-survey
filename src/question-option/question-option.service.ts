@@ -41,8 +41,16 @@ export class QuestionOptionService {
     return questionOption;
   }
 
-  update(id: number, updateQuestionOptionInput: UpdateQuestionOptionInput) {
-    return `This action updates a #${id} questionOption`;
+  async update(
+    id: number,
+    updateQuestionOptionInput: UpdateQuestionOptionInput,
+  ) {
+    const questionOption = await this.findOne(id);
+    this.questionOptionRepository.merge(
+      questionOption,
+      updateQuestionOptionInput,
+    );
+    return this.questionOptionRepository.update(id, questionOption);
   }
 
   remove(id: number) {
