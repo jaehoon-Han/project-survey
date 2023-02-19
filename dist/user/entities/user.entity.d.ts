@@ -1,9 +1,7 @@
+import { CommonEntity } from 'src/common/commonentity.interface';
 import { SurveyResponse } from 'src/survey-response/entities/survey-response.entity';
-export declare class User {
-    id: number;
+export declare class User extends CommonEntity {
     name: string;
-    createdAt: Date;
-    updatedAt: Date;
     deletedAt: Date;
     surveyResponse: SurveyResponse[];
 }

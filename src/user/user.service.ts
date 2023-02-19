@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { CreateUserInput } from './dto/create-user.input';
 import { UpdateUserInput } from './dto/update-user.input';
 import { User } from './entities/user.entity';
@@ -10,6 +10,7 @@ export class UserService {
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
+    private dataSource: DataSource,
   ) {}
 
   async create(createUserInput: CreateUserInput): Promise<User> {
@@ -23,11 +24,19 @@ export class UserService {
     return users;
   }
 
-  async getUserWithResponse(): Promise<User[]> {
-    return this.userRepository
+  /**
+   * @description "유저의 답변 조회"
+   * @param id
+   * @returns
+   */
+  async getUserWithResponse(id: number): Promise<User[]> {
+    const result = await this.userRepository
       .createQueryBuilder('user')
       .leftJoinAndSelect('user.surveyResponse', 'surveyResponse')
+      .where('user.id= :id', { id: id })
       .getMany();
+
+    return result;
   }
 
   async findOne(id: number): Promise<User> {
