@@ -33,12 +33,13 @@ __decorate([
     __metadata("design:type", Number)
 ], Survey.prototype, "amountQuestion", void 0);
 __decorate([
-    (0, typeorm_1.OneToMany)(() => question_entity_1.Question, (question) => question.survey),
+    (0, typeorm_1.OneToMany)(() => question_entity_1.Question, (question) => question.survey, { cascade: true }),
     (0, graphql_1.Field)(() => [question_entity_1.Question]),
     __metadata("design:type", Array)
 ], Survey.prototype, "question", void 0);
 __decorate([
-    (0, typeorm_1.OneToMany)(() => survey_response_entity_1.SurveyResponse, (k) => k.survey),
+    (0, typeorm_1.OneToMany)(() => survey_response_entity_1.SurveyResponse, (surveyResponse) => surveyResponse.survey),
+    (0, graphql_1.Field)(() => [survey_response_entity_1.SurveyResponse]),
     __metadata("design:type", Array)
 ], Survey.prototype, "surveyResponse", void 0);
 Survey = __decorate([

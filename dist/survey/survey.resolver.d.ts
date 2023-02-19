@@ -10,4 +10,5 @@ export declare class SurveyResolver {
     findOneSurvey(id: number): Promise<Survey>;
     findDetail(id: number): Promise<Survey[]>;
     updateSurvey(updateSurveyInput: UpdateSurveyInput): Promise<import("typeorm").UpdateResult>;
+    removeSurvey(id: number): Promise<void>;
 }

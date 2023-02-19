@@ -38,6 +38,9 @@ let SurveyResolver = class SurveyResolver {
     updateSurvey(updateSurveyInput) {
         return this.surveyService.update(updateSurveyInput.id, updateSurveyInput);
     }
+    removeSurvey(id) {
+        return this.surveyService.remove(id);
+    }
 };
 __decorate([
     (0, graphql_1.Mutation)(() => survey_entity_1.Survey),
@@ -73,6 +76,13 @@ __decorate([
     __metadata("design:paramtypes", [update_survey_input_1.UpdateSurveyInput]),
     __metadata("design:returntype", void 0)
 ], SurveyResolver.prototype, "updateSurvey", null);
+__decorate([
+    (0, graphql_1.Mutation)(() => survey_entity_1.Survey),
+    __param(0, (0, graphql_1.Args)('id', { type: () => graphql_1.Int })),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number]),
+    __metadata("design:returntype", void 0)
+], SurveyResolver.prototype, "removeSurvey", null);
 SurveyResolver = __decorate([
     (0, graphql_1.Resolver)(() => survey_entity_1.Survey),
     __metadata("design:paramtypes", [survey_service_1.SurveyService])

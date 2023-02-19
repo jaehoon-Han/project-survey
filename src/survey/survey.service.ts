@@ -39,7 +39,6 @@ export class SurveyService {
       .leftJoinAndSelect('survey.question', 'question')
       .where('survey.id= :id', { id: id })
       .getMany();
-    // console.log(result);
 
     return result;
   }
@@ -50,7 +49,12 @@ export class SurveyService {
     return this.surveyRepository.update(id, survey);
   }
 
-  // remove(id: number) {
-  //   return `This action removes a #${id} survey`;
-  // }
+  async remove(id: number) {
+    await this.surveyRepository
+      .createQueryBuilder()
+      .delete()
+      .from(Survey)
+      .where('survey.id= :id', { id: id })
+      .execute();
+  }
 }

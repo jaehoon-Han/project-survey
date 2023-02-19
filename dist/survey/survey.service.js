@@ -47,6 +47,14 @@ let SurveyService = class SurveyService {
         this.surveyRepository.merge(survey, updateSurveyInput);
         return this.surveyRepository.update(id, survey);
     }
+    async remove(id) {
+        await this.surveyRepository
+            .createQueryBuilder()
+            .delete()
+            .from(survey_entity_1.Survey)
+            .where('survey.id= :id', { id: id })
+            .execute();
+    }
 };
 SurveyService = __decorate([
     (0, common_1.Injectable)(),
