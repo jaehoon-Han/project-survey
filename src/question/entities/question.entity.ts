@@ -1,10 +1,10 @@
 import { ObjectType, Field, Int } from '@nestjs/graphql';
+import { CommonEntity } from 'src/common/commonentity.interface';
 import { QuestionOption } from 'src/question-option/entities/question-option.entity';
 import { Survey } from 'src/survey/entities/survey.entity';
 import {
   Column,
   CreateDateColumn,
-  DeleteDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
@@ -15,20 +15,10 @@ import {
 
 @ObjectType()
 @Entity()
-export class Question {
-  @Field(() => Int)
-  @PrimaryGeneratedColumn()
-  id: number;
-
+export class Question extends CommonEntity {
   @Field(() => String)
   @Column()
   content: string;
-
-  @CreateDateColumn()
-  createdAt: Date;
-
-  @UpdateDateColumn()
-  updatedAt: Date;
 
   @ManyToOne(() => Survey, (survey) => survey.question)
   @Field(() => Survey)
@@ -41,7 +31,4 @@ export class Question {
   @Field(() => [QuestionOption])
   @OneToMany(() => QuestionOption, (questionOption) => questionOption.question)
   questionOption: QuestionOption[];
-
-  // @OneToMany(() => Answer, (answer) => answer.question)
-  // answer: Answer[];
 }

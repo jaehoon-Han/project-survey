@@ -11,29 +11,17 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Question = void 0;
 const graphql_1 = require("@nestjs/graphql");
+const commonentity_interface_1 = require("../../common/commonentity.interface");
 const question_option_entity_1 = require("../../question-option/entities/question-option.entity");
 const survey_entity_1 = require("../../survey/entities/survey.entity");
 const typeorm_1 = require("typeorm");
-let Question = class Question {
+let Question = class Question extends commonentity_interface_1.CommonEntity {
 };
-__decorate([
-    (0, graphql_1.Field)(() => graphql_1.Int),
-    (0, typeorm_1.PrimaryGeneratedColumn)(),
-    __metadata("design:type", Number)
-], Question.prototype, "id", void 0);
 __decorate([
     (0, graphql_1.Field)(() => String),
     (0, typeorm_1.Column)(),
     __metadata("design:type", String)
 ], Question.prototype, "content", void 0);
-__decorate([
-    (0, typeorm_1.CreateDateColumn)(),
-    __metadata("design:type", Date)
-], Question.prototype, "createdAt", void 0);
-__decorate([
-    (0, typeorm_1.UpdateDateColumn)(),
-    __metadata("design:type", Date)
-], Question.prototype, "updatedAt", void 0);
 __decorate([
     (0, typeorm_1.ManyToOne)(() => survey_entity_1.Survey, (survey) => survey.question),
     (0, graphql_1.Field)(() => survey_entity_1.Survey),

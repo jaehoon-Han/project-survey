@@ -55,7 +55,7 @@ let SurveyService = class SurveyService {
         return await this.dataSource.manager.delete(survey_entity_1.Survey, id);
     }
     async removeQuestion(id) {
-        return await this.dataSource.manager.delete(question_entity_1.Question, { surveyId: id });
+        await this.dataSource.manager.delete(question_entity_1.Question, { surveyId: id });
     }
 };
 SurveyService = __decorate([
