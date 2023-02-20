@@ -4,7 +4,4 @@ import { InputType, Int, Field } from '@nestjs/graphql';
 export class CreateAnswerInput {
   @Field(() => Int)
   surveyResponseId: number;
-
-  @Field(() => Int)
-  questionOptionId: number;
 }

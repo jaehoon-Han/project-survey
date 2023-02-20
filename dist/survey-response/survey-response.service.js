@@ -16,6 +16,7 @@ exports.SurveyResponseService = void 0;
 const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
 const answer_entity_1 = require("../answer/entities/answer.entity");
+const survey_entity_1 = require("../survey/entities/survey.entity");
 const user_entity_1 = require("../user/entities/user.entity");
 const typeorm_2 = require("typeorm");
 const survey_response_entity_1 = require("./entities/survey-response.entity");
@@ -28,6 +29,7 @@ let SurveyResponseService = class SurveyResponseService {
     async create(createSurveyResponseInput) {
         const newSurveyResponse = this.surveyResponseRepository.create(createSurveyResponseInput);
         newSurveyResponse.user = await this.entityManager.findOneById(user_entity_1.User, createSurveyResponseInput.userId);
+        newSurveyResponse.survey = await this.entityManager.findOneById(survey_entity_1.Survey, createSurveyResponseInput.surveyId);
         return await this.surveyResponseRepository.save(newSurveyResponse);
     }
     async findAll() {

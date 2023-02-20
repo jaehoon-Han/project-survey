@@ -18,8 +18,10 @@ type User {
 
 type Answer {
   id: Int!
+  question: String!
+  questionOption: String!
+  score: Int!
   surveyResponseId: Int!
-  questionOptionId: Int!
   surveyResponse: SurveyResponse!
 }
 
@@ -79,7 +81,7 @@ type Mutation {
   createSurveyResponse(createSurveyResponseInput: CreateSurveyResponseInput!): SurveyResponse!
   updateSurveyResponse(updateSurveyResponseInput: UpdateSurveyResponseInput!): SurveyResponse!
   removeSurveyResponse(id: Int!): SurveyResponse!
-  createAnswer(createAnswerInput: CreateAnswerInput!): Answer!
+  createAnswer(createAnswerInput: CreateAnswerInput!, questionOptionId: Float!): Answer!
   updateAnswer(updateAnswerInput: UpdateAnswerInput!): Answer!
   removeAnswer(id: Int!): Answer!
   createSurvey(createSurveyInput: CreateSurveyInput!): Survey!
@@ -120,12 +122,10 @@ input UpdateSurveyResponseInput {
 
 input CreateAnswerInput {
   surveyResponseId: Int!
-  questionOptionId: Int!
 }
 
 input UpdateAnswerInput {
   surveyResponseId: Int
-  questionOptionId: Int
   id: Int!
 }
 

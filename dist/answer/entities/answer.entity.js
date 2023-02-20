@@ -11,37 +11,35 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Answer = void 0;
 const graphql_1 = require("@nestjs/graphql");
+const commonentity_interface_1 = require("../../common/commonentity.interface");
 const survey_response_entity_1 = require("../../survey-response/entities/survey-response.entity");
 const typeorm_1 = require("typeorm");
-let Answer = class Answer {
+let Answer = class Answer extends commonentity_interface_1.CommonEntity {
 };
 __decorate([
+    (0, graphql_1.Field)(() => String),
+    (0, typeorm_1.Column)(),
+    __metadata("design:type", String)
+], Answer.prototype, "question", void 0);
+__decorate([
+    (0, graphql_1.Field)(() => String),
+    (0, typeorm_1.Column)(),
+    __metadata("design:type", String)
+], Answer.prototype, "questionOption", void 0);
+__decorate([
     (0, graphql_1.Field)(() => graphql_1.Int),
-    (0, typeorm_1.PrimaryGeneratedColumn)(),
+    (0, typeorm_1.Column)(),
     __metadata("design:type", Number)
-], Answer.prototype, "id", void 0);
+], Answer.prototype, "score", void 0);
+__decorate([
+    (0, typeorm_1.DeleteDateColumn)(),
+    __metadata("design:type", Date)
+], Answer.prototype, "deletedAt", void 0);
 __decorate([
     (0, graphql_1.Field)(() => graphql_1.Int),
     (0, typeorm_1.Column)(),
     __metadata("design:type", Number)
 ], Answer.prototype, "surveyResponseId", void 0);
-__decorate([
-    (0, graphql_1.Field)(() => graphql_1.Int),
-    (0, typeorm_1.Column)(),
-    __metadata("design:type", Number)
-], Answer.prototype, "questionOptionId", void 0);
-__decorate([
-    (0, typeorm_1.CreateDateColumn)(),
-    __metadata("design:type", Date)
-], Answer.prototype, "createdAt", void 0);
-__decorate([
-    (0, typeorm_1.UpdateDateColumn)(),
-    __metadata("design:type", Date)
-], Answer.prototype, "updatedAt", void 0);
-__decorate([
-    (0, typeorm_1.DeleteDateColumn)(),
-    __metadata("design:type", Date)
-], Answer.prototype, "deletedAt", void 0);
 __decorate([
     (0, graphql_1.Field)(() => survey_response_entity_1.SurveyResponse),
     (0, typeorm_1.ManyToOne)(() => survey_response_entity_1.SurveyResponse, (surveyResponse) => surveyResponse.answer),
