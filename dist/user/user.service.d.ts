@@ -11,6 +11,6 @@ export declare class UserService {
     getUserWithResponse(id: number): Promise<User[]>;
     findOne(id: number): Promise<User>;
     update(id: number, updateUserInput: UpdateUserInput): Promise<import("typeorm").UpdateResult>;
-    remove(id: number): Promise<import("typeorm").DeleteResult>;
+    remove(id: number): Promise<User>;
     removeSurveyResponse(id: number): Promise<import("typeorm").DeleteResult>;
 }

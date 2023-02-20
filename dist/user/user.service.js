@@ -44,6 +44,9 @@ let UserService = class UserService {
         const user = await this.userRepository.findOneBy({
             id,
         });
+        if (!user) {
+            throw new common_1.BadRequestException(`NOT FOUND USER ID: ${id}`);
+        }
         return user;
     }
     async update(id, updateUserInput) {
@@ -52,8 +55,8 @@ let UserService = class UserService {
         return this.userRepository.update(id, user);
     }
     async remove(id) {
-        await this.removeSurveyResponse(id);
-        return await this.dataSource.manager.delete(user_entity_1.User, id);
+        const user = await this.findOne(id);
+        return this.dataSource.manager.remove(user);
     }
     async removeSurveyResponse(id) {
         return await this.dataSource.manager.delete(survey_response_entity_1.SurveyResponse, { userId: id });
