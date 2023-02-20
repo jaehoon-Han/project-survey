@@ -34,6 +34,9 @@ let SurveyService = class SurveyService {
     }
     async findOne(id) {
         const survey = await this.surveyRepository.findOneBy({ id });
+        if (!survey) {
+            throw new common_1.BadRequestException(`NOT FOUND SURVEY ID: ${id}`);
+        }
         return survey;
     }
     async findDetail(id) {
@@ -50,7 +53,8 @@ let SurveyService = class SurveyService {
         return this.surveyRepository.update(id, survey);
     }
     async remove(id) {
-        return await this.dataSource.manager.delete(survey_entity_1.Survey, id);
+        const survey = await this.findOne(id);
+        return this.dataSource.manager.remove(survey);
     }
 };
 SurveyService = __decorate([
