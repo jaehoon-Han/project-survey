@@ -15,16 +15,19 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AnswerService = void 0;
 const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
+const survey_response_entity_1 = require("../survey-response/entities/survey-response.entity");
 const typeorm_2 = require("typeorm");
 const answer_entity_1 = require("./entities/answer.entity");
 let AnswerService = class AnswerService {
-    constructor(answerRepository) {
+    constructor(answerRepository, entityManager, dataSource) {
         this.answerRepository = answerRepository;
+        this.entityManager = entityManager;
+        this.dataSource = dataSource;
     }
     async create(createAnswerInput) {
         const newAnswer = this.answerRepository.create(createAnswerInput);
-        await this.answerRepository.save(newAnswer);
-        return newAnswer;
+        newAnswer.surveyResponse = await this.entityManager.findOneById(survey_response_entity_1.SurveyResponse, createAnswerInput.surveyResponseId);
+        return this.entityManager.save(newAnswer);
     }
     async findAll() {
         const answers = await this.answerRepository.find();
@@ -46,7 +49,9 @@ let AnswerService = class AnswerService {
 AnswerService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(answer_entity_1.Answer)),
-    __metadata("design:paramtypes", [typeorm_2.Repository])
+    __metadata("design:paramtypes", [typeorm_2.Repository,
+        typeorm_2.EntityManager,
+        typeorm_2.DataSource])
 ], AnswerService);
 exports.AnswerService = AnswerService;
 //# sourceMappingURL=answer.service.js.map
