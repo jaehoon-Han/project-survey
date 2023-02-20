@@ -45,6 +45,4 @@ export class SurveyResponse {
   @Field(() => [Answer])
   @OneToMany(() => Answer, (answer) => answer.surveyResponse)
   answer: Answer[];
-
-  //todo: user와 manytoone 연결해주기
 }

@@ -54,10 +54,10 @@ export class UserService {
   }
 
   async remove(id: number) {
-    await this.removeUser(id);
+    await this.removeSurveyResponse(id);
     return await this.dataSource.manager.delete(User, id);
   }
-  async removeUser(id: number) {
+  async removeSurveyResponse(id: number) {
     return await this.dataSource.manager.delete(SurveyResponse, { userId: id });
   }
 }
