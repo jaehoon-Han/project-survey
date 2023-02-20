@@ -33,10 +33,18 @@ let SurveyResponseService = class SurveyResponseService {
         return surveyResponse;
     }
     async findOne(id) {
-        const surveyResponse = await this.surveyResponseRepository.findOne({
-            where: { id },
+        const surveyResponse = await this.surveyResponseRepository.findOneBy({
+            id,
         });
         return surveyResponse;
+    }
+    async findDetail(id) {
+        const result = await this.surveyResponseRepository
+            .createQueryBuilder('surveyResponse')
+            .leftJoinAndSelect('surveyResponse.answer', 'answer')
+            .where('surveyResponse.id= :id', { id: id })
+            .getMany();
+        return result;
     }
     update(id, updateSurveyResponseInput) {
         return `This action updates a #${id} surveyResponse`;

@@ -9,6 +9,7 @@ export declare class SurveyResponseService {
     create(createSurveyResponseInput: CreateSurveyResponseInput): Promise<SurveyResponse>;
     findAll(): Promise<SurveyResponse[]>;
     findOne(id: number): Promise<SurveyResponse>;
+    findDetail(id: number): Promise<SurveyResponse[]>;
     update(id: number, updateSurveyResponseInput: UpdateSurveyResponseInput): string;
     remove(id: number): string;
 }

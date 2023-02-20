@@ -33,10 +33,25 @@ export class SurveyResponseService {
   }
 
   async findOne(id: number): Promise<SurveyResponse> {
-    const surveyResponse = await this.surveyResponseRepository.findOne({
-      where: { id },
+    const surveyResponse = await this.surveyResponseRepository.findOneBy({
+      id,
     });
     return surveyResponse;
+  }
+
+  /**
+   * @description "선택한 답변의 응답 조회"
+   * @param id
+   * @returns
+   */
+  async findDetail(id: number) {
+    const result = await this.surveyResponseRepository
+      .createQueryBuilder('surveyResponse')
+      .leftJoinAndSelect('surveyResponse.answer', 'answer')
+      .where('surveyResponse.id= :id', { id: id })
+      .getMany();
+
+    return result;
   }
 
   update(id: number, updateSurveyResponseInput: UpdateSurveyResponseInput) {
