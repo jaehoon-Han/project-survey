@@ -22,8 +22,8 @@ let AnswerResolver = class AnswerResolver {
     constructor(answerService) {
         this.answerService = answerService;
     }
-    createAnswer(createAnswerInput) {
-        return this.answerService.create(createAnswerInput);
+    createAnswer(createAnswerInput, questionOptionid) {
+        return this.answerService.create(createAnswerInput, questionOptionid);
     }
     findAll() {
         return this.answerService.findAll();
@@ -41,8 +41,9 @@ let AnswerResolver = class AnswerResolver {
 __decorate([
     (0, graphql_1.Mutation)(() => answer_entity_1.Answer),
     __param(0, (0, graphql_1.Args)('createAnswerInput')),
+    __param(1, (0, graphql_1.Args)('questionOptionId')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_answer_input_1.CreateAnswerInput]),
+    __metadata("design:paramtypes", [create_answer_input_1.CreateAnswerInput, Number]),
     __metadata("design:returntype", void 0)
 ], AnswerResolver.prototype, "createAnswer", null);
 __decorate([
