@@ -37,6 +37,9 @@ let QuestionService = class QuestionService {
         const question = await this.questionRepository.findOneBy({
             id,
         });
+        if (!question) {
+            throw new common_1.BadRequestException(`NOT FOUND QUESTION ID: ${id}`);
+        }
         return question;
     }
     async findDetail(id) {
@@ -53,7 +56,8 @@ let QuestionService = class QuestionService {
         return this.questionRepository.update(id, question);
     }
     async remove(id) {
-        return await this.dataSource.manager.delete(question_entity_1.Question, id);
+        const question = await this.findOne(id);
+        return this.dataSource.manager.remove(question);
     }
 };
 QuestionService = __decorate([
