@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { QuestionOption } from 'src/question-option/entities/question-option.entity';
 import { Question } from 'src/question/entities/question.entity';
@@ -17,6 +17,7 @@ export class AnswerService {
     private dataSource: DataSource,
   ) {}
 
+  private readonly logger = new Logger(AnswerService.name);
   async create(
     createAnswerInput: CreateAnswerInput,
     questionOptionId: number,
@@ -48,6 +49,7 @@ export class AnswerService {
       id,
     });
     if (!answer) {
+      this.logger.error(new BadRequestException(`NOT FOUND SURVEY ID: ${id}`));
       throw new BadRequestException(`NOT FOUND ANSWER ID: ${id}`);
     }
     return answer;

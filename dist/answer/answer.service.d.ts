@@ -9,6 +9,7 @@ export declare class AnswerService {
     private entityManager;
     private dataSource;
     constructor(answerRepository: Repository<Answer>, entityManager: EntityManager, dataSource: DataSource);
+    private readonly logger;
     create(createAnswerInput: CreateAnswerInput, questionOptionId: number): Promise<Answer>;
     findAll(): Promise<Answer[]>;
     findOne(id: number): Promise<Answer>;

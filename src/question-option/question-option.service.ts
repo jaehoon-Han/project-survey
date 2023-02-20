@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Question } from 'src/question/entities/question.entity';
 import { DataSource, EntityManager, Repository } from 'typeorm';
@@ -14,6 +14,7 @@ export class QuestionOptionService {
     private entityManager: EntityManager,
     private dataSource: DataSource,
   ) {}
+  private readonly logger = new Logger(QuestionOptionService.name);
 
   async create(
     createQuestionOptionInput: CreateQuestionOptionInput,
@@ -38,6 +39,9 @@ export class QuestionOptionService {
       id,
     });
     if (!questionOption) {
+      this.logger.error(
+        new BadRequestException(`NOT FOUND QUESTIONOPTION ID: ${id}`),
+      );
       throw new BadRequestException(`NOT FOUND QUESTIONOPTION ID: ${id}`);
     }
     return questionOption;

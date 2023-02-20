@@ -6,6 +6,7 @@ export declare class UserService {
     private userRepository;
     private dataSource;
     constructor(userRepository: Repository<User>, dataSource: DataSource);
+    private readonly logger;
     create(createUserInput: CreateUserInput): Promise<User>;
     findAll(): Promise<User[]>;
     getUserWithResponse(id: number): Promise<User[]>;

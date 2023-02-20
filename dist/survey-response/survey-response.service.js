@@ -11,6 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
+var SurveyResponseService_1;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SurveyResponseService = void 0;
 const common_1 = require("@nestjs/common");
@@ -19,11 +20,12 @@ const survey_entity_1 = require("../survey/entities/survey.entity");
 const user_entity_1 = require("../user/entities/user.entity");
 const typeorm_2 = require("typeorm");
 const survey_response_entity_1 = require("./entities/survey-response.entity");
-let SurveyResponseService = class SurveyResponseService {
+let SurveyResponseService = SurveyResponseService_1 = class SurveyResponseService {
     constructor(surveyResponseRepository, entityManager, dataSource) {
         this.surveyResponseRepository = surveyResponseRepository;
         this.entityManager = entityManager;
         this.dataSource = dataSource;
+        this.logger = new common_1.Logger(SurveyResponseService_1.name);
     }
     async create(createSurveyResponseInput) {
         const newSurveyResponse = this.surveyResponseRepository.create(createSurveyResponseInput);
@@ -40,6 +42,7 @@ let SurveyResponseService = class SurveyResponseService {
             id,
         });
         if (!surveyResponse) {
+            this.logger.error(new common_1.BadRequestException(`NOT FOUND SURVEYRESPONSE ID: ${id}`));
             throw new common_1.BadRequestException(`NOT FOUND SURVEYRESPONSE ID: ${id}`);
         }
         return surveyResponse;
@@ -77,7 +80,7 @@ let SurveyResponseService = class SurveyResponseService {
         return this.dataSource.manager.remove(surveyResponse);
     }
 };
-SurveyResponseService = __decorate([
+SurveyResponseService = SurveyResponseService_1 = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(survey_response_entity_1.SurveyResponse)),
     __metadata("design:paramtypes", [typeorm_2.Repository,

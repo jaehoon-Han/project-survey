@@ -7,6 +7,7 @@ export declare class SurveyResponseService {
     private entityManager;
     private dataSource;
     constructor(surveyResponseRepository: Repository<SurveyResponse>, entityManager: EntityManager, dataSource: DataSource);
+    private readonly logger;
     create(createSurveyResponseInput: CreateSurveyResponseInput): Promise<SurveyResponse>;
     findAll(): Promise<SurveyResponse[]>;
     findOne(id: number): Promise<SurveyResponse>;

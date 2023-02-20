@@ -11,6 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
+var QuestionService_1;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.QuestionService = void 0;
 const common_1 = require("@nestjs/common");
@@ -18,11 +19,12 @@ const typeorm_1 = require("@nestjs/typeorm");
 const survey_entity_1 = require("../survey/entities/survey.entity");
 const typeorm_2 = require("typeorm");
 const question_entity_1 = require("./entities/question.entity");
-let QuestionService = class QuestionService {
+let QuestionService = QuestionService_1 = class QuestionService {
     constructor(questionRepository, entityManager, dataSource) {
         this.questionRepository = questionRepository;
         this.entityManager = entityManager;
         this.dataSource = dataSource;
+        this.logger = new common_1.Logger(QuestionService_1.name);
     }
     async create(createQuestionInput) {
         const newQuestion = this.questionRepository.create(createQuestionInput);
@@ -38,6 +40,7 @@ let QuestionService = class QuestionService {
             id,
         });
         if (!question) {
+            this.logger.error(new common_1.BadRequestException(`NOT FOUND QUESTION ID: ${id}`));
             throw new common_1.BadRequestException(`NOT FOUND QUESTION ID: ${id}`);
         }
         return question;
@@ -60,7 +63,7 @@ let QuestionService = class QuestionService {
         return this.dataSource.manager.remove(question);
     }
 };
-QuestionService = __decorate([
+QuestionService = QuestionService_1 = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(question_entity_1.Question)),
     __metadata("design:paramtypes", [typeorm_2.Repository,

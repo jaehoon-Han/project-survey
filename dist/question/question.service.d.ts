@@ -7,6 +7,7 @@ export declare class QuestionService {
     private entityManager;
     private dataSource;
     constructor(questionRepository: Repository<Question>, entityManager: EntityManager, dataSource: DataSource);
+    private readonly logger;
     create(createQuestionInput: CreateQuestionInput): Promise<Question>;
     findAll(): Promise<Question[]>;
     findOne(id: number): Promise<Question>;
