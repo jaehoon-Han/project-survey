@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Answer } from 'src/answer/entities/answer.entity';
 import { User } from 'src/user/entities/user.entity';
-import { EntityManager, Repository } from 'typeorm';
+import { DataSource, EntityManager, Repository } from 'typeorm';
 import { CreateSurveyResponseInput } from './dto/create-survey-response.input';
 import { UpdateSurveyResponseInput } from './dto/update-survey-response.input';
 import { SurveyResponse } from './entities/survey-response.entity';
@@ -12,6 +13,7 @@ export class SurveyResponseService {
     @InjectRepository(SurveyResponse)
     private surveyResponseRepository: Repository<SurveyResponse>,
     private entityManager: EntityManager,
+    private dataSource: DataSource,
   ) {}
 
   async create(
@@ -66,7 +68,14 @@ export class SurveyResponseService {
     return this.surveyResponseRepository.update(id, surveyResponse);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} surveyResponse`;
+  async remove(id: number) {
+    await this.removeAnswer(id);
+    return await this.dataSource.manager.delete(SurveyResponse, id);
+  }
+
+  async removeAnswer(id: number): Promise<void> {
+    await this.dataSource.manager.delete(Answer, {
+      surverResponseId: id,
+    });
   }
 }
