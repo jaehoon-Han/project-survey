@@ -1,39 +1,28 @@
 import { ObjectType, Field, Int } from '@nestjs/graphql';
-import { QuestionOption } from 'src/question-option/entities/question-option.entity';
+import { CommonEntity } from 'src/common/commonentity.interface';
 import { SurveyResponse } from 'src/survey-response/entities/survey-response.entity';
-import {
-  Column,
-  CreateDateColumn,
-  DeleteDateColumn,
-  Entity,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { Column, DeleteDateColumn, Entity, ManyToOne } from 'typeorm';
 
 @ObjectType()
 @Entity()
-export class Answer {
+export class Answer extends CommonEntity {
+  @Field(() => String)
+  @Column()
+  question: string;
+
+  @Field(() => String)
+  @Column()
+  questionOption: string;
+
   @Field(() => Int)
-  @PrimaryGeneratedColumn()
-  id: number;
+  @Column()
+  score: number;
+  @DeleteDateColumn()
+  deletedAt: Date;
 
   @Field(() => Int)
   @Column()
   surveyResponseId: number;
-
-  @Field(() => Int)
-  @Column()
-  questionOptionId: number;
-
-  @CreateDateColumn()
-  createdAt: Date;
-
-  @UpdateDateColumn()
-  updatedAt: Date;
-
-  @DeleteDateColumn()
-  deletedAt: Date;
 
   @Field(() => SurveyResponse)
   @ManyToOne(() => SurveyResponse, (surveyResponse) => surveyResponse.answer)

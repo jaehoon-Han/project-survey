@@ -18,8 +18,10 @@ type User {
 
 type Answer {
   id: Int!
+  question: String!
+  questionOption: String!
+  score: Int!
   surveyResponseId: Int!
-  questionOptionId: Int!
   surveyResponse: SurveyResponse!
 }
 
