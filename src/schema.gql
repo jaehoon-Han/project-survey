@@ -46,9 +46,6 @@ type Survey {
 
   """survey description"""
   description: String!
-
-  """question amount"""
-  amountQuestion: Int!
   question: [Question!]
   surveyResponse: [SurveyResponse!]
 }
@@ -124,13 +121,11 @@ input UpdateAnswerInput {
 input CreateSurveyInput {
   title: String!
   description: String!
-  amountQuestion: Int!
 }
 
 input UpdateSurveyInput {
   title: String
   description: String
-  amountQuestion: Int
   id: Int!
 }
 

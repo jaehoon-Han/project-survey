@@ -4,7 +4,6 @@ import { SurveyResponse } from 'src/survey-response/entities/survey-response.ent
 export declare class Survey extends CommonEntity {
     title: string;
     description: string;
-    amountQuestion: number;
     question: Question[];
     surveyResponse: SurveyResponse[];
 }

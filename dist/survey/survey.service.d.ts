@@ -1,12 +1,11 @@
-import { DataSource, EntityManager, Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { CreateSurveyInput } from './dto/create-survey.input';
 import { UpdateSurveyInput } from './dto/update-survey.input';
 import { Survey } from './entities/survey.entity';
 export declare class SurveyService {
     private surveyRepository;
-    private entityManager;
     private dataSource;
-    constructor(surveyRepository: Repository<Survey>, entityManager: EntityManager, dataSource: DataSource);
+    constructor(surveyRepository: Repository<Survey>, dataSource: DataSource);
     private readonly logger;
     create(createSurveyInput: CreateSurveyInput): Promise<Survey>;
     findAll(): Promise<Survey[]>;

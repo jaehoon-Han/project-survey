@@ -1,5 +1,5 @@
-import { ObjectType, Field, Int, InputType } from '@nestjs/graphql';
-import { Min, MinLength } from 'class-validator';
+import { ObjectType, Field, InputType } from '@nestjs/graphql';
+import { MinLength } from 'class-validator';
 import { CommonEntity } from 'src/common/commonentity.interface';
 import { Question } from 'src/question/entities/question.entity';
 import { SurveyResponse } from 'src/survey-response/entities/survey-response.entity';
@@ -17,11 +17,6 @@ export class Survey extends CommonEntity {
   @Field(() => String, { description: 'survey description' })
   @Column()
   description: string;
-
-  @Field(() => Int, { description: 'question amount' })
-  @Column()
-  @Min(1, { message: 'Survey must have questions at least 1! ' })
-  amountQuestion: number;
 
   @OneToMany(() => Question, (question) => question.survey, {
     onDelete: 'CASCADE',

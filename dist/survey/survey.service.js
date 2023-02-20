@@ -19,9 +19,8 @@ const typeorm_1 = require("@nestjs/typeorm");
 const typeorm_2 = require("typeorm");
 const survey_entity_1 = require("./entities/survey.entity");
 let SurveyService = SurveyService_1 = class SurveyService {
-    constructor(surveyRepository, entityManager, dataSource) {
+    constructor(surveyRepository, dataSource) {
         this.surveyRepository = surveyRepository;
-        this.entityManager = entityManager;
         this.dataSource = dataSource;
         this.logger = new common_1.Logger(SurveyService_1.name);
     }
@@ -64,7 +63,6 @@ SurveyService = SurveyService_1 = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(survey_entity_1.Survey)),
     __metadata("design:paramtypes", [typeorm_2.Repository,
-        typeorm_2.EntityManager,
         typeorm_2.DataSource])
 ], SurveyService);
 exports.SurveyService = SurveyService;

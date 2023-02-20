@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DataSource, EntityManager, Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { CreateSurveyInput } from './dto/create-survey.input';
 import { UpdateSurveyInput } from './dto/update-survey.input';
 import { Survey } from './entities/survey.entity';
@@ -10,7 +10,6 @@ export class SurveyService {
   constructor(
     @InjectRepository(Survey)
     private surveyRepository: Repository<Survey>,
-    private entityManager: EntityManager,
     private dataSource: DataSource,
   ) {}
   private readonly logger = new Logger(SurveyService.name);
