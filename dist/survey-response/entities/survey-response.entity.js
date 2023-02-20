@@ -20,13 +20,9 @@ let SurveyResponse = class SurveyResponse extends commonentity_interface_1.Commo
 };
 __decorate([
     (0, graphql_1.Field)(() => graphql_1.Int),
-    (0, typeorm_1.Column)(),
+    (0, typeorm_1.Column)({ default: 0 }),
     __metadata("design:type", Number)
 ], SurveyResponse.prototype, "totalScore", void 0);
-__decorate([
-    (0, typeorm_1.DeleteDateColumn)(),
-    __metadata("design:type", Date)
-], SurveyResponse.prototype, "deletedAt", void 0);
 __decorate([
     (0, typeorm_1.ManyToOne)(() => survey_entity_1.Survey, (survey) => survey.surveyResponse, {
         onDelete: 'CASCADE',

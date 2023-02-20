@@ -1,4 +1,5 @@
 import { ObjectType, Field, Int, InputType } from '@nestjs/graphql';
+import { Min, MinLength } from 'class-validator';
 import { CommonEntity } from 'src/common/commonentity.interface';
 import { Question } from 'src/question/entities/question.entity';
 import { SurveyResponse } from 'src/survey-response/entities/survey-response.entity';
@@ -10,6 +11,7 @@ import { Column, Entity, OneToMany } from 'typeorm';
 export class Survey extends CommonEntity {
   @Field(() => String, { description: 'survey title' })
   @Column()
+  @MinLength(2, { message: 'Title is too short!' })
   title: string;
 
   @Field(() => String, { description: 'survey description' })
@@ -18,15 +20,16 @@ export class Survey extends CommonEntity {
 
   @Field(() => Int, { description: 'question amount' })
   @Column()
+  @Min(1, { message: 'Survey must have questions at least 1! ' })
   amountQuestion: number;
 
   @OneToMany(() => Question, (question) => question.survey, {
     onDelete: 'CASCADE',
   })
-  @Field(() => [Question])
+  @Field(() => [Question], { nullable: true })
   question: Question[];
 
   @OneToMany(() => SurveyResponse, (surveyResponse) => surveyResponse.survey)
-  @Field(() => [SurveyResponse])
+  @Field(() => [SurveyResponse], { nullable: true })
   surveyResponse: SurveyResponse[];
 }

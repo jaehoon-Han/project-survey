@@ -11,20 +11,24 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CommonEntity = void 0;
 const graphql_1 = require("@nestjs/graphql");
+const class_validator_1 = require("class-validator");
 const typeorm_1 = require("typeorm");
 let CommonEntity = class CommonEntity {
 };
 __decorate([
     (0, graphql_1.Field)(() => graphql_1.Int),
     (0, typeorm_1.PrimaryGeneratedColumn)(),
+    (0, class_validator_1.IsNumber)(),
     __metadata("design:type", Number)
 ], CommonEntity.prototype, "id", void 0);
 __decorate([
     (0, typeorm_1.CreateDateColumn)(),
+    (0, class_validator_1.IsDate)(),
     __metadata("design:type", Date)
 ], CommonEntity.prototype, "createdAt", void 0);
 __decorate([
     (0, typeorm_1.UpdateDateColumn)(),
+    (0, class_validator_1.IsDate)(),
     __metadata("design:type", Date)
 ], CommonEntity.prototype, "updatedAt", void 0);
 CommonEntity = __decorate([

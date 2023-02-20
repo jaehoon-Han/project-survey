@@ -4,7 +4,6 @@ export declare class Answer extends CommonEntity {
     question: string;
     questionOption: string;
     score: number;
-    deletedAt: Date;
     surveyResponseId: number;
     surveyResponse: SurveyResponse;
 }

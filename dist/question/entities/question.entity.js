@@ -11,6 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Question = void 0;
 const graphql_1 = require("@nestjs/graphql");
+const class_validator_1 = require("class-validator");
 const commonentity_interface_1 = require("../../common/commonentity.interface");
 const question_option_entity_1 = require("../../question-option/entities/question-option.entity");
 const survey_entity_1 = require("../../survey/entities/survey.entity");
@@ -20,6 +21,7 @@ let Question = class Question extends commonentity_interface_1.CommonEntity {
 __decorate([
     (0, graphql_1.Field)(() => String),
     (0, typeorm_1.Column)(),
+    (0, class_validator_1.MinLength)(1, { message: 'Content is too short!' }),
     __metadata("design:type", String)
 ], Question.prototype, "content", void 0);
 __decorate([
@@ -30,6 +32,7 @@ __decorate([
 ], Question.prototype, "survey", void 0);
 __decorate([
     (0, typeorm_1.Column)(),
+    (0, class_validator_1.IsNumber)(),
     __metadata("design:type", Number)
 ], Question.prototype, "surveyId", void 0);
 __decorate([

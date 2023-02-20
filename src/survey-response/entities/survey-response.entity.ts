@@ -1,14 +1,7 @@
 import { ObjectType, Field, Int } from '@nestjs/graphql';
 import { Survey } from 'src/survey/entities/survey.entity';
 import { User } from 'src/user/entities/user.entity';
-import {
-  Column,
-  DeleteDateColumn,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  OneToMany,
-} from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 import { Answer } from 'src/answer/entities/answer.entity';
 import { CommonEntity } from 'src/common/commonentity.interface';
 
@@ -16,11 +9,8 @@ import { CommonEntity } from 'src/common/commonentity.interface';
 @Entity()
 export class SurveyResponse extends CommonEntity {
   @Field(() => Int)
-  @Column()
+  @Column({ default: 0 })
   totalScore: number;
-
-  @DeleteDateColumn()
-  deletedAt: Date;
 
   @ManyToOne(() => Survey, (survey) => survey.surveyResponse, {
     onDelete: 'CASCADE',

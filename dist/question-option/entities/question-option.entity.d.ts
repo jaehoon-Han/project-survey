@@ -4,6 +4,5 @@ export declare class QuestionOption extends CommonEntity {
     questionId: number;
     content: string;
     score: number;
-    deletedAt: Date;
     question: Question;
 }
