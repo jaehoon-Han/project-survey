@@ -8,6 +8,6 @@ export declare class AnswerResolver {
     createAnswer(createAnswerInput: CreateAnswerInput): Promise<Answer>;
     findAll(): Promise<Answer[]>;
     findOne(id: number): Promise<Answer>;
-    updateAnswer(updateAnswerInput: UpdateAnswerInput): string;
+    updateAnswer(updateAnswerInput: UpdateAnswerInput): Promise<import("typeorm").UpdateResult>;
     removeAnswer(id: number): string;
 }

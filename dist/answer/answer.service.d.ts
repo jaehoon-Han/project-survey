@@ -10,6 +10,6 @@ export declare class AnswerService {
     create(createAnswerInput: CreateAnswerInput): Promise<Answer>;
     findAll(): Promise<Answer[]>;
     findOne(id: number): Promise<Answer>;
-    update(id: number, updateAnswerInput: UpdateAnswerInput): string;
+    update(id: number, updateAnswerInput: UpdateAnswerInput): Promise<import("typeorm").UpdateResult>;
     remove(id: number): string;
 }

@@ -30,24 +30,16 @@ export class AnswerService {
   }
 
   async findOne(id: number): Promise<Answer> {
-    const answer = await this.answerRepository.findOne({
-      where: { id },
+    const answer = await this.answerRepository.findOneBy({
+      id,
     });
     return answer;
-
-    // const answer = await this.answerRepository
-    //   .createQueryBuilder()
-    //   .select('answer')
-    //   .from(Answer, 'answer')
-    //   .where('answer.id = :id', { id: id })
-    //   .leftJoinAndSelect('answer')
-    //   .getMany();
-
-    // return answer;
   }
 
-  update(id: number, updateAnswerInput: UpdateAnswerInput) {
-    return `This action updates a #${id} answer`;
+  async update(id: number, updateAnswerInput: UpdateAnswerInput) {
+    const answer = await this.findOne(id);
+    this.answerRepository.merge(answer, updateAnswerInput);
+    return this.answerRepository.update(id, answer);
   }
 
   remove(id: number) {

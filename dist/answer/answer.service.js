@@ -34,13 +34,15 @@ let AnswerService = class AnswerService {
         return answers;
     }
     async findOne(id) {
-        const answer = await this.answerRepository.findOne({
-            where: { id },
+        const answer = await this.answerRepository.findOneBy({
+            id,
         });
         return answer;
     }
-    update(id, updateAnswerInput) {
-        return `This action updates a #${id} answer`;
+    async update(id, updateAnswerInput) {
+        const answer = await this.findOne(id);
+        this.answerRepository.merge(answer, updateAnswerInput);
+        return this.answerRepository.update(id, answer);
     }
     remove(id) {
         return `This action removes a #${id} answer`;
