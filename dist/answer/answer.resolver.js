@@ -25,10 +25,10 @@ let AnswerResolver = class AnswerResolver {
     createAnswer(createAnswerInput, questionOptionid) {
         return this.answerService.create(createAnswerInput, questionOptionid);
     }
-    findAll() {
+    findAllAnswer() {
         return this.answerService.findAll();
     }
-    findOne(id) {
+    findOneAnswer(id) {
         return this.answerService.findOne(id);
     }
     updateAnswer(updateAnswerInput) {
@@ -51,14 +51,14 @@ __decorate([
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
-], AnswerResolver.prototype, "findAll", null);
+], AnswerResolver.prototype, "findAllAnswer", null);
 __decorate([
     (0, graphql_1.Query)(() => answer_entity_1.Answer),
     __param(0, (0, graphql_1.Args)('id', { type: () => graphql_1.Int })),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", void 0)
-], AnswerResolver.prototype, "findOne", null);
+], AnswerResolver.prototype, "findOneAnswer", null);
 __decorate([
     (0, graphql_1.Mutation)(() => answer_entity_1.Answer),
     __param(0, (0, graphql_1.Args)('updateAnswerInput')),

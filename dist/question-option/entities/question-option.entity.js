@@ -49,7 +49,9 @@ __decorate([
 ], QuestionOption.prototype, "deletedAt", void 0);
 __decorate([
     (0, graphql_1.Field)(() => question_entity_1.Question),
-    (0, typeorm_1.ManyToOne)(() => question_entity_1.Question, (question) => question.questionOption),
+    (0, typeorm_1.ManyToOne)(() => question_entity_1.Question, (question) => question.questionOption, {
+        onDelete: 'CASCADE',
+    }),
     (0, typeorm_1.JoinColumn)({ name: 'questionId' }),
     __metadata("design:type", question_entity_1.Question)
 ], QuestionOption.prototype, "question", void 0);

@@ -42,7 +42,9 @@ __decorate([
 ], Answer.prototype, "surveyResponseId", void 0);
 __decorate([
     (0, graphql_1.Field)(() => survey_response_entity_1.SurveyResponse),
-    (0, typeorm_1.ManyToOne)(() => survey_response_entity_1.SurveyResponse, (surveyResponse) => surveyResponse.answer),
+    (0, typeorm_1.ManyToOne)(() => survey_response_entity_1.SurveyResponse, (surveyResponse) => surveyResponse.answer, {
+        onDelete: 'CASCADE',
+    }),
     __metadata("design:type", survey_response_entity_1.SurveyResponse)
 ], Answer.prototype, "surveyResponse", void 0);
 Answer = __decorate([

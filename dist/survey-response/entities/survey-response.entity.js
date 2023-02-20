@@ -40,18 +40,20 @@ __decorate([
     __metadata("design:type", Date)
 ], SurveyResponse.prototype, "deletedAt", void 0);
 __decorate([
-    (0, typeorm_1.ManyToOne)(() => survey_entity_1.Survey, (survey) => survey.surveyResponse),
+    (0, typeorm_1.ManyToOne)(() => survey_entity_1.Survey, (survey) => survey.surveyResponse, {
+        onDelete: 'CASCADE',
+    }),
     (0, typeorm_1.JoinColumn)({ name: 'surveyId' }),
     __metadata("design:type", survey_entity_1.Survey)
 ], SurveyResponse.prototype, "survey", void 0);
 __decorate([
-    (0, typeorm_1.ManyToOne)(() => user_entity_1.User, (user) => user.surveyResponse),
+    (0, typeorm_1.ManyToOne)(() => user_entity_1.User, (user) => user.surveyResponse, { onDelete: 'CASCADE' }),
     (0, typeorm_1.JoinColumn)({ name: 'userId' }),
     __metadata("design:type", user_entity_1.User)
 ], SurveyResponse.prototype, "user", void 0);
 __decorate([
     (0, graphql_1.Field)(() => [answer_entity_1.Answer]),
-    (0, typeorm_1.OneToMany)(() => answer_entity_1.Answer, (answer) => answer.surveyResponse),
+    (0, typeorm_1.OneToMany)(() => answer_entity_1.Answer, (answer) => answer.surveyResponse, { cascade: true }),
     __metadata("design:type", Array)
 ], SurveyResponse.prototype, "answer", void 0);
 SurveyResponse = __decorate([

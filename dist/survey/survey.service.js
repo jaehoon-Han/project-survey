@@ -15,7 +15,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.SurveyService = void 0;
 const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
-const question_entity_1 = require("../question/entities/question.entity");
 const typeorm_2 = require("typeorm");
 const survey_entity_1 = require("./entities/survey.entity");
 let SurveyService = class SurveyService {
@@ -51,11 +50,7 @@ let SurveyService = class SurveyService {
         return this.surveyRepository.update(id, survey);
     }
     async remove(id) {
-        await this.removeQuestion(id);
         return await this.dataSource.manager.delete(survey_entity_1.Survey, id);
-    }
-    async removeQuestion(id) {
-        return await this.dataSource.manager.delete(question_entity_1.Question, { surveyId: id });
     }
 };
 SurveyService = __decorate([
