@@ -1,13 +1,17 @@
-import { Repository } from 'typeorm';
+import { DataSource, EntityManager, Repository } from 'typeorm';
 import { CreateSurveyResponseInput } from './dto/create-survey-response.input';
 import { UpdateSurveyResponseInput } from './dto/update-survey-response.input';
 import { SurveyResponse } from './entities/survey-response.entity';
 export declare class SurveyResponseService {
     private surveyResponseRepository;
-    constructor(surveyResponseRepository: Repository<SurveyResponse>);
+    private entityManager;
+    private dataSource;
+    constructor(surveyResponseRepository: Repository<SurveyResponse>, entityManager: EntityManager, dataSource: DataSource);
     create(createSurveyResponseInput: CreateSurveyResponseInput): Promise<SurveyResponse>;
     findAll(): Promise<SurveyResponse[]>;
     findOne(id: number): Promise<SurveyResponse>;
-    update(id: number, updateSurveyResponseInput: UpdateSurveyResponseInput): string;
-    remove(id: number): string;
+    findDetail(id: number): Promise<SurveyResponse[]>;
+    update(id: number, updateSurveyResponseInput: UpdateSurveyResponseInput): Promise<import("typeorm").UpdateResult>;
+    remove(id: number): Promise<import("typeorm").DeleteResult>;
+    removeAnswer(id: number): Promise<void>;
 }

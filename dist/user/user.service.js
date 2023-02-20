@@ -52,10 +52,10 @@ let UserService = class UserService {
         return this.userRepository.update(id, user);
     }
     async remove(id) {
-        await this.removeUser(id);
+        await this.removeSurveyResponse(id);
         return await this.dataSource.manager.delete(user_entity_1.User, id);
     }
-    async removeUser(id) {
+    async removeSurveyResponse(id) {
         return await this.dataSource.manager.delete(survey_response_entity_1.SurveyResponse, { userId: id });
     }
 };

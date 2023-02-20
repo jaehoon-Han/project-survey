@@ -15,38 +15,60 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.SurveyResponseService = void 0;
 const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
+const answer_entity_1 = require("../answer/entities/answer.entity");
+const user_entity_1 = require("../user/entities/user.entity");
 const typeorm_2 = require("typeorm");
 const survey_response_entity_1 = require("./entities/survey-response.entity");
 let SurveyResponseService = class SurveyResponseService {
-    constructor(surveyResponseRepository) {
+    constructor(surveyResponseRepository, entityManager, dataSource) {
         this.surveyResponseRepository = surveyResponseRepository;
+        this.entityManager = entityManager;
+        this.dataSource = dataSource;
     }
     async create(createSurveyResponseInput) {
         const newSurveyResponse = this.surveyResponseRepository.create(createSurveyResponseInput);
-        await this.surveyResponseRepository.save(newSurveyResponse);
-        return newSurveyResponse;
+        newSurveyResponse.user = await this.entityManager.findOneById(user_entity_1.User, createSurveyResponseInput.userId);
+        return await this.surveyResponseRepository.save(newSurveyResponse);
     }
     async findAll() {
         const surveyResponse = await this.surveyResponseRepository.find();
         return surveyResponse;
     }
     async findOne(id) {
-        const surveyResponse = await this.surveyResponseRepository.findOne({
-            where: { id },
+        const surveyResponse = await this.surveyResponseRepository.findOneBy({
+            id,
         });
         return surveyResponse;
     }
-    update(id, updateSurveyResponseInput) {
-        return `This action updates a #${id} surveyResponse`;
+    async findDetail(id) {
+        const result = await this.surveyResponseRepository
+            .createQueryBuilder('surveyResponse')
+            .leftJoinAndSelect('surveyResponse.answer', 'answer')
+            .where('surveyResponse.id= :id', { id: id })
+            .getMany();
+        return result;
     }
-    remove(id) {
-        return `This action removes a #${id} surveyResponse`;
+    async update(id, updateSurveyResponseInput) {
+        const surveyResponse = await this.findOne(id);
+        this.surveyResponseRepository.merge(surveyResponse, updateSurveyResponseInput);
+        return this.surveyResponseRepository.update(id, surveyResponse);
+    }
+    async remove(id) {
+        await this.removeAnswer(id);
+        return await this.dataSource.manager.delete(survey_response_entity_1.SurveyResponse, id);
+    }
+    async removeAnswer(id) {
+        await this.dataSource.manager.delete(answer_entity_1.Answer, {
+            surverResponseId: id,
+        });
     }
 };
 SurveyResponseService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(survey_response_entity_1.SurveyResponse)),
-    __metadata("design:paramtypes", [typeorm_2.Repository])
+    __metadata("design:paramtypes", [typeorm_2.Repository,
+        typeorm_2.EntityManager,
+        typeorm_2.DataSource])
 ], SurveyResponseService);
 exports.SurveyResponseService = SurveyResponseService;
 //# sourceMappingURL=survey-response.service.js.map

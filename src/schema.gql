@@ -61,11 +61,11 @@ type Query {
   user(id: Int!): User!
   getUserWithResponse(id: Int!): [User!]!
   surveyResponse(id: Int!): SurveyResponse!
+  findDetail(id: Int!): [Question!]!
   findAll: [Answer!]!
   findOne(id: Int!): Answer!
   findAllSurvey: [Survey!]!
   findOneSurvey(id: Int!): Survey!
-  findDetail(id: Int!): [Question!]!
   surveyStatus(id: Int!): SurveyStatus!
   findAllQuestion: [Question!]!
   question(id: Int!): Question!

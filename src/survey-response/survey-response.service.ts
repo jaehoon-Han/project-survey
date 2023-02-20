@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Answer } from 'src/answer/entities/answer.entity';
+import { User } from 'src/user/entities/user.entity';
+import { DataSource, EntityManager, Repository } from 'typeorm';
 import { CreateSurveyResponseInput } from './dto/create-survey-response.input';
 import { UpdateSurveyResponseInput } from './dto/update-survey-response.input';
 import { SurveyResponse } from './entities/survey-response.entity';
@@ -10,6 +12,8 @@ export class SurveyResponseService {
   constructor(
     @InjectRepository(SurveyResponse)
     private surveyResponseRepository: Repository<SurveyResponse>,
+    private entityManager: EntityManager,
+    private dataSource: DataSource,
   ) {}
 
   async create(
@@ -18,8 +22,11 @@ export class SurveyResponseService {
     const newSurveyResponse = this.surveyResponseRepository.create(
       createSurveyResponseInput,
     );
-    await this.surveyResponseRepository.save(newSurveyResponse);
-    return newSurveyResponse;
+    newSurveyResponse.user = await this.entityManager.findOneById(
+      User,
+      createSurveyResponseInput.userId,
+    );
+    return await this.surveyResponseRepository.save(newSurveyResponse);
   }
 
   async findAll(): Promise<SurveyResponse[]> {
@@ -28,17 +35,47 @@ export class SurveyResponseService {
   }
 
   async findOne(id: number): Promise<SurveyResponse> {
-    const surveyResponse = await this.surveyResponseRepository.findOne({
-      where: { id },
+    const surveyResponse = await this.surveyResponseRepository.findOneBy({
+      id,
     });
     return surveyResponse;
   }
 
-  update(id: number, updateSurveyResponseInput: UpdateSurveyResponseInput) {
-    return `This action updates a #${id} surveyResponse`;
+  /**
+   * @description "선택한 답변의 응답 조회"
+   * @param id
+   * @returns
+   */
+  async findDetail(id: number) {
+    const result = await this.surveyResponseRepository
+      .createQueryBuilder('surveyResponse')
+      .leftJoinAndSelect('surveyResponse.answer', 'answer')
+      .where('surveyResponse.id= :id', { id: id })
+      .getMany();
+
+    return result;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} surveyResponse`;
+  async update(
+    id: number,
+    updateSurveyResponseInput: UpdateSurveyResponseInput,
+  ) {
+    const surveyResponse = await this.findOne(id);
+    this.surveyResponseRepository.merge(
+      surveyResponse,
+      updateSurveyResponseInput,
+    );
+    return this.surveyResponseRepository.update(id, surveyResponse);
+  }
+
+  async remove(id: number) {
+    await this.removeAnswer(id);
+    return await this.dataSource.manager.delete(SurveyResponse, id);
+  }
+
+  async removeAnswer(id: number): Promise<void> {
+    await this.dataSource.manager.delete(Answer, {
+      surverResponseId: id,
+    });
   }
 }
