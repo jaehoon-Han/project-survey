@@ -44,8 +44,8 @@ let AnswerService = class AnswerService {
         this.answerRepository.merge(answer, updateAnswerInput);
         return this.answerRepository.update(id, answer);
     }
-    remove(id) {
-        return `This action removes a #${id} answer`;
+    async remove(id) {
+        return await this.dataSource.manager.delete(answer_entity_1.Answer, id);
     }
 };
 AnswerService = __decorate([

@@ -11,5 +11,5 @@ export declare class AnswerService {
     findAll(): Promise<Answer[]>;
     findOne(id: number): Promise<Answer>;
     update(id: number, updateAnswerInput: UpdateAnswerInput): Promise<import("typeorm").UpdateResult>;
-    remove(id: number): string;
+    remove(id: number): Promise<import("typeorm").DeleteResult>;
 }

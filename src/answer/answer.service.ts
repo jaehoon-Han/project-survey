@@ -42,7 +42,7 @@ export class AnswerService {
     return this.answerRepository.update(id, answer);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} answer`;
+  async remove(id: number) {
+    return await this.dataSource.manager.delete(Answer, id);
   }
 }
