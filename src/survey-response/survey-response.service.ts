@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Survey } from 'src/survey/entities/survey.entity';
 import { User } from 'src/user/entities/user.entity';
@@ -42,6 +42,9 @@ export class SurveyResponseService {
     const surveyResponse = await this.surveyResponseRepository.findOneBy({
       id,
     });
+    if (!surveyResponse) {
+      throw new BadRequestException(`NOT FOUND SURVEYRESPONSE ID: ${id}`);
+    }
     return surveyResponse;
   }
 
@@ -91,6 +94,7 @@ export class SurveyResponseService {
     return count;
   }
   async remove(id: number) {
-    return await this.dataSource.manager.delete(SurveyResponse, id);
+    const surveyResponse = await this.findOne(id);
+    return this.dataSource.manager.remove(surveyResponse);
   }
 }
