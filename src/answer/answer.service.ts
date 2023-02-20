@@ -3,7 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { QuestionOption } from 'src/question-option/entities/question-option.entity';
 import { Question } from 'src/question/entities/question.entity';
 import { SurveyResponse } from 'src/survey-response/entities/survey-response.entity';
-import { Survey } from 'src/survey/entities/survey.entity';
 import { DataSource, EntityManager, Repository } from 'typeorm';
 import { CreateAnswerInput } from './dto/create-answer.input';
 import { UpdateAnswerInput } from './dto/update-answer.input';
