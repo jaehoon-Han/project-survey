@@ -3,33 +3,21 @@ import { Survey } from 'src/survey/entities/survey.entity';
 import { User } from 'src/user/entities/user.entity';
 import {
   Column,
-  CreateDateColumn,
   DeleteDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
   OneToMany,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
 } from 'typeorm';
 import { Answer } from 'src/answer/entities/answer.entity';
+import { CommonEntity } from 'src/common/commonentity.interface';
 
 @ObjectType()
 @Entity()
-export class SurveyResponse {
-  @Field(() => Int)
-  @PrimaryGeneratedColumn()
-  id: number;
-
+export class SurveyResponse extends CommonEntity {
   @Field(() => Int)
   @Column()
   totalScore: number;
-
-  @CreateDateColumn()
-  createdAt: Date;
-
-  @UpdateDateColumn()
-  updatedAt: Date;
 
   @DeleteDateColumn()
   deletedAt: Date;

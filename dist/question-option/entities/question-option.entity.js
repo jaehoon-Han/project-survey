@@ -11,15 +11,11 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.QuestionOption = void 0;
 const graphql_1 = require("@nestjs/graphql");
+const commonentity_interface_1 = require("../../common/commonentity.interface");
 const question_entity_1 = require("../../question/entities/question.entity");
 const typeorm_1 = require("typeorm");
-let QuestionOption = class QuestionOption {
+let QuestionOption = class QuestionOption extends commonentity_interface_1.CommonEntity {
 };
-__decorate([
-    (0, graphql_1.Field)(() => graphql_1.Int),
-    (0, typeorm_1.PrimaryGeneratedColumn)(),
-    __metadata("design:type", Number)
-], QuestionOption.prototype, "id", void 0);
 __decorate([
     (0, graphql_1.Field)(() => graphql_1.Int),
     (0, typeorm_1.Column)(),
@@ -35,14 +31,6 @@ __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", Number)
 ], QuestionOption.prototype, "score", void 0);
-__decorate([
-    (0, typeorm_1.CreateDateColumn)(),
-    __metadata("design:type", Date)
-], QuestionOption.prototype, "createdAt", void 0);
-__decorate([
-    (0, typeorm_1.UpdateDateColumn)(),
-    __metadata("design:type", Date)
-], QuestionOption.prototype, "updatedAt", void 0);
 __decorate([
     (0, typeorm_1.DeleteDateColumn)(),
     __metadata("design:type", Date)
