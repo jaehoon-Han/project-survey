@@ -34,15 +34,17 @@ export class SurveyResponse {
   @DeleteDateColumn()
   deletedAt: Date;
 
-  @ManyToOne(() => Survey, (survey) => survey.surveyResponse)
+  @ManyToOne(() => Survey, (survey) => survey.surveyResponse, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'surveyId' })
   survey: Survey;
 
-  @ManyToOne(() => User, (user) => user.surveyResponse)
+  @ManyToOne(() => User, (user) => user.surveyResponse, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'userId' })
   user: User;
 
   @Field(() => [Answer])
-  @OneToMany(() => Answer, (answer) => answer.surveyResponse)
+  @OneToMany(() => Answer, (answer) => answer.surveyResponse, { cascade: true })
   answer: Answer[];
 }

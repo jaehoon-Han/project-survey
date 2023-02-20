@@ -40,7 +40,9 @@ export class QuestionOption {
   deletedAt: Date;
 
   @Field(() => Question)
-  @ManyToOne(() => Question, (question) => question.questionOption)
+  @ManyToOne(() => Question, (question) => question.questionOption, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'questionId' })
   question: Question;
 }

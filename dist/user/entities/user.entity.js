@@ -27,7 +27,9 @@ __decorate([
 ], User.prototype, "deletedAt", void 0);
 __decorate([
     (0, graphql_1.Field)(() => [survey_response_entity_1.SurveyResponse]),
-    (0, typeorm_1.OneToMany)(() => survey_response_entity_1.SurveyResponse, (surveyResponse) => surveyResponse.user),
+    (0, typeorm_1.OneToMany)(() => survey_response_entity_1.SurveyResponse, (surveyResponse) => surveyResponse.user, {
+        cascade: true,
+    }),
     __metadata("design:type", Array)
 ], User.prototype, "surveyResponse", void 0);
 User = __decorate([

@@ -11,7 +11,7 @@ export class Question extends CommonEntity {
   @Column()
   content: string;
 
-  @ManyToOne(() => Survey, (survey) => survey.question)
+  @ManyToOne(() => Survey, (survey) => survey.question, { onDelete: 'CASCADE' })
   @Field(() => Survey)
   @JoinColumn({ name: 'surveyId' })
   survey: Survey;
@@ -20,6 +20,10 @@ export class Question extends CommonEntity {
   surveyId: number;
 
   @Field(() => [QuestionOption])
-  @OneToMany(() => QuestionOption, (questionOption) => questionOption.question)
+  @OneToMany(
+    () => QuestionOption,
+    (questionOption) => questionOption.question,
+    { cascade: true },
+  )
   questionOption: QuestionOption[];
 }

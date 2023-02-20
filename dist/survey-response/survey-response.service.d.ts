@@ -13,5 +13,4 @@ export declare class SurveyResponseService {
     findDetail(id: number): Promise<SurveyResponse[]>;
     update(id: number, updateSurveyResponseInput: UpdateSurveyResponseInput): Promise<import("typeorm").UpdateResult>;
     remove(id: number): Promise<import("typeorm").DeleteResult>;
-    removeAnswer(id: number): Promise<void>;
 }

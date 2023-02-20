@@ -10,6 +10,13 @@ type QuestionOption {
   question: Question!
 }
 
+type Question {
+  id: Int!
+  content: String!
+  survey: Survey!
+  questionOption: [QuestionOption!]!
+}
+
 type User {
   id: Int!
   name: String!
@@ -46,13 +53,6 @@ type Survey {
   surveyResponse: [SurveyResponse!]!
 }
 
-type Question {
-  id: Int!
-  content: String!
-  survey: Survey!
-  questionOption: [QuestionOption!]!
-}
-
 type SurveyStatus {
   id: Int!
   surveyId: Int!
@@ -60,12 +60,13 @@ type SurveyStatus {
 }
 
 type Query {
-  user(id: Int!): User!
+  findAllUser: [User!]!
   getUserWithResponse(id: Int!): [User!]!
+  findOneUser(id: Int!): User!
   surveyResponse(id: Int!): SurveyResponse!
   findDetail(id: Int!): [Question!]!
-  findAll: [Answer!]!
-  findOne(id: Int!): Answer!
+  findAllAnswer: [Answer!]!
+  findOneAnswer(id: Int!): Answer!
   findAllSurvey: [Survey!]!
   findOneSurvey(id: Int!): Survey!
   surveyStatus(id: Int!): SurveyStatus!

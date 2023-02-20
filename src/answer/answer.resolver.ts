@@ -17,12 +17,12 @@ export class AnswerResolver {
   }
 
   @Query(() => [Answer])
-  findAll() {
+  findAllAnswer() {
     return this.answerService.findAll();
   }
 
   @Query(() => Answer)
-  findOne(@Args('id', { type: () => Int }) id: number) {
+  findOneAnswer(@Args('id', { type: () => Int }) id: number) {
     return this.answerService.findOne(id);
   }
 

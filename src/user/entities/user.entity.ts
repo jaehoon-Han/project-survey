@@ -14,6 +14,8 @@ export class User extends CommonEntity {
   deletedAt: Date;
 
   @Field(() => [SurveyResponse])
-  @OneToMany(() => SurveyResponse, (surveyResponse) => surveyResponse.user)
+  @OneToMany(() => SurveyResponse, (surveyResponse) => surveyResponse.user, {
+    cascade: true,
+  })
   surveyResponse: SurveyResponse[];
 }

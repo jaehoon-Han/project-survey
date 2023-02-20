@@ -26,6 +26,8 @@ export class Answer extends CommonEntity {
   surveyResponseId: number;
 
   @Field(() => SurveyResponse)
-  @ManyToOne(() => SurveyResponse, (surveyResponse) => surveyResponse.answer)
+  @ManyToOne(() => SurveyResponse, (surveyResponse) => surveyResponse.answer, {
+    onDelete: 'CASCADE',
+  })
   surveyResponse: SurveyResponse;
 }
