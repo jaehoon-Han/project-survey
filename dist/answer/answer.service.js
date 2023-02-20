@@ -42,6 +42,9 @@ let AnswerService = class AnswerService {
         const answer = await this.answerRepository.findOneBy({
             id,
         });
+        if (!answer) {
+            throw new common_1.BadRequestException(`NOT FOUND ANSWER ID: ${id}`);
+        }
         return answer;
     }
     async update(id, updateAnswerInput) {
@@ -50,7 +53,8 @@ let AnswerService = class AnswerService {
         return this.answerRepository.update(id, answer);
     }
     async remove(id) {
-        return await this.dataSource.manager.delete(answer_entity_1.Answer, id);
+        const answer = await this.findOne(id);
+        return this.dataSource.manager.remove(answer);
     }
     async findQuestion(questionId) {
         return await this.entityManager.findOneById(question_entity_1.Question, questionId);

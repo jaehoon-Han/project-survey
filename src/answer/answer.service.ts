@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { QuestionOption } from 'src/question-option/entities/question-option.entity';
 import { Question } from 'src/question/entities/question.entity';
@@ -47,6 +47,9 @@ export class AnswerService {
     const answer = await this.answerRepository.findOneBy({
       id,
     });
+    if (!answer) {
+      throw new BadRequestException(`NOT FOUND ANSWER ID: ${id}`);
+    }
     return answer;
   }
 
@@ -57,7 +60,8 @@ export class AnswerService {
   }
 
   async remove(id: number) {
-    return await this.dataSource.manager.delete(Answer, id);
+    const answer = await this.findOne(id);
+    return this.dataSource.manager.remove(answer);
   }
 
   async findQuestion(questionId: number) {
