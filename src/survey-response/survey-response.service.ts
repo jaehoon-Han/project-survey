@@ -72,6 +72,24 @@ export class SurveyResponseService {
     return this.surveyResponseRepository.update(id, surveyResponse);
   }
 
+  async updateScore(id: number) {
+    const surveyResponse = await this.findOne(id);
+
+    surveyResponse.totalScore = await this.countScore(id);
+    return this.surveyResponseRepository.update(id, surveyResponse);
+  }
+
+  async countScore(id: number): Promise<number> {
+    const count = await this.surveyResponseRepository
+      .createQueryBuilder('surveyResponse')
+      .leftJoinAndSelect('surveyResponse.answer', 'answer')
+      .select('sum(answer.score)')
+      .where('answer.surveyResponseId= :id', { id: id })
+      .groupBy('surveyResponse.userId')
+      .getRawOne();
+
+    return count;
+  }
   async remove(id: number) {
     return await this.dataSource.manager.delete(SurveyResponse, id);
   }

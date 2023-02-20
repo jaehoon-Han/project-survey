@@ -54,6 +54,21 @@ let SurveyResponseService = class SurveyResponseService {
         this.surveyResponseRepository.merge(surveyResponse, updateSurveyResponseInput);
         return this.surveyResponseRepository.update(id, surveyResponse);
     }
+    async updateScore(id) {
+        const surveyResponse = await this.findOne(id);
+        surveyResponse.totalScore = await this.countScore(id);
+        return this.surveyResponseRepository.update(id, surveyResponse);
+    }
+    async countScore(id) {
+        const count = await this.surveyResponseRepository
+            .createQueryBuilder('surveyResponse')
+            .leftJoinAndSelect('surveyResponse.answer', 'answer')
+            .select('sum(answer.score)')
+            .where('answer.surveyResponseId= :id', { id: id })
+            .groupBy('surveyResponse.userId')
+            .getRawOne();
+        return count;
+    }
     async remove(id) {
         return await this.dataSource.manager.delete(survey_response_entity_1.SurveyResponse, id);
     }

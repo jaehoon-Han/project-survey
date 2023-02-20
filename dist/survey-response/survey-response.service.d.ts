@@ -12,5 +12,7 @@ export declare class SurveyResponseService {
     findOne(id: number): Promise<SurveyResponse>;
     findDetail(id: number): Promise<SurveyResponse[]>;
     update(id: number, updateSurveyResponseInput: UpdateSurveyResponseInput): Promise<import("typeorm").UpdateResult>;
+    updateScore(id: number): Promise<import("typeorm").UpdateResult>;
+    countScore(id: number): Promise<number>;
     remove(id: number): Promise<import("typeorm").DeleteResult>;
 }

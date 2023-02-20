@@ -43,6 +43,11 @@ export class SurveyResponseResolver {
   }
 
   @Mutation(() => SurveyResponse)
+  updateCount(@Args('id', { type: () => Int }) id: number) {
+    return this.surveyResponseService.countScore(id);
+  }
+
+  @Mutation(() => SurveyResponse)
   removeSurveyResponse(@Args('id', { type: () => Int }) id: number) {
     return this.surveyResponseService.remove(id);
   }

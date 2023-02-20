@@ -81,6 +81,7 @@ type Mutation {
   removeUser(id: Int!): User!
   createSurveyResponse(createSurveyResponseInput: CreateSurveyResponseInput!): SurveyResponse!
   updateSurveyResponse(updateSurveyResponseInput: UpdateSurveyResponseInput!): SurveyResponse!
+  updateCount(id: Int!): SurveyResponse!
   removeSurveyResponse(id: Int!): SurveyResponse!
   createAnswer(createAnswerInput: CreateAnswerInput!, questionOptionId: Float!): Answer!
   updateAnswer(updateAnswerInput: UpdateAnswerInput!): Answer!
