@@ -22,6 +22,16 @@ export class QuestionService {
       Survey,
       createQuestionInput.surveyId,
     );
+    const survey = this.entityManager.findOneById(
+      Survey,
+      createQuestionInput.surveyId,
+    );
+    (await survey).amountQuestion++;
+    this.entityManager.update(
+      Survey,
+      createQuestionInput.surveyId,
+      await survey,
+    );
     return this.entityManager.save(newQuestion);
   }
 

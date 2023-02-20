@@ -16,6 +16,7 @@ export class SurveyService {
 
   async create(createSurveyInput: CreateSurveyInput): Promise<Survey> {
     const newSurvey = this.surveyRepository.create(createSurveyInput);
+    newSurvey.amountQuestion = 0;
     await this.surveyRepository.save(newSurvey);
     return newSurvey;
   }

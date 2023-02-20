@@ -29,6 +29,9 @@ let QuestionService = QuestionService_1 = class QuestionService {
     async create(createQuestionInput) {
         const newQuestion = this.questionRepository.create(createQuestionInput);
         newQuestion.survey = await this.entityManager.findOneById(survey_entity_1.Survey, createQuestionInput.surveyId);
+        const survey = this.entityManager.findOneById(survey_entity_1.Survey, createQuestionInput.surveyId);
+        (await survey).amountQuestion++;
+        this.entityManager.update(survey_entity_1.Survey, createQuestionInput.surveyId, await survey);
         return this.entityManager.save(newQuestion);
     }
     async findAll() {

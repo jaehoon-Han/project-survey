@@ -7,4 +7,5 @@ export declare class SurveyResponse extends CommonEntity {
     survey: Survey;
     user: User;
     answer: Answer[];
+    isComplete: boolean;
 }

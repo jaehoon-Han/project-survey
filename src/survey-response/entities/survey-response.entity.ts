@@ -25,4 +25,11 @@ export class SurveyResponse extends CommonEntity {
   @Field(() => [Answer])
   @OneToMany(() => Answer, (answer) => answer.surveyResponse, { cascade: true })
   answer: Answer[];
+
+  /**
+   * @description 설문 완료 여부
+   */
+  @Field(() => Boolean)
+  @Column({ default: false })
+  isComplete: boolean;
 }

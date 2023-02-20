@@ -26,6 +26,7 @@ let SurveyService = SurveyService_1 = class SurveyService {
     }
     async create(createSurveyInput) {
         const newSurvey = this.surveyRepository.create(createSurveyInput);
+        newSurvey.amountQuestion = 0;
         await this.surveyRepository.save(newSurvey);
         return newSurvey;
     }

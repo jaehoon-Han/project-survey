@@ -40,6 +40,11 @@ __decorate([
     (0, typeorm_1.OneToMany)(() => answer_entity_1.Answer, (answer) => answer.surveyResponse, { cascade: true }),
     __metadata("design:type", Array)
 ], SurveyResponse.prototype, "answer", void 0);
+__decorate([
+    (0, graphql_1.Field)(() => Boolean),
+    (0, typeorm_1.Column)({ default: false }),
+    __metadata("design:type", Boolean)
+], SurveyResponse.prototype, "isComplete", void 0);
 SurveyResponse = __decorate([
     (0, graphql_1.ObjectType)(),
     (0, typeorm_1.Entity)()

@@ -36,6 +36,8 @@ export class AnswerService {
       await this.findQuestionId(questionOptionId),
     );
 
+    // this.checkComplete(createAnswerInput.surveyResponseId);
+
     return this.entityManager.save(newAnswer);
   }
 
@@ -88,4 +90,11 @@ export class AnswerService {
   async findQuestionOptionScore(questionOptionId: number) {
     return (await this.findQuestionOption(questionOptionId)).score;
   }
+
+  // async checkComplete(surveyResponseId: number){
+  //   const amountofQuestion = this.dataSource.manager
+  //   .createQueryBuilder()
+  //   .leftJoinAndSelect('survey.question', 'question')
+  //   .where('survey.id= ')
+  // }
 }
