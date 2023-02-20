@@ -46,8 +46,10 @@ let SurveyResponseService = class SurveyResponseService {
             .getMany();
         return result;
     }
-    update(id, updateSurveyResponseInput) {
-        return `This action updates a #${id} surveyResponse`;
+    async update(id, updateSurveyResponseInput) {
+        const surveyResponse = await this.findOne(id);
+        this.surveyResponseRepository.merge(surveyResponse, updateSurveyResponseInput);
+        return this.surveyResponseRepository.update(id, surveyResponse);
     }
     remove(id) {
         return `This action removes a #${id} surveyResponse`;

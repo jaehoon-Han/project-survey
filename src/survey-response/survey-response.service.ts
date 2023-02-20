@@ -54,8 +54,16 @@ export class SurveyResponseService {
     return result;
   }
 
-  update(id: number, updateSurveyResponseInput: UpdateSurveyResponseInput) {
-    return `This action updates a #${id} surveyResponse`;
+  async update(
+    id: number,
+    updateSurveyResponseInput: UpdateSurveyResponseInput,
+  ) {
+    const surveyResponse = await this.findOne(id);
+    this.surveyResponseRepository.merge(
+      surveyResponse,
+      updateSurveyResponseInput,
+    );
+    return this.surveyResponseRepository.update(id, surveyResponse);
   }
 
   remove(id: number) {
