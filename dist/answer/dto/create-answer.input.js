@@ -21,6 +21,18 @@ __decorate([
     (0, graphql_1.Field)(() => graphql_1.Int),
     __metadata("design:type", Number)
 ], CreateAnswerInput.prototype, "questionOptionId", void 0);
+__decorate([
+    (0, graphql_1.Field)(() => String),
+    __metadata("design:type", String)
+], CreateAnswerInput.prototype, "question", void 0);
+__decorate([
+    (0, graphql_1.Field)(() => String),
+    __metadata("design:type", String)
+], CreateAnswerInput.prototype, "questionOption", void 0);
+__decorate([
+    (0, graphql_1.Field)(() => graphql_1.Int),
+    __metadata("design:type", Number)
+], CreateAnswerInput.prototype, "score", void 0);
 CreateAnswerInput = __decorate([
     (0, graphql_1.InputType)()
 ], CreateAnswerInput);

@@ -123,11 +123,17 @@ input UpdateSurveyResponseInput {
 input CreateAnswerInput {
   surveyResponseId: Int!
   questionOptionId: Int!
+  question: String!
+  questionOption: String!
+  score: Int!
 }
 
 input UpdateAnswerInput {
   surveyResponseId: Int
   questionOptionId: Int
+  question: String
+  questionOption: String
+  score: Int
   id: Int!
 }
 

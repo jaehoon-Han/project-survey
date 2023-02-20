@@ -17,6 +17,7 @@ export class Answer extends CommonEntity {
   @Field(() => Int)
   @Column()
   score: number;
+
   @DeleteDateColumn()
   deletedAt: Date;
 
