@@ -11,5 +11,5 @@ export declare class QuestionOptionService {
     findAll(): Promise<QuestionOption[]>;
     findOne(id: number): Promise<QuestionOption>;
     update(id: number, updateQuestionOptionInput: UpdateQuestionOptionInput): Promise<import("typeorm").UpdateResult>;
-    remove(id: number): Promise<import("typeorm").DeleteResult>;
+    remove(id: number): Promise<QuestionOption>;
 }

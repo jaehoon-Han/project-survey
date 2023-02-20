@@ -37,6 +37,9 @@ let QuestionOptionService = class QuestionOptionService {
         const questionOption = await this.questionOptionRepository.findOneBy({
             id,
         });
+        if (!questionOption) {
+            throw new common_1.BadRequestException(`NOT FOUND QUESTIONOPTION ID: ${id}`);
+        }
         return questionOption;
     }
     async update(id, updateQuestionOptionInput) {
@@ -45,7 +48,8 @@ let QuestionOptionService = class QuestionOptionService {
         return this.questionOptionRepository.update(id, questionOption);
     }
     async remove(id) {
-        return await this.dataSource.manager.delete(question_option_entity_1.QuestionOption, id);
+        const questionOption = await this.findOne(id);
+        return this.dataSource.manager.remove(questionOption);
     }
 };
 QuestionOptionService = __decorate([
