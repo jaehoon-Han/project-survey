@@ -48,6 +48,7 @@ export class SurveyService {
     const result = await this.surveyRepository
       .createQueryBuilder('survey')
       .leftJoinAndSelect('survey.question', 'question')
+      .leftJoinAndSelect('question.questionOption', 'questionOption')
       .where('survey.id= :id', { id: id })
       .getMany();
     if (!result) {
