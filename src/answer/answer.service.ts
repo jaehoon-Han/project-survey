@@ -24,20 +24,26 @@ export class AnswerService {
   ): Promise<Answer> {
     const newAnswer = this.answerRepository.create(createAnswerInput);
 
-    newAnswer.surveyResponse = await this.entityManager.findOneById(
+    this.logger.debug('createSurveyResponse entity');
+    const surveyResponse = await this.entityManager.findOneById(
       SurveyResponse,
       createAnswerInput.surveyResponseId,
     );
+    this.logger.debug('checkComplete method');
+    this.checkComplete(surveyResponse, createAnswerInput.surveyResponseId);
+
+    this.logger.debug('find question content');
     newAnswer.questionOption = await this.findQuestionOptionContent(
       questionOptionId,
     );
+    this.logger.debug('find question option score');
     newAnswer.score = await this.findQuestionOptionScore(questionOptionId);
+
+    this.logger.debug('find question option content');
     newAnswer.question = await this.findQuestionContent(
       await this.findQuestionId(questionOptionId),
     );
-
-    // this.checkComplete(createAnswerInput.surveyResponseId);
-
+    this.logger.debug('return answer');
     return this.entityManager.save(newAnswer);
   }
 
@@ -90,11 +96,22 @@ export class AnswerService {
   async findQuestionOptionScore(questionOptionId: number) {
     return (await this.findQuestionOption(questionOptionId)).score;
   }
-
-  // async checkComplete(surveyResponseId: number){
-  //   const amountofQuestion = this.dataSource.manager
-  //   .createQueryBuilder()
-  //   .leftJoinAndSelect('survey.question', 'question')
-  //   .where('survey.id= ')
-  // }
+  /**
+   * @description "설문이 완료되었는지 확인"
+   * @param id
+   */
+  async checkComplete(
+    surveyResponse: SurveyResponse,
+    surveyResponseId: number,
+  ) {
+    surveyResponse.amountAnswer++;
+    if (surveyResponse.amountAnswer == surveyResponse.amountQuestion) {
+      surveyResponse.isComplete = true;
+    }
+    this.entityManager.update(
+      SurveyResponse,
+      surveyResponseId,
+      await surveyResponse,
+    );
+  }
 }

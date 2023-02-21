@@ -31,6 +31,7 @@ let SurveyResponseService = SurveyResponseService_1 = class SurveyResponseServic
         const newSurveyResponse = this.surveyResponseRepository.create(createSurveyResponseInput);
         newSurveyResponse.user = await this.entityManager.findOneById(user_entity_1.User, createSurveyResponseInput.userId);
         newSurveyResponse.survey = await this.entityManager.findOneById(survey_entity_1.Survey, createSurveyResponseInput.surveyId);
+        newSurveyResponse.amountQuestion = newSurveyResponse.survey.amountQuestion;
         return await this.surveyResponseRepository.save(newSurveyResponse);
     }
     async findAll() {

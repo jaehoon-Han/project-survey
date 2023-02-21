@@ -23,6 +23,7 @@ export class SurveyResponseService {
     const newSurveyResponse = this.surveyResponseRepository.create(
       createSurveyResponseInput,
     );
+
     newSurveyResponse.user = await this.entityManager.findOneById(
       User,
       createSurveyResponseInput.userId,
@@ -31,6 +32,7 @@ export class SurveyResponseService {
       Survey,
       createSurveyResponseInput.surveyId,
     );
+    newSurveyResponse.amountQuestion = newSurveyResponse.survey.amountQuestion;
     return await this.surveyResponseRepository.save(newSurveyResponse);
   }
 

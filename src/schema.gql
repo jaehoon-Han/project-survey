@@ -35,6 +35,8 @@ type Answer {
 type SurveyResponse {
   id: Int!
   totalScore: Int!
+  amountAnswer: Int!
+  amountQuestion: Int!
   answer: [Answer!]!
   isComplete: Boolean!
 }

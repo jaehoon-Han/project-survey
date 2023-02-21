@@ -12,6 +12,14 @@ export class SurveyResponse extends CommonEntity {
   @Column({ default: 0 })
   totalScore: number;
 
+  @Column({ default: 0 })
+  @Field(() => Int)
+  amountAnswer: number;
+
+  @Column()
+  @Field(() => Int)
+  amountQuestion: number;
+
   @ManyToOne(() => Survey, (survey) => survey.surveyResponse, {
     onDelete: 'CASCADE',
   })

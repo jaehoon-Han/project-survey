@@ -1,5 +1,6 @@
 import { QuestionOption } from 'src/question-option/entities/question-option.entity';
 import { Question } from 'src/question/entities/question.entity';
+import { SurveyResponse } from 'src/survey-response/entities/survey-response.entity';
 import { DataSource, EntityManager, Repository } from 'typeorm';
 import { CreateAnswerInput } from './dto/create-answer.input';
 import { UpdateAnswerInput } from './dto/update-answer.input';
@@ -21,4 +22,5 @@ export declare class AnswerService {
     findQuestionOption(questionOptionId: number): Promise<QuestionOption>;
     findQuestionOptionContent(questionOptionId: number): Promise<string>;
     findQuestionOptionScore(questionOptionId: number): Promise<number>;
+    checkComplete(surveyResponse: SurveyResponse, surveyResponseId: number): Promise<void>;
 }
