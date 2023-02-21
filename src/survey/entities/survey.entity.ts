@@ -24,7 +24,7 @@ export class Survey extends CommonEntity {
   amountQuestion: number;
 
   @OneToMany(() => Question, (question) => question.survey, {
-    onDelete: 'CASCADE',
+    cascade: true,
   })
   @Field(() => [Question], { nullable: true })
   question: Question[];

@@ -17,8 +17,8 @@ export class UserService {
   private readonly logger = new Logger(UserService.name);
   async create(createUserInput: CreateUserInput): Promise<User> {
     const newUser = this.userRepository.create(createUserInput);
-    await this.userRepository.save(newUser);
-    return newUser;
+
+    return await this.userRepository.save(newUser);
   }
 
   async findAll(): Promise<User[]> {

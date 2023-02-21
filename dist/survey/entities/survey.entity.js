@@ -37,7 +37,7 @@ __decorate([
 ], Survey.prototype, "amountQuestion", void 0);
 __decorate([
     (0, typeorm_1.OneToMany)(() => question_entity_1.Question, (question) => question.survey, {
-        onDelete: 'CASCADE',
+        cascade: true,
     }),
     (0, graphql_1.Field)(() => [question_entity_1.Question], { nullable: true }),
     __metadata("design:type", Array)

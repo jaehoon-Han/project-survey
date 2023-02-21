@@ -29,7 +29,9 @@ let SurveyResponseService = SurveyResponseService_1 = class SurveyResponseServic
     }
     async create(createSurveyResponseInput) {
         const newSurveyResponse = this.surveyResponseRepository.create(createSurveyResponseInput);
-        newSurveyResponse.user = await this.entityManager.findOneById(user_entity_1.User, createSurveyResponseInput.userId);
+        const user = new user_entity_1.User();
+        user.id = createSurveyResponseInput.userId;
+        newSurveyResponse.user = user;
         newSurveyResponse.survey = await this.entityManager.findOneById(survey_entity_1.Survey, createSurveyResponseInput.surveyId);
         newSurveyResponse.amountQuestion = newSurveyResponse.survey.amountQuestion;
         return await this.surveyResponseRepository.save(newSurveyResponse);
@@ -72,12 +74,12 @@ let SurveyResponseService = SurveyResponseService_1 = class SurveyResponseServic
         const count = await this.surveyResponseRepository
             .createQueryBuilder('surveyResponse')
             .leftJoinAndSelect('surveyResponse.answer', 'answer')
-            .select('sum(answer.score)')
+            .select('sum(answer.score)', 'sum')
             .where('answer.surveyResponseId= :id', { id: id })
             .groupBy('surveyResponse.userId')
             .getRawOne();
         this.logger.debug(count);
-        return count;
+        return count.sum;
     }
     async remove(id) {
         const surveyResponse = await this.findOne(id);

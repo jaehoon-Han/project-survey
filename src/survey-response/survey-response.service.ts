@@ -23,11 +23,10 @@ export class SurveyResponseService {
     const newSurveyResponse = this.surveyResponseRepository.create(
       createSurveyResponseInput,
     );
+    const user = new User();
+    user.id = createSurveyResponseInput.userId;
+    newSurveyResponse.user = user;
 
-    newSurveyResponse.user = await this.entityManager.findOneById(
-      User,
-      createSurveyResponseInput.userId,
-    );
     newSurveyResponse.survey = await this.entityManager.findOneById(
       Survey,
       createSurveyResponseInput.surveyId,
@@ -91,16 +90,18 @@ export class SurveyResponseService {
   }
 
   async countScore(id: number): Promise<number> {
-    const count = await this.surveyResponseRepository
+    const count: {
+      sum: number;
+    } = await this.surveyResponseRepository
       .createQueryBuilder('surveyResponse')
       .leftJoinAndSelect('surveyResponse.answer', 'answer')
-      .select('sum(answer.score)')
+      .select('sum(answer.score)', 'sum')
       .where('answer.surveyResponseId= :id', { id: id })
       .groupBy('surveyResponse.userId')
       .getRawOne();
 
     this.logger.debug(count);
-    return count;
+    return count.sum;
   }
   async remove(id: number) {
     const surveyResponse = await this.findOne(id);
