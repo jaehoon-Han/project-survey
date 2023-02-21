@@ -50,7 +50,10 @@ export class SurveyService {
       .leftJoinAndSelect('survey.question', 'question')
       .where('survey.id= :id', { id: id })
       .getMany();
-
+    if (!result) {
+      this.logger.error(new BadRequestException(`NOT FOUND SURVEY ID: ${id}`));
+      throw new BadRequestException(`NOT FOUND SURVEY ID: ${id}`);
+    }
     return result;
   }
 

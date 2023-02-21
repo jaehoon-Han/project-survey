@@ -51,6 +51,10 @@ let SurveyService = SurveyService_1 = class SurveyService {
             .leftJoinAndSelect('survey.question', 'question')
             .where('survey.id= :id', { id: id })
             .getMany();
+        if (!result) {
+            this.logger.error(new common_1.BadRequestException(`NOT FOUND SURVEY ID: ${id}`));
+            throw new common_1.BadRequestException(`NOT FOUND SURVEY ID: ${id}`);
+        }
         return result;
     }
     async update(id, updateSurveyInput) {
