@@ -26,7 +26,7 @@ export class QuestionResolver {
   }
 
   @Query(() => [Question])
-  findDetail(@Args('id', { type: () => Int }) id: number) {
+  findDetailQuestion(@Args('id', { type: () => Int }) id: number) {
     return this.questionService.findDetail(id);
   }
 

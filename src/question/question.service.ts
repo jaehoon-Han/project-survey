@@ -67,6 +67,7 @@ export class QuestionService {
     const result = await this.questionRepository
       .createQueryBuilder('question')
       .leftJoinAndSelect('question.questionOption', 'questionOption')
+      .innerJoinAndSelect('question.survey', 'survey')
       .where('question.id= :id', { id: id })
       .getMany();
 

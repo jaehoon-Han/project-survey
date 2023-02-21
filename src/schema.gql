@@ -61,7 +61,7 @@ type Query {
   getUserWithResponse(id: Int!): [User!]!
   findOneUser(id: Int!): User!
   surveyResponse(id: Int!): SurveyResponse!
-  findDetail(id: Int!): [Question!]!
+  findDetail(id: Int!): [SurveyResponse!]!
   findAllAnswer: [Answer!]!
   findOneAnswer(id: Int!): Answer!
   findAllSurvey: [Survey!]!
@@ -69,6 +69,7 @@ type Query {
   findDetailSurvey(id: Int!): [Survey!]!
   findAllQuestion: [Question!]!
   question(id: Int!): Question!
+  findDetailQuestion(id: Int!): [Question!]!
   questionOption(id: Int!): QuestionOption!
 }
 
