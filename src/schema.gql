@@ -66,6 +66,7 @@ type Query {
   findOneAnswer(id: Int!): Answer!
   findAllSurvey: [Survey!]!
   findOneSurvey(id: Int!): Survey!
+  findDetailSurvey(id: Int!): [Survey!]!
   findAllQuestion: [Question!]!
   question(id: Int!): Question!
   questionOption(id: Int!): QuestionOption!
