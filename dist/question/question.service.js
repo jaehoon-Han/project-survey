@@ -29,14 +29,18 @@ let QuestionService = QuestionService_1 = class QuestionService {
     async create(createQuestionInput) {
         const newQuestion = this.questionRepository.create(createQuestionInput);
         newQuestion.survey = await this.entityManager.findOneById(survey_entity_1.Survey, createQuestionInput.surveyId);
-        const survey = this.entityManager.findOneById(survey_entity_1.Survey, createQuestionInput.surveyId);
-        (await survey).amountQuestion++;
+        const survey = await this.entityManager.findOneById(survey_entity_1.Survey, createQuestionInput.surveyId);
+        survey.amountQuestion++;
         this.entityManager.update(survey_entity_1.Survey, createQuestionInput.surveyId, await survey);
         return this.entityManager.save(newQuestion);
     }
     async findAll() {
-        const question = await this.questionRepository.find();
-        return question;
+        const result = await this.questionRepository
+            .createQueryBuilder('question')
+            .leftJoinAndSelect('question.questionOption', 'questionOption')
+            .innerJoinAndSelect('question.survey', 'survey')
+            .getMany();
+        return result;
     }
     async findOne(id) {
         const question = await this.questionRepository.findOneBy({

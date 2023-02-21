@@ -22,11 +22,11 @@ export class QuestionService {
       Survey,
       createQuestionInput.surveyId,
     );
-    const survey = this.entityManager.findOneById(
+    const survey = await this.entityManager.findOneById(
       Survey,
       createQuestionInput.surveyId,
     );
-    (await survey).amountQuestion++;
+    survey.amountQuestion++;
     this.entityManager.update(
       Survey,
       createQuestionInput.surveyId,
@@ -36,8 +36,13 @@ export class QuestionService {
   }
 
   async findAll(): Promise<Question[]> {
-    const question = await this.questionRepository.find();
-    return question;
+    const result = await this.questionRepository
+      .createQueryBuilder('question')
+      .leftJoinAndSelect('question.questionOption', 'questionOption')
+      .innerJoinAndSelect('question.survey', 'survey')
+      .getMany();
+
+    return result;
   }
 
   async findOne(id: number): Promise<Question> {
