@@ -38,7 +38,7 @@ let SurveyResponseResolver = class SurveyResponseResolver {
         return this.surveyResponseService.update(updateSurveyResponseInput.id, updateSurveyResponseInput);
     }
     updateCount(id) {
-        return this.surveyResponseService.countScore(id);
+        return this.surveyResponseService.updateScore(id);
     }
     removeSurveyResponse(id) {
         return this.surveyResponseService.remove(id);

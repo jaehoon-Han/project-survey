@@ -63,7 +63,9 @@ let SurveyResponseService = SurveyResponseService_1 = class SurveyResponseServic
     }
     async updateScore(id) {
         const surveyResponse = await this.findOne(id);
+        this.logger.debug('call totalScore');
         surveyResponse.totalScore = await this.countScore(id);
+        this.logger.debug(surveyResponse.totalScore);
         return this.surveyResponseRepository.update(id, surveyResponse);
     }
     async countScore(id) {
@@ -74,6 +76,7 @@ let SurveyResponseService = SurveyResponseService_1 = class SurveyResponseServic
             .where('answer.surveyResponseId= :id', { id: id })
             .groupBy('surveyResponse.userId')
             .getRawOne();
+        this.logger.debug(count);
         return count;
     }
     async remove(id) {

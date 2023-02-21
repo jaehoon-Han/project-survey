@@ -10,6 +10,6 @@ export declare class SurveyResponseResolver {
     findOne(id: number): Promise<SurveyResponse>;
     findDetail(id: number): Promise<SurveyResponse[]>;
     updateSurveyResponse(updateSurveyResponseInput: UpdateSurveyResponseInput): Promise<import("typeorm").UpdateResult>;
-    updateCount(id: number): Promise<number>;
+    updateCount(id: number): Promise<import("typeorm").UpdateResult>;
     removeSurveyResponse(id: number): Promise<SurveyResponse>;
 }
