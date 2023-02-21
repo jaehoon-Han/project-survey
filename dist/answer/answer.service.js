@@ -30,17 +30,11 @@ let AnswerService = AnswerService_1 = class AnswerService {
     }
     async create(createAnswerInput, questionOptionId) {
         const newAnswer = this.answerRepository.create(createAnswerInput);
-        this.logger.debug('createSurveyResponse entity');
         const surveyResponse = await this.entityManager.findOneById(survey_response_entity_1.SurveyResponse, createAnswerInput.surveyResponseId);
-        this.logger.debug('checkComplete method');
         this.checkComplete(surveyResponse, createAnswerInput.surveyResponseId);
-        this.logger.debug('find question content');
         newAnswer.questionOption = await this.findQuestionOptionContent(questionOptionId);
-        this.logger.debug('find question option score');
         newAnswer.score = await this.findQuestionOptionScore(questionOptionId);
-        this.logger.debug('find question option content');
         newAnswer.question = await this.findQuestionContent(await this.findQuestionId(questionOptionId));
-        this.logger.debug('return answer');
         return this.entityManager.save(newAnswer);
     }
     async findAll() {

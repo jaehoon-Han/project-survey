@@ -22,8 +22,12 @@ export class SurveyService {
   }
 
   async findAll(): Promise<Survey[]> {
-    const surveys = await this.surveyRepository.find();
-    return surveys;
+    const result = await this.surveyRepository
+      .createQueryBuilder('survey')
+      .leftJoinAndSelect('survey.question', 'question')
+      .getMany();
+
+    return result;
   }
 
   async findOne(id: number): Promise<Survey> {

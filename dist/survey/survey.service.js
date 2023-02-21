@@ -31,8 +31,11 @@ let SurveyService = SurveyService_1 = class SurveyService {
         return newSurvey;
     }
     async findAll() {
-        const surveys = await this.surveyRepository.find();
-        return surveys;
+        const result = await this.surveyRepository
+            .createQueryBuilder('survey')
+            .leftJoinAndSelect('survey.question', 'question')
+            .getMany();
+        return result;
     }
     async findOne(id) {
         const survey = await this.surveyRepository.findOneBy({ id });
