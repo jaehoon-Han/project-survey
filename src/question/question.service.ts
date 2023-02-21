@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Survey } from 'src/survey/entities/survey.entity';
 import { DataSource, EntityManager, Repository } from 'typeorm';
@@ -14,6 +14,7 @@ export class QuestionService {
     private entityManager: EntityManager,
     private dataSource: DataSource,
   ) {}
+  private readonly logger = new Logger(QuestionService.name);
 
   async create(createQuestionInput: CreateQuestionInput) {
     const newQuestion = this.questionRepository.create(createQuestionInput);
@@ -21,18 +22,39 @@ export class QuestionService {
       Survey,
       createQuestionInput.surveyId,
     );
+    const survey = await this.entityManager.findOneById(
+      Survey,
+      createQuestionInput.surveyId,
+    );
+    survey.amountQuestion++;
+    this.entityManager.update(
+      Survey,
+      createQuestionInput.surveyId,
+      await survey,
+    );
     return this.entityManager.save(newQuestion);
   }
 
   async findAll(): Promise<Question[]> {
-    const question = await this.questionRepository.find();
-    return question;
+    const result = await this.questionRepository
+      .createQueryBuilder('question')
+      .leftJoinAndSelect('question.questionOption', 'questionOption')
+      .innerJoinAndSelect('question.survey', 'survey')
+      .getMany();
+
+    return result;
   }
 
   async findOne(id: number): Promise<Question> {
     const question = await this.questionRepository.findOneBy({
       id,
     });
+    if (!question) {
+      this.logger.error(
+        new BadRequestException(`NOT FOUND QUESTION ID: ${id}`),
+      );
+      throw new BadRequestException(`NOT FOUND QUESTION ID: ${id}`);
+    }
     return question;
   }
 
@@ -45,6 +67,7 @@ export class QuestionService {
     const result = await this.questionRepository
       .createQueryBuilder('question')
       .leftJoinAndSelect('question.questionOption', 'questionOption')
+      .innerJoinAndSelect('question.survey', 'survey')
       .where('question.id= :id', { id: id })
       .getMany();
 
@@ -58,6 +81,7 @@ export class QuestionService {
   }
 
   async remove(id: number) {
-    return await this.dataSource.manager.delete(Question, id);
+    const question = await this.findOne(id);
+    return this.dataSource.manager.remove(question);
   }
 }

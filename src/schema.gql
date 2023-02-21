@@ -35,7 +35,10 @@ type Answer {
 type SurveyResponse {
   id: Int!
   totalScore: Int!
+  amountAnswer: Int!
+  amountQuestion: Int!
   answer: [Answer!]!
+  isComplete: Boolean!
 }
 
 type Survey {
@@ -49,14 +52,8 @@ type Survey {
 
   """question amount"""
   amountQuestion: Int!
-  question: [Question!]!
-  surveyResponse: [SurveyResponse!]!
-}
-
-type SurveyStatus {
-  id: Int!
-  surveyId: Int!
-  status: String!
+  question: [Question!]
+  surveyResponse: [SurveyResponse!]
 }
 
 type Query {
@@ -64,14 +61,15 @@ type Query {
   getUserWithResponse(id: Int!): [User!]!
   findOneUser(id: Int!): User!
   surveyResponse(id: Int!): SurveyResponse!
-  findDetail(id: Int!): [Question!]!
+  findDetail(id: Int!): [SurveyResponse!]!
   findAllAnswer: [Answer!]!
   findOneAnswer(id: Int!): Answer!
   findAllSurvey: [Survey!]!
   findOneSurvey(id: Int!): Survey!
-  surveyStatus(id: Int!): SurveyStatus!
+  findDetailSurvey(id: Int!): [Survey!]!
   findAllQuestion: [Question!]!
   question(id: Int!): Question!
+  findDetailQuestion(id: Int!): [Question!]!
   questionOption(id: Int!): QuestionOption!
 }
 
@@ -81,6 +79,7 @@ type Mutation {
   removeUser(id: Int!): User!
   createSurveyResponse(createSurveyResponseInput: CreateSurveyResponseInput!): SurveyResponse!
   updateSurveyResponse(updateSurveyResponseInput: UpdateSurveyResponseInput!): SurveyResponse!
+  updateCount(id: Int!): SurveyResponse!
   removeSurveyResponse(id: Int!): SurveyResponse!
   createAnswer(createAnswerInput: CreateAnswerInput!, questionOptionId: Float!): Answer!
   updateAnswer(updateAnswerInput: UpdateAnswerInput!): Answer!
@@ -88,9 +87,6 @@ type Mutation {
   createSurvey(createSurveyInput: CreateSurveyInput!): Survey!
   updateSurvey(updateSurveyInput: UpdateSurveyInput!): Survey!
   removeSurvey(id: Int!): Survey!
-  createSurveyStatus(createSurveyStatusInput: CreateSurveyStatusInput!): SurveyStatus!
-  updateSurveyStatus(updateSurveyStatusInput: UpdateSurveyStatusInput!): SurveyStatus!
-  removeSurveyStatus(id: Int!): SurveyStatus!
   createQuestion(createQuestionInput: CreateQuestionInput!): Question!
   updateQuestion(updateQuestionInput: UpdateQuestionInput!): Question!
   removeQuestion(id: Int!): Question!
@@ -133,24 +129,11 @@ input UpdateAnswerInput {
 input CreateSurveyInput {
   title: String!
   description: String!
-  amountQuestion: Int!
 }
 
 input UpdateSurveyInput {
   title: String
   description: String
-  amountQuestion: Int
-  id: Int!
-}
-
-input CreateSurveyStatusInput {
-  status: String!
-  surveyId: Int!
-}
-
-input UpdateSurveyStatusInput {
-  status: String
-  surveyId: Int
   id: Int!
 }
 

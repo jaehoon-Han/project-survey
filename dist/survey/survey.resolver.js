@@ -32,7 +32,7 @@ let SurveyResolver = class SurveyResolver {
     findOneSurvey(id) {
         return this.surveyService.findOne(id);
     }
-    findDetail(id) {
+    findDetailSurvey(id) {
         return this.surveyService.findDetail(id);
     }
     updateSurvey(updateSurveyInput) {
@@ -68,7 +68,7 @@ __decorate([
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", void 0)
-], SurveyResolver.prototype, "findDetail", null);
+], SurveyResolver.prototype, "findDetailSurvey", null);
 __decorate([
     (0, graphql_1.Mutation)(() => survey_entity_1.Survey),
     __param(0, (0, graphql_1.Args)('updateSurveyInput')),

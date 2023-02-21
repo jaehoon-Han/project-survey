@@ -11,6 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
+var QuestionOptionService_1;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.QuestionOptionService = void 0;
 const common_1 = require("@nestjs/common");
@@ -18,11 +19,12 @@ const typeorm_1 = require("@nestjs/typeorm");
 const question_entity_1 = require("../question/entities/question.entity");
 const typeorm_2 = require("typeorm");
 const question_option_entity_1 = require("./entities/question-option.entity");
-let QuestionOptionService = class QuestionOptionService {
+let QuestionOptionService = QuestionOptionService_1 = class QuestionOptionService {
     constructor(questionOptionRepository, entityManager, dataSource) {
         this.questionOptionRepository = questionOptionRepository;
         this.entityManager = entityManager;
         this.dataSource = dataSource;
+        this.logger = new common_1.Logger(QuestionOptionService_1.name);
     }
     async create(createQuestionOptionInput) {
         const newQuestionOption = this.questionOptionRepository.create(createQuestionOptionInput);
@@ -37,6 +39,10 @@ let QuestionOptionService = class QuestionOptionService {
         const questionOption = await this.questionOptionRepository.findOneBy({
             id,
         });
+        if (!questionOption) {
+            this.logger.error(new common_1.BadRequestException(`NOT FOUND QUESTIONOPTION ID: ${id}`));
+            throw new common_1.BadRequestException(`NOT FOUND QUESTIONOPTION ID: ${id}`);
+        }
         return questionOption;
     }
     async update(id, updateQuestionOptionInput) {
@@ -45,10 +51,11 @@ let QuestionOptionService = class QuestionOptionService {
         return this.questionOptionRepository.update(id, questionOption);
     }
     async remove(id) {
-        return await this.dataSource.manager.delete(question_option_entity_1.QuestionOption, id);
+        const questionOption = await this.findOne(id);
+        return this.dataSource.manager.remove(questionOption);
     }
 };
-QuestionOptionService = __decorate([
+QuestionOptionService = QuestionOptionService_1 = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(question_option_entity_1.QuestionOption)),
     __metadata("design:paramtypes", [typeorm_2.Repository,

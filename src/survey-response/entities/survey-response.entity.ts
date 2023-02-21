@@ -1,38 +1,24 @@
 import { ObjectType, Field, Int } from '@nestjs/graphql';
 import { Survey } from 'src/survey/entities/survey.entity';
 import { User } from 'src/user/entities/user.entity';
-import {
-  Column,
-  CreateDateColumn,
-  DeleteDateColumn,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  OneToMany,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 import { Answer } from 'src/answer/entities/answer.entity';
+import { CommonEntity } from 'src/common/commonentity.interface';
 
 @ObjectType()
 @Entity()
-export class SurveyResponse {
+export class SurveyResponse extends CommonEntity {
   @Field(() => Int)
-  @PrimaryGeneratedColumn()
-  id: number;
-
-  @Field(() => Int)
-  @Column()
+  @Column({ default: 0 })
   totalScore: number;
 
-  @CreateDateColumn()
-  createdAt: Date;
+  @Column({ default: 0 })
+  @Field(() => Int)
+  amountAnswer: number;
 
-  @UpdateDateColumn()
-  updatedAt: Date;
-
-  @DeleteDateColumn()
-  deletedAt: Date;
+  @Column()
+  @Field(() => Int)
+  amountQuestion: number;
 
   @ManyToOne(() => Survey, (survey) => survey.surveyResponse, {
     onDelete: 'CASCADE',
@@ -47,4 +33,11 @@ export class SurveyResponse {
   @Field(() => [Answer])
   @OneToMany(() => Answer, (answer) => answer.surveyResponse, { cascade: true })
   answer: Answer[];
+
+  /**
+   * @description 설문 완료 여부
+   */
+  @Field(() => Boolean)
+  @Column({ default: false })
+  isComplete: boolean;
 }

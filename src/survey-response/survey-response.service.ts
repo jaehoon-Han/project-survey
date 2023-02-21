@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Survey } from 'src/survey/entities/survey.entity';
 import { User } from 'src/user/entities/user.entity';
@@ -16,12 +16,14 @@ export class SurveyResponseService {
     private dataSource: DataSource,
   ) {}
 
+  private readonly logger = new Logger(SurveyResponseService.name);
   async create(
     createSurveyResponseInput: CreateSurveyResponseInput,
   ): Promise<SurveyResponse> {
     const newSurveyResponse = this.surveyResponseRepository.create(
       createSurveyResponseInput,
     );
+
     newSurveyResponse.user = await this.entityManager.findOneById(
       User,
       createSurveyResponseInput.userId,
@@ -30,6 +32,7 @@ export class SurveyResponseService {
       Survey,
       createSurveyResponseInput.surveyId,
     );
+    newSurveyResponse.amountQuestion = newSurveyResponse.survey.amountQuestion;
     return await this.surveyResponseRepository.save(newSurveyResponse);
   }
 
@@ -42,6 +45,12 @@ export class SurveyResponseService {
     const surveyResponse = await this.surveyResponseRepository.findOneBy({
       id,
     });
+    if (!surveyResponse) {
+      this.logger.error(
+        new BadRequestException(`NOT FOUND SURVEYRESPONSE ID: ${id}`),
+      );
+      throw new BadRequestException(`NOT FOUND SURVEYRESPONSE ID: ${id}`);
+    }
     return surveyResponse;
   }
 
@@ -72,7 +81,29 @@ export class SurveyResponseService {
     return this.surveyResponseRepository.update(id, surveyResponse);
   }
 
+  async updateScore(id: number) {
+    const surveyResponse = await this.findOne(id);
+
+    this.logger.debug('call totalScore');
+    surveyResponse.totalScore = await this.countScore(id);
+    this.logger.debug(surveyResponse.totalScore);
+    return this.surveyResponseRepository.update(id, surveyResponse);
+  }
+
+  async countScore(id: number): Promise<number> {
+    const count = await this.surveyResponseRepository
+      .createQueryBuilder('surveyResponse')
+      .leftJoinAndSelect('surveyResponse.answer', 'answer')
+      .select('sum(answer.score)')
+      .where('answer.surveyResponseId= :id', { id: id })
+      .groupBy('surveyResponse.userId')
+      .getRawOne();
+
+    this.logger.debug(count);
+    return count;
+  }
   async remove(id: number) {
-    return await this.dataSource.manager.delete(SurveyResponse, id);
+    const surveyResponse = await this.findOne(id);
+    return this.dataSource.manager.remove(surveyResponse);
   }
 }

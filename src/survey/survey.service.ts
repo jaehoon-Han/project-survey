@@ -1,6 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DataSource, EntityManager, Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { CreateSurveyInput } from './dto/create-survey.input';
 import { UpdateSurveyInput } from './dto/update-survey.input';
 import { Survey } from './entities/survey.entity';
@@ -10,23 +10,32 @@ export class SurveyService {
   constructor(
     @InjectRepository(Survey)
     private surveyRepository: Repository<Survey>,
-    private entityManager: EntityManager,
     private dataSource: DataSource,
   ) {}
+  private readonly logger = new Logger(SurveyService.name);
 
   async create(createSurveyInput: CreateSurveyInput): Promise<Survey> {
     const newSurvey = this.surveyRepository.create(createSurveyInput);
+    newSurvey.amountQuestion = 0;
     await this.surveyRepository.save(newSurvey);
     return newSurvey;
   }
 
   async findAll(): Promise<Survey[]> {
-    const surveys = await this.surveyRepository.find();
-    return surveys;
+    const result = await this.surveyRepository
+      .createQueryBuilder('survey')
+      .leftJoinAndSelect('survey.question', 'question')
+      .getMany();
+
+    return result;
   }
 
   async findOne(id: number): Promise<Survey> {
     const survey = await this.surveyRepository.findOneBy({ id });
+    if (!survey) {
+      this.logger.error(new BadRequestException(`NOT FOUND SURVEY ID: ${id}`));
+      throw new BadRequestException(`NOT FOUND SURVEY ID: ${id}`);
+    }
     return survey;
   }
 
@@ -39,9 +48,13 @@ export class SurveyService {
     const result = await this.surveyRepository
       .createQueryBuilder('survey')
       .leftJoinAndSelect('survey.question', 'question')
+      .leftJoinAndSelect('question.questionOption', 'questionOption')
       .where('survey.id= :id', { id: id })
       .getMany();
-
+    if (!result) {
+      this.logger.error(new BadRequestException(`NOT FOUND SURVEY ID: ${id}`));
+      throw new BadRequestException(`NOT FOUND SURVEY ID: ${id}`);
+    }
     return result;
   }
 
@@ -52,6 +65,7 @@ export class SurveyService {
   }
 
   async remove(id: number) {
-    return await this.dataSource.manager.delete(Survey, id);
+    const survey = await this.findOne(id);
+    return this.dataSource.manager.remove(survey);
   }
 }

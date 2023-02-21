@@ -11,6 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
+var SurveyResponseService_1;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SurveyResponseService = void 0;
 const common_1 = require("@nestjs/common");
@@ -19,16 +20,18 @@ const survey_entity_1 = require("../survey/entities/survey.entity");
 const user_entity_1 = require("../user/entities/user.entity");
 const typeorm_2 = require("typeorm");
 const survey_response_entity_1 = require("./entities/survey-response.entity");
-let SurveyResponseService = class SurveyResponseService {
+let SurveyResponseService = SurveyResponseService_1 = class SurveyResponseService {
     constructor(surveyResponseRepository, entityManager, dataSource) {
         this.surveyResponseRepository = surveyResponseRepository;
         this.entityManager = entityManager;
         this.dataSource = dataSource;
+        this.logger = new common_1.Logger(SurveyResponseService_1.name);
     }
     async create(createSurveyResponseInput) {
         const newSurveyResponse = this.surveyResponseRepository.create(createSurveyResponseInput);
         newSurveyResponse.user = await this.entityManager.findOneById(user_entity_1.User, createSurveyResponseInput.userId);
         newSurveyResponse.survey = await this.entityManager.findOneById(survey_entity_1.Survey, createSurveyResponseInput.surveyId);
+        newSurveyResponse.amountQuestion = newSurveyResponse.survey.amountQuestion;
         return await this.surveyResponseRepository.save(newSurveyResponse);
     }
     async findAll() {
@@ -39,6 +42,10 @@ let SurveyResponseService = class SurveyResponseService {
         const surveyResponse = await this.surveyResponseRepository.findOneBy({
             id,
         });
+        if (!surveyResponse) {
+            this.logger.error(new common_1.BadRequestException(`NOT FOUND SURVEYRESPONSE ID: ${id}`));
+            throw new common_1.BadRequestException(`NOT FOUND SURVEYRESPONSE ID: ${id}`);
+        }
         return surveyResponse;
     }
     async findDetail(id) {
@@ -54,11 +61,30 @@ let SurveyResponseService = class SurveyResponseService {
         this.surveyResponseRepository.merge(surveyResponse, updateSurveyResponseInput);
         return this.surveyResponseRepository.update(id, surveyResponse);
     }
+    async updateScore(id) {
+        const surveyResponse = await this.findOne(id);
+        this.logger.debug('call totalScore');
+        surveyResponse.totalScore = await this.countScore(id);
+        this.logger.debug(surveyResponse.totalScore);
+        return this.surveyResponseRepository.update(id, surveyResponse);
+    }
+    async countScore(id) {
+        const count = await this.surveyResponseRepository
+            .createQueryBuilder('surveyResponse')
+            .leftJoinAndSelect('surveyResponse.answer', 'answer')
+            .select('sum(answer.score)')
+            .where('answer.surveyResponseId= :id', { id: id })
+            .groupBy('surveyResponse.userId')
+            .getRawOne();
+        this.logger.debug(count);
+        return count;
+    }
     async remove(id) {
-        return await this.dataSource.manager.delete(survey_response_entity_1.SurveyResponse, id);
+        const surveyResponse = await this.findOne(id);
+        return this.dataSource.manager.remove(surveyResponse);
     }
 };
-SurveyResponseService = __decorate([
+SurveyResponseService = SurveyResponseService_1 = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(survey_response_entity_1.SurveyResponse)),
     __metadata("design:paramtypes", [typeorm_2.Repository,

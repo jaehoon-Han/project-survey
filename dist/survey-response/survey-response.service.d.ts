@@ -7,10 +7,13 @@ export declare class SurveyResponseService {
     private entityManager;
     private dataSource;
     constructor(surveyResponseRepository: Repository<SurveyResponse>, entityManager: EntityManager, dataSource: DataSource);
+    private readonly logger;
     create(createSurveyResponseInput: CreateSurveyResponseInput): Promise<SurveyResponse>;
     findAll(): Promise<SurveyResponse[]>;
     findOne(id: number): Promise<SurveyResponse>;
     findDetail(id: number): Promise<SurveyResponse[]>;
     update(id: number, updateSurveyResponseInput: UpdateSurveyResponseInput): Promise<import("typeorm").UpdateResult>;
-    remove(id: number): Promise<import("typeorm").DeleteResult>;
+    updateScore(id: number): Promise<import("typeorm").UpdateResult>;
+    countScore(id: number): Promise<number>;
+    remove(id: number): Promise<SurveyResponse>;
 }

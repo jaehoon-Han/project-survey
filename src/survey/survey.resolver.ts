@@ -27,7 +27,7 @@ export class SurveyResolver {
   }
 
   @Query(() => [Survey])
-  findDetail(@Args('id', { type: () => Int }) id: number) {
+  findDetailSurvey(@Args('id', { type: () => Int }) id: number) {
     return this.surveyService.findDetail(id);
   }
 

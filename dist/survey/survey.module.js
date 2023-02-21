@@ -13,7 +13,6 @@ const survey_resolver_1 = require("./survey.resolver");
 const typeorm_1 = require("@nestjs/typeorm");
 const survey_entity_1 = require("./entities/survey.entity");
 const survey_response_module_1 = require("../survey-response/survey-response.module");
-const survey_status_module_1 = require("../survey-status/survey-status.module");
 const question_module_1 = require("../question/question.module");
 let SurveyModule = class SurveyModule {
 };
@@ -22,7 +21,6 @@ SurveyModule = __decorate([
         imports: [
             typeorm_1.TypeOrmModule.forFeature([survey_entity_1.Survey]),
             survey_response_module_1.SurveyResponseModule,
-            survey_status_module_1.SurveyStatusModule,
             question_module_1.QuestionModule,
         ],
         providers: [survey_resolver_1.SurveyResolver, survey_service_1.SurveyService],

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { QuestionOption } from 'src/question-option/entities/question-option.entity';
 import { Question } from 'src/question/entities/question.entity';
@@ -17,24 +17,27 @@ export class AnswerService {
     private dataSource: DataSource,
   ) {}
 
+  private readonly logger = new Logger(AnswerService.name);
   async create(
     createAnswerInput: CreateAnswerInput,
     questionOptionId: number,
   ): Promise<Answer> {
     const newAnswer = this.answerRepository.create(createAnswerInput);
 
-    newAnswer.surveyResponse = await this.entityManager.findOneById(
+    const surveyResponse = await this.entityManager.findOneById(
       SurveyResponse,
       createAnswerInput.surveyResponseId,
     );
+    this.checkComplete(surveyResponse, createAnswerInput.surveyResponseId);
+
     newAnswer.questionOption = await this.findQuestionOptionContent(
       questionOptionId,
     );
     newAnswer.score = await this.findQuestionOptionScore(questionOptionId);
+
     newAnswer.question = await this.findQuestionContent(
       await this.findQuestionId(questionOptionId),
     );
-
     return this.entityManager.save(newAnswer);
   }
 
@@ -47,6 +50,10 @@ export class AnswerService {
     const answer = await this.answerRepository.findOneBy({
       id,
     });
+    if (!answer) {
+      this.logger.error(new BadRequestException(`NOT FOUND SURVEY ID: ${id}`));
+      throw new BadRequestException(`NOT FOUND ANSWER ID: ${id}`);
+    }
     return answer;
   }
 
@@ -57,7 +64,8 @@ export class AnswerService {
   }
 
   async remove(id: number) {
-    return await this.dataSource.manager.delete(Answer, id);
+    const answer = await this.findOne(id);
+    return this.dataSource.manager.remove(answer);
   }
 
   async findQuestion(questionId: number) {
@@ -81,5 +89,23 @@ export class AnswerService {
 
   async findQuestionOptionScore(questionOptionId: number) {
     return (await this.findQuestionOption(questionOptionId)).score;
+  }
+  /**
+   * @description "설문이 완료되었는지 확인"
+   * @param id
+   */
+  async checkComplete(
+    surveyResponse: SurveyResponse,
+    surveyResponseId: number,
+  ) {
+    surveyResponse.amountAnswer++;
+    if (surveyResponse.amountAnswer == surveyResponse.amountQuestion) {
+      surveyResponse.isComplete = true;
+    }
+    this.entityManager.update(
+      SurveyResponse,
+      surveyResponseId,
+      await surveyResponse,
+    );
   }
 }

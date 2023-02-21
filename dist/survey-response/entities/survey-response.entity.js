@@ -15,30 +15,24 @@ const survey_entity_1 = require("../../survey/entities/survey.entity");
 const user_entity_1 = require("../../user/entities/user.entity");
 const typeorm_1 = require("typeorm");
 const answer_entity_1 = require("../../answer/entities/answer.entity");
-let SurveyResponse = class SurveyResponse {
+const commonentity_interface_1 = require("../../common/commonentity.interface");
+let SurveyResponse = class SurveyResponse extends commonentity_interface_1.CommonEntity {
 };
 __decorate([
     (0, graphql_1.Field)(() => graphql_1.Int),
-    (0, typeorm_1.PrimaryGeneratedColumn)(),
-    __metadata("design:type", Number)
-], SurveyResponse.prototype, "id", void 0);
-__decorate([
-    (0, graphql_1.Field)(() => graphql_1.Int),
-    (0, typeorm_1.Column)(),
+    (0, typeorm_1.Column)({ default: 0 }),
     __metadata("design:type", Number)
 ], SurveyResponse.prototype, "totalScore", void 0);
 __decorate([
-    (0, typeorm_1.CreateDateColumn)(),
-    __metadata("design:type", Date)
-], SurveyResponse.prototype, "createdAt", void 0);
+    (0, typeorm_1.Column)({ default: 0 }),
+    (0, graphql_1.Field)(() => graphql_1.Int),
+    __metadata("design:type", Number)
+], SurveyResponse.prototype, "amountAnswer", void 0);
 __decorate([
-    (0, typeorm_1.UpdateDateColumn)(),
-    __metadata("design:type", Date)
-], SurveyResponse.prototype, "updatedAt", void 0);
-__decorate([
-    (0, typeorm_1.DeleteDateColumn)(),
-    __metadata("design:type", Date)
-], SurveyResponse.prototype, "deletedAt", void 0);
+    (0, typeorm_1.Column)(),
+    (0, graphql_1.Field)(() => graphql_1.Int),
+    __metadata("design:type", Number)
+], SurveyResponse.prototype, "amountQuestion", void 0);
 __decorate([
     (0, typeorm_1.ManyToOne)(() => survey_entity_1.Survey, (survey) => survey.surveyResponse, {
         onDelete: 'CASCADE',
@@ -56,6 +50,11 @@ __decorate([
     (0, typeorm_1.OneToMany)(() => answer_entity_1.Answer, (answer) => answer.surveyResponse, { cascade: true }),
     __metadata("design:type", Array)
 ], SurveyResponse.prototype, "answer", void 0);
+__decorate([
+    (0, graphql_1.Field)(() => Boolean),
+    (0, typeorm_1.Column)({ default: false }),
+    __metadata("design:type", Boolean)
+], SurveyResponse.prototype, "isComplete", void 0);
 SurveyResponse = __decorate([
     (0, graphql_1.ObjectType)(),
     (0, typeorm_1.Entity)()
