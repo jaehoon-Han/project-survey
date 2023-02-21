@@ -1,7 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { SurveyResponseService } from 'src/survey-response/survey-response.service';
-import { Repository } from 'typeorm';
+import { SurveyResponse } from 'src/survey-response/entities/survey-response.entity';
+import { DataSource, Repository } from 'typeorm';
 import { CreateUserInput } from './dto/create-user.input';
 import { UpdateUserInput } from './dto/update-user.input';
 import { User } from './entities/user.entity';
@@ -11,13 +11,14 @@ export class UserService {
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
-    private surveyResponse: SurveyResponseService,
+    private dataSource: DataSource,
   ) {}
 
+  private readonly logger = new Logger(UserService.name);
   async create(createUserInput: CreateUserInput): Promise<User> {
     const newUser = this.userRepository.create(createUserInput);
-    await this.userRepository.save(newUser);
-    return newUser;
+
+    return await this.userRepository.save(newUser);
   }
 
   async findAll(): Promise<User[]> {
@@ -25,25 +26,43 @@ export class UserService {
     return users;
   }
 
-  async getUserWithResponse(): Promise<User[]> {
-    return this.userRepository
+  /**
+   * @description "유저의 답변 조회"
+   * @param id
+   * @returns
+   */
+  async getUserWithResponse(id: number): Promise<User[]> {
+    const result = await this.userRepository
       .createQueryBuilder('user')
       .leftJoinAndSelect('user.surveyResponse', 'surveyResponse')
+      .where('user.id= :id', { id: id })
       .getMany();
+
+    return result;
   }
 
   async findOne(id: number): Promise<User> {
-    const user = await this.userRepository.findOne({
-      where: { id },
+    const user = await this.userRepository.findOneBy({
+      id,
     });
+    if (!user) {
+      this.logger.error(new BadRequestException(`NOT FOUND USER ID: ${id}`));
+      throw new BadRequestException(`NOT FOUND USER ID: ${id}`);
+    }
     return user;
   }
 
-  update(id: number, updateUserInput: UpdateUserInput) {
-    return `This action updates a #${id} user`;
+  async update(id: number, updateUserInput: UpdateUserInput) {
+    const user = await this.findOne(id);
+    this.userRepository.merge(user, updateUserInput);
+    return this.userRepository.update(id, user);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async remove(id: number) {
+    const user = await this.findOne(id);
+    return this.dataSource.manager.remove(user);
+  }
+  async removeSurveyResponse(id: number) {
+    return await this.dataSource.manager.delete(SurveyResponse, { userId: id });
   }
 }

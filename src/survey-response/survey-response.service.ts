@@ -1,7 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { AnswerService } from 'src/answer/answer.service';
-import { Repository } from 'typeorm';
+import { Survey } from 'src/survey/entities/survey.entity';
+import { User } from 'src/user/entities/user.entity';
+import { DataSource, EntityManager, Repository } from 'typeorm';
 import { CreateSurveyResponseInput } from './dto/create-survey-response.input';
 import { UpdateSurveyResponseInput } from './dto/update-survey-response.input';
 import { SurveyResponse } from './entities/survey-response.entity';
@@ -11,17 +12,27 @@ export class SurveyResponseService {
   constructor(
     @InjectRepository(SurveyResponse)
     private surveyResponseRepository: Repository<SurveyResponse>,
-    private answerService: AnswerService,
+    private entityManager: EntityManager,
+    private dataSource: DataSource,
   ) {}
 
+  private readonly logger = new Logger(SurveyResponseService.name);
   async create(
     createSurveyResponseInput: CreateSurveyResponseInput,
   ): Promise<SurveyResponse> {
     const newSurveyResponse = this.surveyResponseRepository.create(
       createSurveyResponseInput,
     );
-    await this.surveyResponseRepository.save(newSurveyResponse);
-    return newSurveyResponse;
+    const user = new User();
+    user.id = createSurveyResponseInput.userId;
+    newSurveyResponse.user = user;
+
+    newSurveyResponse.survey = await this.entityManager.findOneById(
+      Survey,
+      createSurveyResponseInput.surveyId,
+    );
+    newSurveyResponse.amountQuestion = newSurveyResponse.survey.amountQuestion;
+    return await this.surveyResponseRepository.save(newSurveyResponse);
   }
 
   async findAll(): Promise<SurveyResponse[]> {
@@ -30,17 +41,70 @@ export class SurveyResponseService {
   }
 
   async findOne(id: number): Promise<SurveyResponse> {
-    const surveyResponse = await this.surveyResponseRepository.findOne({
-      where: { id },
+    const surveyResponse = await this.surveyResponseRepository.findOneBy({
+      id,
     });
+    if (!surveyResponse) {
+      this.logger.error(
+        new BadRequestException(`NOT FOUND SURVEYRESPONSE ID: ${id}`),
+      );
+      throw new BadRequestException(`NOT FOUND SURVEYRESPONSE ID: ${id}`);
+    }
     return surveyResponse;
   }
 
-  update(id: number, updateSurveyResponseInput: UpdateSurveyResponseInput) {
-    return `This action updates a #${id} surveyResponse`;
+  /**
+   * @description "선택한 답변의 응답 조회"
+   * @param id
+   * @returns
+   */
+  async findDetail(id: number) {
+    const result = await this.surveyResponseRepository
+      .createQueryBuilder('surveyResponse')
+      .leftJoinAndSelect('surveyResponse.answer', 'answer')
+      .where('surveyResponse.id= :id', { id: id })
+      .getMany();
+
+    return result;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} surveyResponse`;
+  async update(
+    id: number,
+    updateSurveyResponseInput: UpdateSurveyResponseInput,
+  ) {
+    const surveyResponse = await this.findOne(id);
+    this.surveyResponseRepository.merge(
+      surveyResponse,
+      updateSurveyResponseInput,
+    );
+    return this.surveyResponseRepository.update(id, surveyResponse);
+  }
+
+  async updateScore(id: number) {
+    const surveyResponse = await this.findOne(id);
+
+    this.logger.debug('call totalScore');
+    surveyResponse.totalScore = await this.countScore(id);
+    this.logger.debug(surveyResponse.totalScore);
+    return this.surveyResponseRepository.update(id, surveyResponse);
+  }
+
+  async countScore(id: number): Promise<number> {
+    const count: {
+      sum: number;
+    } = await this.surveyResponseRepository
+      .createQueryBuilder('surveyResponse')
+      .leftJoinAndSelect('surveyResponse.answer', 'answer')
+      .select('sum(answer.score)', 'sum')
+      .where('answer.surveyResponseId= :id', { id: id })
+      .groupBy('surveyResponse.userId')
+      .getRawOne();
+
+    this.logger.debug(count);
+    return count.sum;
+  }
+  async remove(id: number) {
+    const surveyResponse = await this.findOne(id);
+    return this.dataSource.manager.remove(surveyResponse);
   }
 }

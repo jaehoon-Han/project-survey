@@ -22,13 +22,13 @@ let AnswerResolver = class AnswerResolver {
     constructor(answerService) {
         this.answerService = answerService;
     }
-    createAnswer(createAnswerInput) {
-        return this.answerService.create(createAnswerInput);
+    createAnswer(createAnswerInput, questionOptionid) {
+        return this.answerService.create(createAnswerInput, questionOptionid);
     }
-    findAll() {
+    findAllAnswer() {
         return this.answerService.findAll();
     }
-    findOne(id) {
+    findOneAnswer(id) {
         return this.answerService.findOne(id);
     }
     updateAnswer(updateAnswerInput) {
@@ -41,8 +41,9 @@ let AnswerResolver = class AnswerResolver {
 __decorate([
     (0, graphql_1.Mutation)(() => answer_entity_1.Answer),
     __param(0, (0, graphql_1.Args)('createAnswerInput')),
+    __param(1, (0, graphql_1.Args)('questionOptionId')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_answer_input_1.CreateAnswerInput]),
+    __metadata("design:paramtypes", [create_answer_input_1.CreateAnswerInput, Number]),
     __metadata("design:returntype", void 0)
 ], AnswerResolver.prototype, "createAnswer", null);
 __decorate([
@@ -50,14 +51,14 @@ __decorate([
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
-], AnswerResolver.prototype, "findAll", null);
+], AnswerResolver.prototype, "findAllAnswer", null);
 __decorate([
     (0, graphql_1.Query)(() => answer_entity_1.Answer),
     __param(0, (0, graphql_1.Args)('id', { type: () => graphql_1.Int })),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", void 0)
-], AnswerResolver.prototype, "findOne", null);
+], AnswerResolver.prototype, "findOneAnswer", null);
 __decorate([
     (0, graphql_1.Mutation)(() => answer_entity_1.Answer),
     __param(0, (0, graphql_1.Args)('updateAnswerInput')),

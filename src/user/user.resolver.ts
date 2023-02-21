@@ -13,18 +13,18 @@ export class UserResolver {
     return this.userService.create(createUserInput);
   }
 
-  @Query(() => [User], { name: 'user' })
-  findAll() {
+  @Query(() => [User])
+  findAllUser() {
     return this.userService.findAll();
   }
 
   @Query(() => [User])
-  getUserWithResponse() {
-    return this.userService.getUserWithResponse();
+  getUserWithResponse(@Args('id', { type: () => Int }) id: number) {
+    return this.userService.getUserWithResponse(id);
   }
 
-  @Query(() => User, { name: 'user' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
+  @Query(() => User)
+  findOneUser(@Args('id', { type: () => Int }) id: number) {
     return this.userService.findOne(id);
   }
 

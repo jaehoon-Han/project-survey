@@ -16,8 +16,6 @@ const graphql_1 = require("@nestjs/graphql");
 const apollo_1 = require("@nestjs/apollo");
 const typeorm_1 = require("@nestjs/typeorm");
 const typeorm_config_1 = require("./configs/typeorm.config");
-const survey_status_module_1 = require("./survey-status/survey-status.module");
-const survey_response_module_1 = require("./survey-response/survey-response.module");
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
@@ -30,8 +28,6 @@ AppModule = __decorate([
             }),
             user_module_1.UserModule,
             survey_module_1.SurveyModule,
-            survey_status_module_1.SurveyStatusModule,
-            survey_response_module_1.SurveyResponseModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],

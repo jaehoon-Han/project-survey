@@ -1,12 +1,9 @@
-import { QuestionOption } from 'src/question-option/entities/question-option.entity';
+import { CommonEntity } from 'src/common/commonentity.interface';
 import { SurveyResponse } from 'src/survey-response/entities/survey-response.entity';
-export declare class Answer {
-    id: number;
+export declare class Answer extends CommonEntity {
+    question: string;
+    questionOption: string;
+    score: number;
     surveyResponseId: number;
-    questionOptionId: number;
-    createdAt: Date;
-    updatedAt: Date;
-    deletedAt: Date;
     surveyResponse: SurveyResponse;
-    questionOption: QuestionOption;
 }

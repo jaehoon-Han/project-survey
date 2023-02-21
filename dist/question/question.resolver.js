@@ -31,6 +31,9 @@ let QuestionResolver = class QuestionResolver {
     findOne(id) {
         return this.questionService.findOne(id);
     }
+    findDetailQuestion(id) {
+        return this.questionService.findDetail(id);
+    }
     updateQuestion(updateQuestionInput) {
         return this.questionService.update(updateQuestionInput.id, updateQuestionInput);
     }
@@ -58,6 +61,13 @@ __decorate([
     __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", void 0)
 ], QuestionResolver.prototype, "findOne", null);
+__decorate([
+    (0, graphql_1.Query)(() => [question_entity_1.Question]),
+    __param(0, (0, graphql_1.Args)('id', { type: () => graphql_1.Int })),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number]),
+    __metadata("design:returntype", void 0)
+], QuestionResolver.prototype, "findDetailQuestion", null);
 __decorate([
     (0, graphql_1.Mutation)(() => question_entity_1.Question),
     __param(0, (0, graphql_1.Args)('updateQuestionInput')),

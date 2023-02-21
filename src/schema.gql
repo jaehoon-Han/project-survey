@@ -2,92 +2,97 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type User {
-  id: Int!
-  name: String!
-  surveyResponse: [SurveyResponse!]!
-}
-
-type SurveyResponse {
-  id: Int!
-  surveyId: Int!
-  userId: Int!
-  totalScore: Int!
-  survey: Survey!
-  user: User!
-  answer: [Answer!]!
-}
-
-type Answer {
-  id: Int!
-  surveyResponseId: Int!
-  questionOptionId: Int!
-  surveyResponse: SurveyResponse!
-  questionOption: QuestionOption!
-}
-
 type QuestionOption {
   id: Int!
   questionId: Int!
   content: String!
   score: Int!
   question: Question!
-  answer: Answer!
 }
 
 type Question {
   id: Int!
-  surveyId: Int!
   content: String!
   survey: Survey!
   questionOption: [QuestionOption!]!
 }
 
-type SurveyStatus {
+type User {
   id: Int!
-  surveyId: Int!
-  status: String!
-  survey: Survey!
+  name: String!
+  surveyResponse: [SurveyResponse!]!
+}
+
+type Answer {
+  id: Int!
+  question: String!
+  questionOption: String!
+  score: Int!
+  surveyResponseId: Int!
+  surveyResponse: SurveyResponse!
+}
+
+type SurveyResponse {
+  id: Int!
+  totalScore: Int!
+  amountAnswer: Int!
+  amountQuestion: Int!
+  answer: [Answer!]!
+  isComplete: Boolean!
 }
 
 type Survey {
-  """ID"""
   id: Int!
 
-  """title list의 id """
+  """survey title"""
   title: String!
 
-  """description"""
+  """survey description"""
   description: String!
 
   """question amount"""
   amountQuestion: Int!
   question: [Question!]
-  surveyStatus: [SurveyStatus!]
   surveyResponse: [SurveyResponse!]
 }
 
 type Query {
-  user(id: Int!): User!
-  getUserWithResponse: [User!]!
+  findAllUser: [User!]!
+  getUserWithResponse(id: Int!): [User!]!
+  findOneUser(id: Int!): User!
+  surveyResponse(id: Int!): SurveyResponse!
+  findDetail(id: Int!): [SurveyResponse!]!
+  findAllAnswer: [Answer!]!
+  findOneAnswer(id: Int!): Answer!
   findAllSurvey: [Survey!]!
   findOneSurvey(id: Int!): Survey!
-  findDetail(id: Int!): [Survey!]!
-  surveyStatus(id: Int!): SurveyStatus!
-  surveyResponse(id: Int!): SurveyResponse!
+  findDetailSurvey(id: Int!): [Survey!]!
+  findAllQuestion: [Question!]!
+  question(id: Int!): Question!
+  findDetailQuestion(id: Int!): [Question!]!
+  questionOption(id: Int!): QuestionOption!
 }
 
 type Mutation {
   createUser(createUserInput: CreateUserInput!): User!
   updateUser(updateUserInput: UpdateUserInput!): User!
   removeUser(id: Int!): User!
-  createSurvey(createSurveyInput: CreateSurveyInput!): Survey!
-  createSurveyStatus(createSurveyStatusInput: CreateSurveyStatusInput!): SurveyStatus!
-  updateSurveyStatus(updateSurveyStatusInput: UpdateSurveyStatusInput!): SurveyStatus!
-  removeSurveyStatus(id: Int!): SurveyStatus!
   createSurveyResponse(createSurveyResponseInput: CreateSurveyResponseInput!): SurveyResponse!
   updateSurveyResponse(updateSurveyResponseInput: UpdateSurveyResponseInput!): SurveyResponse!
+  updateCount(id: Int!): SurveyResponse!
   removeSurveyResponse(id: Int!): SurveyResponse!
+  createAnswer(createAnswerInput: CreateAnswerInput!, questionOptionId: Float!): Answer!
+  updateAnswer(updateAnswerInput: UpdateAnswerInput!): Answer!
+  removeAnswer(id: Int!): Answer!
+  createSurvey(createSurveyInput: CreateSurveyInput!): Survey!
+  updateSurvey(updateSurveyInput: UpdateSurveyInput!): Survey!
+  removeSurvey(id: Int!): Survey!
+  createQuestion(createQuestionInput: CreateQuestionInput!): Question!
+  updateQuestion(updateQuestionInput: UpdateQuestionInput!): Question!
+  removeQuestion(id: Int!): Question!
+  createQuestionOption(createQuestionOptionInput: CreateQuestionOptionInput!): QuestionOption!
+  updateQuestionOption(updateQuestionOptionInput: UpdateQuestionOptionInput!): QuestionOption!
+  removeQuestionOption(id: Int!): QuestionOption!
 }
 
 input CreateUserInput {
@@ -96,23 +101,6 @@ input CreateUserInput {
 
 input UpdateUserInput {
   name: String
-  id: Int!
-}
-
-input CreateSurveyInput {
-  title: String!
-  description: String!
-  amountQuestion: Int!
-}
-
-input CreateSurveyStatusInput {
-  status: String!
-  surveyId: Int!
-}
-
-input UpdateSurveyStatusInput {
-  status: String
-  surveyId: Int
   id: Int!
 }
 
@@ -126,5 +114,49 @@ input UpdateSurveyResponseInput {
   surveyId: Int
   userId: Int
   totalScore: Int
+  id: Int!
+}
+
+input CreateAnswerInput {
+  surveyResponseId: Int!
+}
+
+input UpdateAnswerInput {
+  surveyResponseId: Int
+  id: Int!
+}
+
+input CreateSurveyInput {
+  title: String!
+  description: String!
+}
+
+input UpdateSurveyInput {
+  title: String
+  description: String
+  id: Int!
+}
+
+input CreateQuestionInput {
+  surveyId: Int!
+  content: String!
+}
+
+input UpdateQuestionInput {
+  surveyId: Int
+  content: String
+  id: Int!
+}
+
+input CreateQuestionOptionInput {
+  questionId: Int!
+  score: Int!
+  content: String!
+}
+
+input UpdateQuestionOptionInput {
+  questionId: Int
+  score: Int
+  content: String
   id: Int!
 }

@@ -11,17 +11,18 @@ export class AnswerResolver {
   @Mutation(() => Answer)
   createAnswer(
     @Args('createAnswerInput') createAnswerInput: CreateAnswerInput,
+    @Args('questionOptionId') questionOptionid: number,
   ) {
-    return this.answerService.create(createAnswerInput);
+    return this.answerService.create(createAnswerInput, questionOptionid);
   }
 
   @Query(() => [Answer])
-  findAll() {
+  findAllAnswer() {
     return this.answerService.findAll();
   }
 
   @Query(() => Answer)
-  findOne(@Args('id', { type: () => Int }) id: number) {
+  findOneAnswer(@Args('id', { type: () => Int }) id: number) {
     return this.answerService.findOne(id);
   }
 

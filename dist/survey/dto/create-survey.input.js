@@ -21,10 +21,6 @@ __decorate([
     (0, graphql_1.Field)(() => String),
     __metadata("design:type", String)
 ], CreateSurveyInput.prototype, "description", void 0);
-__decorate([
-    (0, graphql_1.Field)(() => graphql_1.Int),
-    __metadata("design:type", Number)
-], CreateSurveyInput.prototype, "amountQuestion", void 0);
 CreateSurveyInput = __decorate([
     (0, graphql_1.InputType)()
 ], CreateSurveyInput);

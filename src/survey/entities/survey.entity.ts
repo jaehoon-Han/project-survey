@@ -1,60 +1,35 @@
 import { ObjectType, Field, Int, InputType } from '@nestjs/graphql';
+import { Min, MinLength } from 'class-validator';
+import { CommonEntity } from 'src/common/commonentity.interface';
 import { Question } from 'src/question/entities/question.entity';
 import { SurveyResponse } from 'src/survey-response/entities/survey-response.entity';
-import { SurveyStatus } from 'src/survey-status/entities/survey-status.entity';
-import {
-  Column,
-  CreateDateColumn,
-  DeleteDateColumn,
-  Entity,
-  OneToMany,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { Column, Entity, OneToMany } from 'typeorm';
 
 @InputType('SurveyInputType', { isAbstract: true })
 @ObjectType()
 @Entity()
-export class Survey {
-  @Field(() => Int, { description: 'ID' })
-  @PrimaryGeneratedColumn()
-  id: number;
-
-  @Field(() => String, { description: 'title list의 id ' })
+export class Survey extends CommonEntity {
+  @Field(() => String, { description: 'survey title' })
   @Column()
+  @MinLength(2, { message: 'Title is too short!' })
   title: string;
 
-  @Field(() => String, { description: 'description' })
+  @Field(() => String, { description: 'survey description' })
   @Column()
   description: string;
 
   @Field(() => Int, { description: 'question amount' })
   @Column()
+  @Min(1, { message: 'Survey must have questions at least 1! ' })
   amountQuestion: number;
 
-  @CreateDateColumn()
-  createdAt: Date;
-
-  @UpdateDateColumn()
-  updatedAt: Date;
-
-  @DeleteDateColumn()
-  deletedAt: Date;
-
+  @OneToMany(() => Question, (question) => question.survey, {
+    cascade: true,
+  })
   @Field(() => [Question], { nullable: true })
-  @OneToMany(() => Question, (question) => question.survey, { eager: true })
   question: Question[];
 
-  @Field(() => [SurveyStatus], { nullable: true })
-  @OneToMany(() => SurveyStatus, (surveyStatus) => surveyStatus.survey, {
-    eager: true,
-  })
-  surveyStatus: SurveyStatus[];
-
+  @OneToMany(() => SurveyResponse, (surveyResponse) => surveyResponse.survey)
   @Field(() => [SurveyResponse], { nullable: true })
-  @OneToMany(() => SurveyResponse, (surveyResponse) => surveyResponse.survey, {
-    eager: true,
-  })
   surveyResponse: SurveyResponse[];
-  // one to many > survey_status, survey_response 둘다 필요
 }

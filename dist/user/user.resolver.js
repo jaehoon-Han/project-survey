@@ -25,13 +25,13 @@ let UserResolver = class UserResolver {
     createUser(createUserInput) {
         return this.userService.create(createUserInput);
     }
-    findAll() {
+    findAllUser() {
         return this.userService.findAll();
     }
-    getUserWithResponse() {
-        return this.userService.getUserWithResponse();
+    getUserWithResponse(id) {
+        return this.userService.getUserWithResponse(id);
     }
-    findOne(id) {
+    findOneUser(id) {
         return this.userService.findOne(id);
     }
     updateUser(updateUserInput) {
@@ -49,24 +49,25 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], UserResolver.prototype, "createUser", null);
 __decorate([
-    (0, graphql_1.Query)(() => [user_entity_1.User], { name: 'user' }),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
-    __metadata("design:returntype", void 0)
-], UserResolver.prototype, "findAll", null);
-__decorate([
     (0, graphql_1.Query)(() => [user_entity_1.User]),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
-], UserResolver.prototype, "getUserWithResponse", null);
+], UserResolver.prototype, "findAllUser", null);
 __decorate([
-    (0, graphql_1.Query)(() => user_entity_1.User, { name: 'user' }),
+    (0, graphql_1.Query)(() => [user_entity_1.User]),
     __param(0, (0, graphql_1.Args)('id', { type: () => graphql_1.Int })),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", void 0)
-], UserResolver.prototype, "findOne", null);
+], UserResolver.prototype, "getUserWithResponse", null);
+__decorate([
+    (0, graphql_1.Query)(() => user_entity_1.User),
+    __param(0, (0, graphql_1.Args)('id', { type: () => graphql_1.Int })),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number]),
+    __metadata("design:returntype", void 0)
+], UserResolver.prototype, "findOneUser", null);
 __decorate([
     (0, graphql_1.Mutation)(() => user_entity_1.User),
     __param(0, (0, graphql_1.Args)('updateUserInput')),

@@ -1,4 +1,4 @@
-import { InputType, Int, Field } from '@nestjs/graphql';
+import { InputType, Field } from '@nestjs/graphql';
 
 @InputType()
 export class CreateSurveyInput {
@@ -7,7 +7,4 @@ export class CreateSurveyInput {
 
   @Field(() => String)
   description: string;
-
-  @Field(() => Int)
-  amountQuestion: number;
 }

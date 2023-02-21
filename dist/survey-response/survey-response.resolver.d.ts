@@ -8,6 +8,8 @@ export declare class SurveyResponseResolver {
     createSurveyResponse(createSurveyResponseInput: CreateSurveyResponseInput): Promise<SurveyResponse>;
     findAll(): Promise<SurveyResponse[]>;
     findOne(id: number): Promise<SurveyResponse>;
-    updateSurveyResponse(updateSurveyResponseInput: UpdateSurveyResponseInput): string;
-    removeSurveyResponse(id: number): string;
+    findDetail(id: number): Promise<SurveyResponse[]>;
+    updateSurveyResponse(updateSurveyResponseInput: UpdateSurveyResponseInput): Promise<import("typeorm").UpdateResult>;
+    updateCount(id: number): Promise<import("typeorm").UpdateResult>;
+    removeSurveyResponse(id: number): Promise<SurveyResponse>;
 }

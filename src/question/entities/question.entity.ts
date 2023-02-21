@@ -1,53 +1,32 @@
-import { ObjectType, Field, Int } from '@nestjs/graphql';
+import { ObjectType, Field } from '@nestjs/graphql';
+import { IsNumber, MinLength } from 'class-validator';
+import { CommonEntity } from 'src/common/commonentity.interface';
 import { QuestionOption } from 'src/question-option/entities/question-option.entity';
 import { Survey } from 'src/survey/entities/survey.entity';
-import {
-  Column,
-  CreateDateColumn,
-  DeleteDateColumn,
-  Entity,
-  ManyToOne,
-  OneToMany,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 
 @ObjectType()
 @Entity()
-export class Question {
-  @Field(() => Int)
-  @PrimaryGeneratedColumn()
-  id: number;
-
-  @Field(() => Int)
-  @Column()
-  surveyId: number;
-
+export class Question extends CommonEntity {
   @Field(() => String)
   @Column()
+  @MinLength(1, { message: 'Content is too short!' })
   content: string;
 
-  @CreateDateColumn()
-  createdAt: Date;
-
-  @UpdateDateColumn()
-  updatedAt: Date;
-
-  @DeleteDateColumn()
-  deletedAt: Date;
-
+  @ManyToOne(() => Survey, (survey) => survey.question, { onDelete: 'CASCADE' })
   @Field(() => Survey)
-  @ManyToOne(() => Survey, (survey) => survey.question)
+  @JoinColumn({ name: 'surveyId' })
   survey: Survey;
+
+  @Column()
+  @IsNumber()
+  surveyId: number;
 
   @Field(() => [QuestionOption])
   @OneToMany(
     () => QuestionOption,
     (questionOption) => questionOption.question,
-    { eager: true },
+    { cascade: true },
   )
   questionOption: QuestionOption[];
-
-  // @OneToMany(() => Answer, (answer) => answer.question)
-  // answer: Answer[];
 }

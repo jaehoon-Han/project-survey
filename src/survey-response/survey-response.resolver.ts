@@ -26,6 +26,11 @@ export class SurveyResponseResolver {
     return this.surveyResponseService.findOne(id);
   }
 
+  @Query(() => [SurveyResponse])
+  findDetail(@Args('id', { type: () => Int }) id: number) {
+    return this.surveyResponseService.findDetail(id);
+  }
+
   @Mutation(() => SurveyResponse)
   updateSurveyResponse(
     @Args('updateSurveyResponseInput')
@@ -35,6 +40,11 @@ export class SurveyResponseResolver {
       updateSurveyResponseInput.id,
       updateSurveyResponseInput,
     );
+  }
+
+  @Mutation(() => SurveyResponse)
+  updateCount(@Args('id', { type: () => Int }) id: number) {
+    return this.surveyResponseService.updateScore(id);
   }
 
   @Mutation(() => SurveyResponse)

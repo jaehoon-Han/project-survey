@@ -11,51 +11,64 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
+var UserService_1;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserService = void 0;
 const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
-const survey_response_service_1 = require("../survey-response/survey-response.service");
+const survey_response_entity_1 = require("../survey-response/entities/survey-response.entity");
 const typeorm_2 = require("typeorm");
 const user_entity_1 = require("./entities/user.entity");
-let UserService = class UserService {
-    constructor(userRepository, surveyResponse) {
+let UserService = UserService_1 = class UserService {
+    constructor(userRepository, dataSource) {
         this.userRepository = userRepository;
-        this.surveyResponse = surveyResponse;
+        this.dataSource = dataSource;
+        this.logger = new common_1.Logger(UserService_1.name);
     }
     async create(createUserInput) {
         const newUser = this.userRepository.create(createUserInput);
-        await this.userRepository.save(newUser);
-        return newUser;
+        return await this.userRepository.save(newUser);
     }
     async findAll() {
         const users = await this.userRepository.find();
         return users;
     }
-    async getUserWithResponse() {
-        return this.userRepository
+    async getUserWithResponse(id) {
+        const result = await this.userRepository
             .createQueryBuilder('user')
             .leftJoinAndSelect('user.surveyResponse', 'surveyResponse')
+            .where('user.id= :id', { id: id })
             .getMany();
+        return result;
     }
     async findOne(id) {
-        const user = await this.userRepository.findOne({
-            where: { id },
+        const user = await this.userRepository.findOneBy({
+            id,
         });
+        if (!user) {
+            this.logger.error(new common_1.BadRequestException(`NOT FOUND USER ID: ${id}`));
+            throw new common_1.BadRequestException(`NOT FOUND USER ID: ${id}`);
+        }
         return user;
     }
-    update(id, updateUserInput) {
-        return `This action updates a #${id} user`;
+    async update(id, updateUserInput) {
+        const user = await this.findOne(id);
+        this.userRepository.merge(user, updateUserInput);
+        return this.userRepository.update(id, user);
     }
-    remove(id) {
-        return `This action removes a #${id} user`;
+    async remove(id) {
+        const user = await this.findOne(id);
+        return this.dataSource.manager.remove(user);
+    }
+    async removeSurveyResponse(id) {
+        return await this.dataSource.manager.delete(survey_response_entity_1.SurveyResponse, { userId: id });
     }
 };
-UserService = __decorate([
+UserService = UserService_1 = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(user_entity_1.User)),
     __metadata("design:paramtypes", [typeorm_2.Repository,
-        survey_response_service_1.SurveyResponseService])
+        typeorm_2.DataSource])
 ], UserService);
 exports.UserService = UserService;
 //# sourceMappingURL=user.service.js.map

@@ -1,6 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Question } from 'src/question/entities/question.entity';
+import { DataSource, EntityManager, Repository } from 'typeorm';
 import { CreateQuestionOptionInput } from './dto/create-question-option.input';
 import { UpdateQuestionOptionInput } from './dto/update-question-option.input';
 import { QuestionOption } from './entities/question-option.entity';
@@ -10,7 +11,10 @@ export class QuestionOptionService {
   constructor(
     @InjectRepository(QuestionOption)
     private questionOptionRepository: Repository<QuestionOption>,
+    private entityManager: EntityManager,
+    private dataSource: DataSource,
   ) {}
+  private readonly logger = new Logger(QuestionOptionService.name);
 
   async create(
     createQuestionOptionInput: CreateQuestionOptionInput,
@@ -18,8 +22,11 @@ export class QuestionOptionService {
     const newQuestionOption = this.questionOptionRepository.create(
       createQuestionOptionInput,
     );
-    await this.questionOptionRepository.save(newQuestionOption);
-    return newQuestionOption;
+    newQuestionOption.question = await this.entityManager.findOneById(
+      Question,
+      createQuestionOptionInput.questionId,
+    );
+    return this.entityManager.save(newQuestionOption);
   }
 
   async findAll(): Promise<QuestionOption[]> {
@@ -28,17 +35,32 @@ export class QuestionOptionService {
   }
 
   async findOne(id: number): Promise<QuestionOption> {
-    const questionOption = await this.questionOptionRepository.findOne({
-      where: { id },
+    const questionOption = await this.questionOptionRepository.findOneBy({
+      id,
     });
+    if (!questionOption) {
+      this.logger.error(
+        new BadRequestException(`NOT FOUND QUESTIONOPTION ID: ${id}`),
+      );
+      throw new BadRequestException(`NOT FOUND QUESTIONOPTION ID: ${id}`);
+    }
     return questionOption;
   }
 
-  update(id: number, updateQuestionOptionInput: UpdateQuestionOptionInput) {
-    return `This action updates a #${id} questionOption`;
+  async update(
+    id: number,
+    updateQuestionOptionInput: UpdateQuestionOptionInput,
+  ) {
+    const questionOption = await this.findOne(id);
+    this.questionOptionRepository.merge(
+      questionOption,
+      updateQuestionOptionInput,
+    );
+    return this.questionOptionRepository.update(id, questionOption);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} questionOption`;
+  async remove(id: number) {
+    const questionOption = await this.findOne(id);
+    return this.dataSource.manager.remove(questionOption);
   }
 }

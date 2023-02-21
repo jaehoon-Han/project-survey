@@ -1,7 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { QuestionOptionService } from 'src/question-option/question-option.service';
-import { Repository } from 'typeorm';
+import { QuestionOption } from 'src/question-option/entities/question-option.entity';
+import { Question } from 'src/question/entities/question.entity';
+import { SurveyResponse } from 'src/survey-response/entities/survey-response.entity';
+import { DataSource, EntityManager, Repository } from 'typeorm';
 import { CreateAnswerInput } from './dto/create-answer.input';
 import { UpdateAnswerInput } from './dto/update-answer.input';
 import { Answer } from './entities/answer.entity';
@@ -11,13 +13,32 @@ export class AnswerService {
   constructor(
     @InjectRepository(Answer)
     private answerRepository: Repository<Answer>,
-    private questionOptionService: QuestionOptionService,
+    private entityManager: EntityManager,
+    private dataSource: DataSource,
   ) {}
 
-  async create(createAnswerInput: CreateAnswerInput): Promise<Answer> {
+  private readonly logger = new Logger(AnswerService.name);
+  async create(
+    createAnswerInput: CreateAnswerInput,
+    questionOptionId: number,
+  ): Promise<Answer> {
     const newAnswer = this.answerRepository.create(createAnswerInput);
-    await this.answerRepository.save(newAnswer);
-    return newAnswer;
+
+    const surveyResponse = await this.entityManager.findOneById(
+      SurveyResponse,
+      createAnswerInput.surveyResponseId,
+    );
+    this.checkComplete(surveyResponse, createAnswerInput.surveyResponseId);
+
+    newAnswer.questionOption = await this.findQuestionOptionContent(
+      questionOptionId,
+    );
+    newAnswer.score = await this.findQuestionOptionScore(questionOptionId);
+
+    newAnswer.question = await this.findQuestionContent(
+      await this.findQuestionId(questionOptionId),
+    );
+    return this.entityManager.save(newAnswer);
   }
 
   async findAll(): Promise<Answer[]> {
@@ -26,27 +47,65 @@ export class AnswerService {
   }
 
   async findOne(id: number): Promise<Answer> {
-    const answer = await this.answerRepository.findOne({
-      where: { id },
+    const answer = await this.answerRepository.findOneBy({
+      id,
     });
+    if (!answer) {
+      this.logger.error(new BadRequestException(`NOT FOUND SURVEY ID: ${id}`));
+      throw new BadRequestException(`NOT FOUND ANSWER ID: ${id}`);
+    }
     return answer;
-
-    // const answer = await this.answerRepository
-    //   .createQueryBuilder()
-    //   .select('answer')
-    //   .from(Answer, 'answer')
-    //   .where('answer.id = :id', { id: id })
-    //   .leftJoinAndSelect('answer')
-    //   .getMany();
-
-    // return answer;
   }
 
-  update(id: number, updateAnswerInput: UpdateAnswerInput) {
-    return `This action updates a #${id} answer`;
+  async update(id: number, updateAnswerInput: UpdateAnswerInput) {
+    const answer = await this.findOne(id);
+    this.answerRepository.merge(answer, updateAnswerInput);
+    return this.answerRepository.update(id, answer);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} answer`;
+  async remove(id: number) {
+    const answer = await this.findOne(id);
+    return this.dataSource.manager.remove(answer);
+  }
+
+  async findQuestion(questionId: number) {
+    return await this.entityManager.findOneById(Question, questionId);
+  }
+
+  async findQuestionId(questionOptionId: number) {
+    return (await this.findQuestionOption(questionOptionId)).questionId;
+  }
+  async findQuestionContent(questionId: number) {
+    return (await this.findQuestion(questionId)).content;
+  }
+
+  async findQuestionOption(questionOptionId: number) {
+    return this.entityManager.findOneById(QuestionOption, questionOptionId);
+  }
+
+  async findQuestionOptionContent(questionOptionId: number) {
+    return (await this.findQuestionOption(questionOptionId)).content;
+  }
+
+  async findQuestionOptionScore(questionOptionId: number) {
+    return (await this.findQuestionOption(questionOptionId)).score;
+  }
+  /**
+   * @description "설문이 완료되었는지 확인"
+   * @param id
+   */
+  async checkComplete(
+    surveyResponse: SurveyResponse,
+    surveyResponseId: number,
+  ) {
+    surveyResponse.amountAnswer++;
+    if (surveyResponse.amountAnswer == surveyResponse.amountQuestion) {
+      surveyResponse.isComplete = true;
+    }
+    this.entityManager.update(
+      SurveyResponse,
+      surveyResponseId,
+      await surveyResponse,
+    );
   }
 }
