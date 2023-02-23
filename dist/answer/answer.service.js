@@ -79,7 +79,7 @@ let AnswerService = AnswerService_1 = class AnswerService {
         return (await this.findQuestionOption(questionOptionId)).score;
     }
     async checkComplete(surveyResponse, surveyResponseId) {
-        surveyResponse.amountAnswer++;
+        surveyResponse.amountAnswer = surveyResponse.amountAnswer++;
         if (surveyResponse.amountAnswer == surveyResponse.amountQuestion) {
             surveyResponse.isComplete = true;
         }

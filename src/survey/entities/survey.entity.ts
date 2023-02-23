@@ -20,7 +20,7 @@ export class Survey extends CommonEntity {
 
   @Field(() => Int, { description: 'question amount' })
   @Column()
-  @Min(1, { message: 'Survey must have questions at least 1! ' })
+  @Min(0, { message: 'Survey must have questions at least 1! ' })
   amountQuestion: number;
 
   @OneToMany(() => Question, (question) => question.survey, {

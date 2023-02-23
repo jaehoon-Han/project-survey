@@ -75,6 +75,7 @@ export class AnswerService {
   async findQuestionId(questionOptionId: number) {
     return (await this.findQuestionOption(questionOptionId)).questionId;
   }
+
   async findQuestionContent(questionId: number) {
     return (await this.findQuestion(questionId)).content;
   }
@@ -98,7 +99,7 @@ export class AnswerService {
     surveyResponse: SurveyResponse,
     surveyResponseId: number,
   ) {
-    surveyResponse.amountAnswer++;
+    surveyResponse.amountAnswer = surveyResponse.amountAnswer++;
     if (surveyResponse.amountAnswer == surveyResponse.amountQuestion) {
       surveyResponse.isComplete = true;
     }

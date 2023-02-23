@@ -32,7 +32,7 @@ __decorate([
 __decorate([
     (0, graphql_1.Field)(() => graphql_1.Int, { description: 'question amount' }),
     (0, typeorm_1.Column)(),
-    (0, class_validator_1.Min)(1, { message: 'Survey must have questions at least 1! ' }),
+    (0, class_validator_1.Min)(0, { message: 'Survey must have questions at least 1! ' }),
     __metadata("design:type", Number)
 ], Survey.prototype, "amountQuestion", void 0);
 __decorate([
