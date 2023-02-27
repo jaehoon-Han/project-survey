@@ -1,162 +1,193 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { DataSource, EntityManager, Repository } from 'typeorm';
-import { AnswerService } from './answer.service';
 import { Answer } from './entities/answer.entity';
+import { AnswerService } from './answer.service';
+import { DataSource, EntityManager } from 'typeorm';
+import { BadRequestException } from '@nestjs/common';
 
 type MockRepository<T = any> = Partial<Record<keyof T, jest.Mock>>;
 
 describe('AnswerService', () => {
   let answerService: AnswerService;
-  let answerRepository: Repository<Answer>;
-  let entityManager: EntityManager;
-  let dataSource: DataSource;
-
-  const mockRepository = {
-    create: jest.fn(),
-    save: jest.fn(),
-    find: jest.fn(),
-    findOne: jest.fn(),
-    update: jest.fn(),
-    remove: jest.fn(),
-    findOneById: jest.fn(),
-    findQuestionOptionContent: jest.fn(),
-    findQuestionOptionScore: jest.fn(),
-    findQuestionContent: jest.fn(),
-    findQuestionId: jest.fn(),
-    checkComplete: jest.fn(),
-  };
+  let answerRepositoryMock: any;
+  let entityManagerMock: any;
+  let dataSourceMock: any;
 
   beforeEach(async () => {
+    answerRepositoryMock = {
+      create: jest.fn(),
+      save: jest.fn(),
+      findOneBy: jest.fn(),
+      update: jest.fn(),
+      find: jest.fn(),
+      remove: jest.fn(),
+      findOneById: jest.fn(),
+      findQuestionOptionContent: jest.fn(),
+      findQuestionOptionScore: jest.fn(),
+      findQuestionContent: jest.fn(),
+      findQuestionId: jest.fn(),
+      findQuestion: jest.fn(),
+      checkComplete: jest.fn(),
+    };
+
+    entityManagerMock = {
+      findOneById: jest.fn(),
+      update: jest.fn(),
+    };
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AnswerService,
         {
           provide: getRepositoryToken(Answer),
-          useValue: mockRepository,
-        },
-        {
-          provide: DataSource,
-          useValue: mockRepository,
+          useValue: answerRepositoryMock,
         },
         {
           provide: EntityManager,
-          useValue: mockRepository,
+          useValue: entityManagerMock,
+        },
+        {
+          provide: DataSource,
+          useValue: answerRepositoryMock,
         },
       ],
     }).compile();
 
     answerService = module.get<AnswerService>(AnswerService);
-    answerRepository = module.get<Repository<Answer>>(
-      getRepositoryToken(Answer),
-    );
-    entityManager = module.get<EntityManager>(EntityManager);
-    dataSource = module.get<DataSource>(DataSource);
+    dataSourceMock = module.get<DataSource>(DataSource);
+    entityManagerMock = module.get<EntityManager>(EntityManager);
   });
 
   it('to be defined ??', () => {
     expect(answerService).toBeDefined();
-    expect(answerRepository).toBeDefined();
-    expect(dataSource).toBeDefined();
-    expect(entityManager).toBeDefined();
+    expect(dataSourceMock).toBeDefined();
+    expect(entityManagerMock).toBeDefined();
   });
 
-  it('정상적으로 Answer가 생성되는 경우', async () => {
-    const mockAnswer = new Answer();
+  describe('create', () => {
+    it('👊 Answer 가 정상적으로 생성될 때 ', async () => {
+      const createAnswerInput = {
+        surveyResponseId: 1,
+      };
+      const questionOptionId = 1;
+      const surveyResponse = {
+        id: 1,
+        amountAnswer: 0,
+        amountQuestion: 1,
+        isComplete: false,
+      };
+      const questionOption = {
+        id: 1,
+        score: 1,
+        content: '밀키스',
+      };
+      const question = {
+        id: 1,
+        content: 'some question content',
+      };
 
-    const mockCreateAnswerInput = {
-      question: '질문이요 ~',
-      questionOption: '질문사항이여 ~',
-      score: 10,
-      surveyResponseId: 1,
-    };
-    const mockQuestionOptionId = 1;
+      entityManagerMock.findOneById.mockResolvedValueOnce(surveyResponse);
 
-    const mockQuestionOption = {
-      id: 1,
-      score: 777,
-      questionId: 1,
-      content: '밀키스 좋아요~',
-    };
+      answerRepositoryMock.create.mockReturnValueOnce({
+        ...createAnswerInput,
+        questionOption,
+        score: questionOption.score,
+        question,
+      });
 
-    const mockSurveyResponse = {
-      id: 1,
-      totalScore: 20,
-      amountAnswer: 2,
-      amountQuestion: 3,
-      isComplete: false,
-      surveyId: 1,
-      userId: 1,
-    };
+      answerRepositoryMock.save.mockResolvedValueOnce({
+        ...createAnswerInput,
+        questionOption,
+        score: questionOption.score,
+        question,
+      });
 
-    answerRepository.create(mockCreateAnswerInput);
-    mockAnswer.question = mockCreateAnswerInput.question;
-    mockAnswer.questionOption = mockCreateAnswerInput.questionOption;
-    mockAnswer.score = mockCreateAnswerInput.score;
-    mockAnswer.surveyResponseId = mockCreateAnswerInput.surveyResponseId;
+      const result = await answerService.create(
+        createAnswerInput,
+        questionOptionId,
+      );
 
-    const mockAnswerRepositorySaveSpy = jest
-      .spyOn(mockRepository, 'save')
-      .mockResolvedValue(2);
+      console.log('result : ', result);
 
-    console.log('mock spy on : ', mockAnswerRepositorySaveSpy);
+      expect(entityManagerMock.findOneById).toHaveBeenCalledWith(
+        'SurveyResponse',
+        createAnswerInput.surveyResponseId,
+      );
+      expect(answerService.checkComplete).toHaveBeenCalledWith(
+        surveyResponse,
+        createAnswerInput.surveyResponseId,
+      );
+      expect(entityManagerMock.findOneById).toHaveBeenCalledWith(
+        'QuestionOption',
+        questionOptionId,
+      );
+      expect(answerService.findQuestionId).toHaveBeenCalledWith(
+        questionOptionId,
+      );
+      expect(entityManagerMock.findOneById).toHaveBeenCalledWith(
+        'Question',
+        question.content,
+      );
+      expect(answerRepositoryMock.create).toHaveBeenCalledWith({
+        ...createAnswerInput,
+        questionOption,
+        score: questionOption.score,
+        question,
+      });
+      expect(answerRepositoryMock.save).toHaveBeenCalledWith({
+        ...createAnswerInput,
+        questionOption,
+        score: questionOption.score,
+        question,
+      });
+      expect(result).toEqual({
+        ...createAnswerInput,
+        questionOption,
+        score: questionOption.score,
+        question,
+      });
+    });
+  });
 
-    console.log(
-      mockRepository.checkComplete(
-        mockSurveyResponse,
-        mockCreateAnswerInput.surveyResponseId,
-      ),
-    );
-    console.log('question Option Id = ', mockQuestionOption.score);
+  describe('findOne', () => {
+    it(' Answer를 id로 찾을때, 존재하지 않으면 BadRequestException 을 던져준다. ', async () => {
+      const id = 1;
+      answerRepositoryMock.findOneBy.mockResolvedValueOnce(null);
 
-    console.log('mockAnswer : ', mockAnswer);
+      await expect(answerService.findOne(id)).rejects.toThrowError(
+        'NOT FOUND ANSWER ID: 1',
+      );
 
-    //     const createAnswerInput = {
-    //       surveyResponseId: 1,
-    //     };
-    //     const questionOptionId = 1;
+      expect(answerRepositoryMock.findOneBy).toHaveBeenCalledWith({ id });
+    });
 
-    //     mockAnswerRepository.create.mockReturnValue(mockAnswer);
-    //     const mockResult = await answerService.create(
-    //       createAnswerInput,
-    //       questionOptionId,
-    //     );
+    it(' Answer가 존재하면 return 해준다. ', async () => {
+      const id = 1;
+      const answer = {
+        id: 1,
+        surveyResponseId: 1,
+        content: 'some answer content',
+        questionOption: {},
+        score: 0,
+        question: {},
+      };
 
-    //     mockAnswer.surveyResponseId = createAnswerInput.surveyResponseId;
-    //     console.log(mockAnswer);
+      jest
+        .spyOn(answerService, 'findOne')
+        .mockResolvedValueOnce(answerRepositoryMock);
 
-    //     const mockSurveyResponse = {
-    //       amountQuestion: 1,
-    //       amountAnswer: 0,
-    //       isComplete: false,
-    //     };
+      const result = await answerService.findOne(id);
 
-    //     entityManager.findOneById.mockResolvedValue(mockSurveyResponse);
-    //     entityManager.save.mockResolvedValue(mockAnswer);
+      expect(result).toBe(answer);
+    });
 
-    //     const result = await answerService.create(
-    //       mockCreateAnswerInput,
-    //       mockQuestionOptionId,
-    //     );
+    it(' Answer를 id로 찾을때, 존재하지 않으면 BadRequestException 을 던져준다. ', async () => {
+      const id = 1;
+      const error = new BadRequestException(`NOT FOUND ANSWER ID: ${id}`);
 
-    //     expect(mockAnswerRepository.create).toHaveBeenCalledWith(
-    //       mockCreateAnswerInput,
-    //     );
-    //     expect(entityManager.findOneById).toHaveBeenCalledWith(
-    //       expect.any(Function),
-    //       mockCreateAnswerInput.surveyResponseId,
-    //     );
-    //     expect(entityManager.update).toHaveBeenCalledWith(
-    //       expect.any(Function),
-    //       mockCreateAnswerInput.surveyResponseId,
-    //       {
-    //         amountQuestion: 1,
-    //         amountAnswer: 1,
-    //         isComplete: true,
-    //       },
-    //     );
-    //     expect(mockAnswerRepository.save).toHaveBeenCalledWith(mockAnswer);
-    //     expect(result).toEqual(mockAnswer);
-    //   });
+      jest.spyOn(answerService, 'findOne').mockRejectedValueOnce(error);
+
+      await expect(answerService.findOne(id)).rejects.toThrowError(error);
+    });
   });
 });

@@ -30,7 +30,7 @@ let QuestionService = QuestionService_1 = class QuestionService {
         const newQuestion = this.questionRepository.create(createQuestionInput);
         newQuestion.survey = await this.entityManager.findOneById(survey_entity_1.Survey, createQuestionInput.surveyId);
         const survey = await this.entityManager.findOneById(survey_entity_1.Survey, createQuestionInput.surveyId);
-        survey.amountQuestion++;
+        survey.amountQuestion + 1;
         this.entityManager.update(survey_entity_1.Survey, createQuestionInput.surveyId, await survey);
         return this.entityManager.save(newQuestion);
     }

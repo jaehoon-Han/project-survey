@@ -79,11 +79,13 @@ let AnswerService = AnswerService_1 = class AnswerService {
         return (await this.findQuestionOption(questionOptionId)).score;
     }
     async checkComplete(surveyResponse, surveyResponseId) {
-        surveyResponse.amountAnswer = surveyResponse.amountAnswer++;
-        if (surveyResponse.amountAnswer == surveyResponse.amountQuestion) {
+        if (!surveyResponse)
+            throw new common_1.BadRequestException(`🍚 NOT FOUND SURVEY RESPONSE ID: ${surveyResponseId} 🍚`);
+        if (surveyResponse.amountAnswer === surveyResponse.amountQuestion) {
             surveyResponse.isComplete = true;
         }
-        this.entityManager.update(survey_response_entity_1.SurveyResponse, surveyResponseId, await surveyResponse);
+        surveyResponse.amountAnswer = surveyResponse.amountAnswer + 1;
+        await this.entityManager.update(survey_response_entity_1.SurveyResponse, surveyResponseId, await surveyResponse);
     }
 };
 AnswerService = AnswerService_1 = __decorate([

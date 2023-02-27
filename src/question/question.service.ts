@@ -26,7 +26,7 @@ export class QuestionService {
       Survey,
       createQuestionInput.surveyId,
     );
-    survey.amountQuestion++;
+    survey.amountQuestion + 1;
     this.entityManager.update(
       Survey,
       createQuestionInput.surveyId,

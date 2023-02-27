@@ -99,11 +99,16 @@ export class AnswerService {
     surveyResponse: SurveyResponse,
     surveyResponseId: number,
   ) {
-    surveyResponse.amountAnswer = surveyResponse.amountAnswer++;
-    if (surveyResponse.amountAnswer == surveyResponse.amountQuestion) {
+    if (!surveyResponse)
+      throw new BadRequestException(
+        `🍚 NOT FOUND SURVEY RESPONSE ID: ${surveyResponseId} 🍚`,
+      );
+    if (surveyResponse.amountAnswer === surveyResponse.amountQuestion) {
       surveyResponse.isComplete = true;
     }
-    this.entityManager.update(
+    surveyResponse.amountAnswer = surveyResponse.amountAnswer + 1;
+
+    await this.entityManager.update(
       SurveyResponse,
       surveyResponseId,
       await surveyResponse,
