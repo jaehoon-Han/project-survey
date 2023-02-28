@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Question } from 'src/question/entities/question.entity';
-import { DataSource, EntityManager, Repository } from 'typeorm';
+import { EntityManager, Repository } from 'typeorm';
 import { CreateQuestionOptionInput } from './dto/create-question-option.input';
 import { UpdateQuestionOptionInput } from './dto/update-question-option.input';
 import { QuestionOption } from './entities/question-option.entity';
@@ -12,7 +12,6 @@ export class QuestionOptionService {
     @InjectRepository(QuestionOption)
     private questionOptionRepository: Repository<QuestionOption>,
     private entityManager: EntityManager,
-    private dataSource: DataSource,
   ) {}
   private readonly logger = new Logger(QuestionOptionService.name);
 
@@ -22,10 +21,9 @@ export class QuestionOptionService {
     const newQuestionOption = this.questionOptionRepository.create(
       createQuestionOptionInput,
     );
-    newQuestionOption.question = await this.entityManager.findOneById(
-      Question,
-      createQuestionOptionInput.questionId,
-    );
+    newQuestionOption.question = await this.entityManager.findOneBy(Question, {
+      id: createQuestionOptionInput.questionId,
+    });
     return this.entityManager.save(newQuestionOption);
   }
 
@@ -61,6 +59,6 @@ export class QuestionOptionService {
 
   async remove(id: number) {
     const questionOption = await this.findOne(id);
-    return this.dataSource.manager.remove(questionOption);
+    return this.entityManager.remove(questionOption);
   }
 }

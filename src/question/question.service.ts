@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Survey } from 'src/survey/entities/survey.entity';
-import { DataSource, EntityManager, Repository } from 'typeorm';
+import { EntityManager, Repository } from 'typeorm';
 import { CreateQuestionInput } from './dto/create-question.input';
 import { UpdateQuestionInput } from './dto/update-question.input';
 import { Question } from './entities/question.entity';
@@ -12,20 +12,17 @@ export class QuestionService {
     @InjectRepository(Question)
     private questionRepository: Repository<Question>,
     private entityManager: EntityManager,
-    private dataSource: DataSource,
   ) {}
   private readonly logger = new Logger(QuestionService.name);
 
   async create(createQuestionInput: CreateQuestionInput) {
     const newQuestion = this.questionRepository.create(createQuestionInput);
-    newQuestion.survey = await this.entityManager.findOneById(
-      Survey,
-      createQuestionInput.surveyId,
-    );
-    const survey = await this.entityManager.findOneById(
-      Survey,
-      createQuestionInput.surveyId,
-    );
+    newQuestion.survey = await this.entityManager.findOneBy(Survey, {
+      id: createQuestionInput.surveyId,
+    });
+    const survey = await this.entityManager.findOneBy(Survey, {
+      id: createQuestionInput.surveyId,
+    });
     survey.amountQuestion + 1;
     this.entityManager.update(
       Survey,
@@ -82,6 +79,6 @@ export class QuestionService {
 
   async remove(id: number) {
     const question = await this.findOne(id);
-    return this.dataSource.manager.remove(question);
+    return this.entityManager.remove(question);
   }
 }

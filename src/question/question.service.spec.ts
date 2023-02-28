@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { EntityManager, Repository } from 'typeorm';
 import { CreateQuestionInput } from './dto/create-question.input';
 import { Question } from './entities/question.entity';
 import { QuestionService } from './question.service';
@@ -10,6 +10,7 @@ type MockRepository<T = any> = Partial<Record<keyof T, jest.Mock>>;
 describe(' Question Service', () => {
   let questionService: QuestionService;
   let questionRepository: Repository<Question>;
+  let entityManager: EntityManager;
 
   const mockRepository = {
     create: jest.fn(),
@@ -24,6 +25,10 @@ describe(' Question Service', () => {
           provide: getRepositoryToken(Question),
           useValue: mockRepository,
         },
+        {
+          provide: EntityManager,
+          useValue: mockRepository,
+        },
       ],
     }).compile();
 
@@ -31,11 +36,13 @@ describe(' Question Service', () => {
     questionRepository = module.get<Repository<Question>>(
       getRepositoryToken(Question),
     );
+    entityManager = module.get<EntityManager>(EntityManager);
   });
 
   it(' to be defined ?? ', () => {
     expect(questionRepository).toBeDefined();
     expect(questionService).toBeDefined();
+    expect(entityManager).toBeDefined();
   });
 
   describe('create', () => {
@@ -59,23 +66,22 @@ describe(' Question Service', () => {
         score: 5,
       };
 
-      // create a mock question
       const mockQuestion = new Question();
 
       mockQuestion.id = 1;
       mockQuestion.content = questionInput.content;
       mockQuestion.surveyId = questionInput.surveyId;
+
       jest.spyOn(questionRepository, 'create').mockReturnValue(mockQuestion);
       jest.spyOn(questionRepository, 'save').mockResolvedValue(mockQuestion);
 
-      // call the question's create method with the input
       const result = await questionService.create(questionInput);
 
-      //check that the repo's create and save method
       expect(questionRepository.create).toHaveBeenCalledWith(questionInput);
       expect(questionRepository.save).toHaveBeenCalledWith(mockQuestion);
 
-      //check that the result returned by the question is the same as the mock question
+      console.log('mockQuestion : ', mockQuestion);
+
       expect(result).toEqual(mockQuestion);
     });
   });

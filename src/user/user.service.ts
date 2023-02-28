@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { SurveyResponse } from 'src/survey-response/entities/survey-response.entity';
-import { DataSource, Repository } from 'typeorm';
+import { EntityManager, Repository } from 'typeorm';
 import { CreateUserInput } from './dto/create-user.input';
 import { UpdateUserInput } from './dto/update-user.input';
 import { User } from './entities/user.entity';
@@ -11,7 +11,7 @@ export class UserService {
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
-    private dataSource: DataSource,
+    private entityManager: EntityManager,
   ) {}
 
   private readonly logger = new Logger(UserService.name);
@@ -31,12 +31,12 @@ export class UserService {
    * @param id
    * @returns
    */
-  async getUserWithResponse(id: number): Promise<User[]> {
+  async getUserWithResponse(id: number): Promise<User> {
     const result = await this.userRepository
       .createQueryBuilder('user')
       .leftJoinAndSelect('user.surveyResponse', 'surveyResponse')
       .where('user.id= :id', { id: id })
-      .getMany();
+      .getOne();
 
     return result;
   }
@@ -60,9 +60,9 @@ export class UserService {
 
   async remove(id: number) {
     const user = await this.findOne(id);
-    return this.dataSource.manager.remove(user);
+    return this.entityManager.remove(user);
   }
   async removeSurveyResponse(id: number) {
-    return await this.dataSource.manager.delete(SurveyResponse, { userId: id });
+    return await this.entityManager.delete(SurveyResponse, { userId: id });
   }
 }

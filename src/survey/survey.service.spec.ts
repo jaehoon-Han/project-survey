@@ -1,12 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { SurveyService } from './survey.service';
-import { DataSource, Repository } from 'typeorm';
+import { EntityManager, Repository } from 'typeorm';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Survey } from './entities/survey.entity';
 
 type MockRepository<T = any> = Partial<Record<keyof T, jest.Mock>>;
 
-const mockSurveyRepository = {
+const surveyRepositoryMock = {
   create: jest.fn().mockReturnValue({}),
   save: jest.fn(),
   findOne: jest.fn(),
@@ -16,7 +16,6 @@ describe('SurveyService', () => {
   let surveyService: SurveyService;
   let surveyRepository: Repository<Survey>;
   let mockSurveyRepo: MockRepository<Survey>;
-  let dataSource: DataSource;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -24,17 +23,16 @@ describe('SurveyService', () => {
         SurveyService,
         {
           provide: getRepositoryToken(Survey),
-          useValue: mockSurveyRepository,
+          useValue: surveyRepositoryMock,
         },
         {
-          provide: DataSource,
-          useValue: mockSurveyRepository,
+          provide: EntityManager,
+          useValue: surveyRepositoryMock,
         },
       ],
     }).compile();
 
     surveyService = module.get<SurveyService>(SurveyService);
-    dataSource = module.get<DataSource>(DataSource);
     mockSurveyRepo = module.get<MockRepository<Survey>>(
       getRepositoryToken(Survey),
     );
@@ -46,7 +44,6 @@ describe('SurveyService', () => {
   it('to be defined ??', () => {
     expect(surveyRepository).toBeDefined();
     expect(surveyService).toBeDefined();
-    expect(dataSource).toBeDefined();
     expect(mockSurveyRepo).toBeDefined();
   });
 
@@ -66,7 +63,7 @@ describe('SurveyService', () => {
     newSurvey.description = createSurveyInput.description;
     newSurvey.amountQuestion = 0;
 
-    // const saveSpy = jest.spyOn(mockSurveyRepository, 'save');
+    // const saveSpy = jest.spyOn(surveyRepositoryMock, 'save');
 
     expect(newSurvey.amountQuestion).toBe(0);
 
@@ -79,11 +76,11 @@ describe('SurveyService', () => {
   });
 
   it('title이나 describe를 입력하지 않았을 때 예외를 던진다', async () => {
-    const id = 1;
-    const createSurveyInput = {
-      title: '',
-      description: '',
-    };
+    // const id = 1;
+    // const createSurveyInput = {
+    //   title: '',
+    //   description: '',
+    // };
   });
 });
 

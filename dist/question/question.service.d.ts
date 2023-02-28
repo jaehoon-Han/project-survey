@@ -1,12 +1,11 @@
-import { DataSource, EntityManager, Repository } from 'typeorm';
+import { EntityManager, Repository } from 'typeorm';
 import { CreateQuestionInput } from './dto/create-question.input';
 import { UpdateQuestionInput } from './dto/update-question.input';
 import { Question } from './entities/question.entity';
 export declare class QuestionService {
     private questionRepository;
     private entityManager;
-    private dataSource;
-    constructor(questionRepository: Repository<Question>, entityManager: EntityManager, dataSource: DataSource);
+    constructor(questionRepository: Repository<Question>, entityManager: EntityManager);
     private readonly logger;
     create(createQuestionInput: CreateQuestionInput): Promise<Question>;
     findAll(): Promise<Question[]>;

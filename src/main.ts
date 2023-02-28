@@ -7,6 +7,5 @@ async function bootstrap() {
     bufferLogs: true,
   });
   await app.listen(4000);
-  // await app.useGlobalPipes(new ValidationPipe());
 }
 bootstrap();

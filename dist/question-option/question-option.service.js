@@ -20,15 +20,16 @@ const question_entity_1 = require("../question/entities/question.entity");
 const typeorm_2 = require("typeorm");
 const question_option_entity_1 = require("./entities/question-option.entity");
 let QuestionOptionService = QuestionOptionService_1 = class QuestionOptionService {
-    constructor(questionOptionRepository, entityManager, dataSource) {
+    constructor(questionOptionRepository, entityManager) {
         this.questionOptionRepository = questionOptionRepository;
         this.entityManager = entityManager;
-        this.dataSource = dataSource;
         this.logger = new common_1.Logger(QuestionOptionService_1.name);
     }
     async create(createQuestionOptionInput) {
         const newQuestionOption = this.questionOptionRepository.create(createQuestionOptionInput);
-        newQuestionOption.question = await this.entityManager.findOneById(question_entity_1.Question, createQuestionOptionInput.questionId);
+        newQuestionOption.question = await this.entityManager.findOneBy(question_entity_1.Question, {
+            id: createQuestionOptionInput.questionId,
+        });
         return this.entityManager.save(newQuestionOption);
     }
     async findAll() {
@@ -52,15 +53,14 @@ let QuestionOptionService = QuestionOptionService_1 = class QuestionOptionServic
     }
     async remove(id) {
         const questionOption = await this.findOne(id);
-        return this.dataSource.manager.remove(questionOption);
+        return this.entityManager.remove(questionOption);
     }
 };
 QuestionOptionService = QuestionOptionService_1 = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(question_option_entity_1.QuestionOption)),
     __metadata("design:paramtypes", [typeorm_2.Repository,
-        typeorm_2.EntityManager,
-        typeorm_2.DataSource])
+        typeorm_2.EntityManager])
 ], QuestionOptionService);
 exports.QuestionOptionService = QuestionOptionService;
 //# sourceMappingURL=question-option.service.js.map

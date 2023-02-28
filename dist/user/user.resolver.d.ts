@@ -7,7 +7,7 @@ export declare class UserResolver {
     constructor(userService: UserService);
     createUser(createUserInput: CreateUserInput): Promise<User>;
     findAllUser(): Promise<User[]>;
-    getUserWithResponse(id: number): Promise<User[]>;
+    getUserWithResponse(id: number): Promise<User>;
     findOneUser(id: number): Promise<User>;
     updateUser(updateUserInput: UpdateUserInput): Promise<import("typeorm").UpdateResult>;
     removeUser(id: number): Promise<User>;

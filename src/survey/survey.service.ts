@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DataSource, Repository } from 'typeorm';
+import { EntityManager, Repository } from 'typeorm';
 import { CreateSurveyInput } from './dto/create-survey.input';
 import { UpdateSurveyInput } from './dto/update-survey.input';
 import { Survey } from './entities/survey.entity';
@@ -10,7 +10,7 @@ export class SurveyService {
   constructor(
     @InjectRepository(Survey)
     private surveyRepository: Repository<Survey>,
-    private dataSource: DataSource,
+    private entityManager: EntityManager,
   ) {}
   private readonly logger = new Logger(SurveyService.name);
 
@@ -66,6 +66,6 @@ export class SurveyService {
 
   async remove(id: number) {
     const survey = await this.findOne(id);
-    return this.dataSource.manager.remove(survey);
+    return this.entityManager.remove(survey);
   }
 }

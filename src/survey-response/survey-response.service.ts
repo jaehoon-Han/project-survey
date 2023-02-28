@@ -2,7 +2,7 @@ import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Survey } from 'src/survey/entities/survey.entity';
 import { User } from 'src/user/entities/user.entity';
-import { DataSource, EntityManager, Repository } from 'typeorm';
+import { EntityManager, Repository } from 'typeorm';
 import { CreateSurveyResponseInput } from './dto/create-survey-response.input';
 import { UpdateSurveyResponseInput } from './dto/update-survey-response.input';
 import { SurveyResponse } from './entities/survey-response.entity';
@@ -13,7 +13,6 @@ export class SurveyResponseService {
     @InjectRepository(SurveyResponse)
     private surveyResponseRepository: Repository<SurveyResponse>,
     private entityManager: EntityManager,
-    private dataSource: DataSource,
   ) {}
 
   private readonly logger = new Logger(SurveyResponseService.name);
@@ -27,10 +26,9 @@ export class SurveyResponseService {
     user.id = createSurveyResponseInput.userId;
     newSurveyResponse.user = user;
 
-    newSurveyResponse.survey = await this.entityManager.findOneById(
-      Survey,
-      createSurveyResponseInput.surveyId,
-    );
+    newSurveyResponse.survey = await this.entityManager.findOneBy(Survey, {
+      id: createSurveyResponseInput.surveyId,
+    });
     newSurveyResponse.amountQuestion = newSurveyResponse.survey.amountQuestion;
     return await this.surveyResponseRepository.save(newSurveyResponse);
   }
@@ -105,6 +103,6 @@ export class SurveyResponseService {
   }
   async remove(id: number) {
     const surveyResponse = await this.findOne(id);
-    return this.dataSource.manager.remove(surveyResponse);
+    return this.entityManager.remove(surveyResponse);
   }
 }

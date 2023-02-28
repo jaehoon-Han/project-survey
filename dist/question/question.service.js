@@ -20,16 +20,19 @@ const survey_entity_1 = require("../survey/entities/survey.entity");
 const typeorm_2 = require("typeorm");
 const question_entity_1 = require("./entities/question.entity");
 let QuestionService = QuestionService_1 = class QuestionService {
-    constructor(questionRepository, entityManager, dataSource) {
+    constructor(questionRepository, entityManager) {
         this.questionRepository = questionRepository;
         this.entityManager = entityManager;
-        this.dataSource = dataSource;
         this.logger = new common_1.Logger(QuestionService_1.name);
     }
     async create(createQuestionInput) {
         const newQuestion = this.questionRepository.create(createQuestionInput);
-        newQuestion.survey = await this.entityManager.findOneById(survey_entity_1.Survey, createQuestionInput.surveyId);
-        const survey = await this.entityManager.findOneById(survey_entity_1.Survey, createQuestionInput.surveyId);
+        newQuestion.survey = await this.entityManager.findOneBy(survey_entity_1.Survey, {
+            id: createQuestionInput.surveyId,
+        });
+        const survey = await this.entityManager.findOneBy(survey_entity_1.Survey, {
+            id: createQuestionInput.surveyId,
+        });
         survey.amountQuestion + 1;
         this.entityManager.update(survey_entity_1.Survey, createQuestionInput.surveyId, await survey);
         return this.entityManager.save(newQuestion);
@@ -68,15 +71,14 @@ let QuestionService = QuestionService_1 = class QuestionService {
     }
     async remove(id) {
         const question = await this.findOne(id);
-        return this.dataSource.manager.remove(question);
+        return this.entityManager.remove(question);
     }
 };
 QuestionService = QuestionService_1 = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(question_entity_1.Question)),
     __metadata("design:paramtypes", [typeorm_2.Repository,
-        typeorm_2.EntityManager,
-        typeorm_2.DataSource])
+        typeorm_2.EntityManager])
 ], QuestionService);
 exports.QuestionService = QuestionService;
 //# sourceMappingURL=question.service.js.map

@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { QuestionOption } from 'src/question-option/entities/question-option.entity';
 import { Question } from 'src/question/entities/question.entity';
 import { SurveyResponse } from 'src/survey-response/entities/survey-response.entity';
-import { DataSource, EntityManager, Repository } from 'typeorm';
+import { EntityManager, Repository } from 'typeorm';
 import { CreateAnswerInput } from './dto/create-answer.input';
 import { UpdateAnswerInput } from './dto/update-answer.input';
 import { Answer } from './entities/answer.entity';
@@ -14,7 +14,6 @@ export class AnswerService {
     @InjectRepository(Answer)
     private answerRepository: Repository<Answer>,
     private entityManager: EntityManager,
-    private dataSource: DataSource,
   ) {}
 
   private readonly logger = new Logger(AnswerService.name);
@@ -24,10 +23,9 @@ export class AnswerService {
   ): Promise<Answer> {
     const newAnswer = this.answerRepository.create(createAnswerInput);
 
-    const surveyResponse = await this.entityManager.findOneById(
-      SurveyResponse,
-      createAnswerInput.surveyResponseId,
-    );
+    const surveyResponse = await this.entityManager.findOneBy(SurveyResponse, {
+      id: createAnswerInput.surveyResponseId,
+    });
     this.checkComplete(surveyResponse, createAnswerInput.surveyResponseId);
 
     newAnswer.questionOption = await this.findQuestionOptionContent(
@@ -65,15 +63,12 @@ export class AnswerService {
 
   async remove(id: number) {
     const answer = await this.findOne(id);
-    return this.dataSource.manager.remove(answer);
+    return this.entityManager.remove(answer);
   }
 
+  //TODO : refactoring - 불러오는 횟수 줄이고, 통합할 수 있는것들 해주기.
   async findQuestion(questionId: number) {
-    return await this.entityManager.findOneById(Question, questionId);
-  }
-
-  async findQuestionId(questionOptionId: number) {
-    return (await this.findQuestionOption(questionOptionId)).questionId;
+    return await this.entityManager.findOneBy(Question, { id: questionId });
   }
 
   async findQuestionContent(questionId: number) {
@@ -81,7 +76,9 @@ export class AnswerService {
   }
 
   async findQuestionOption(questionOptionId: number) {
-    return this.entityManager.findOneById(QuestionOption, questionOptionId);
+    return this.entityManager.findOneBy(QuestionOption, {
+      id: questionOptionId,
+    });
   }
 
   async findQuestionOptionContent(questionOptionId: number) {
@@ -90,6 +87,10 @@ export class AnswerService {
 
   async findQuestionOptionScore(questionOptionId: number) {
     return (await this.findQuestionOption(questionOptionId)).score;
+  }
+
+  async findQuestionId(questionOptionId: number) {
+    return (await this.findQuestionOption(questionOptionId)).questionId;
   }
   /**
    * @description "설문이 완료되었는지 확인"
@@ -101,7 +102,7 @@ export class AnswerService {
   ) {
     if (!surveyResponse)
       throw new BadRequestException(
-        `🍚 NOT FOUND SURVEY RESPONSE ID: ${surveyResponseId} 🍚`,
+        `NOT FOUND SURVEY RESPONSE ID: ${surveyResponseId}`,
       );
     if (surveyResponse.amountAnswer === surveyResponse.amountQuestion) {
       surveyResponse.isComplete = true;

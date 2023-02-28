@@ -1,12 +1,11 @@
-import { DataSource, EntityManager, Repository } from 'typeorm';
+import { EntityManager, Repository } from 'typeorm';
 import { CreateQuestionOptionInput } from './dto/create-question-option.input';
 import { UpdateQuestionOptionInput } from './dto/update-question-option.input';
 import { QuestionOption } from './entities/question-option.entity';
 export declare class QuestionOptionService {
     private questionOptionRepository;
     private entityManager;
-    private dataSource;
-    constructor(questionOptionRepository: Repository<QuestionOption>, entityManager: EntityManager, dataSource: DataSource);
+    constructor(questionOptionRepository: Repository<QuestionOption>, entityManager: EntityManager);
     private readonly logger;
     create(createQuestionOptionInput: CreateQuestionOptionInput): Promise<QuestionOption>;
     findAll(): Promise<QuestionOption[]>;

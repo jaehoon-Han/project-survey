@@ -21,10 +21,9 @@ const user_entity_1 = require("../user/entities/user.entity");
 const typeorm_2 = require("typeorm");
 const survey_response_entity_1 = require("./entities/survey-response.entity");
 let SurveyResponseService = SurveyResponseService_1 = class SurveyResponseService {
-    constructor(surveyResponseRepository, entityManager, dataSource) {
+    constructor(surveyResponseRepository, entityManager) {
         this.surveyResponseRepository = surveyResponseRepository;
         this.entityManager = entityManager;
-        this.dataSource = dataSource;
         this.logger = new common_1.Logger(SurveyResponseService_1.name);
     }
     async create(createSurveyResponseInput) {
@@ -32,7 +31,9 @@ let SurveyResponseService = SurveyResponseService_1 = class SurveyResponseServic
         const user = new user_entity_1.User();
         user.id = createSurveyResponseInput.userId;
         newSurveyResponse.user = user;
-        newSurveyResponse.survey = await this.entityManager.findOneById(survey_entity_1.Survey, createSurveyResponseInput.surveyId);
+        newSurveyResponse.survey = await this.entityManager.findOneBy(survey_entity_1.Survey, {
+            id: createSurveyResponseInput.surveyId,
+        });
         newSurveyResponse.amountQuestion = newSurveyResponse.survey.amountQuestion;
         return await this.surveyResponseRepository.save(newSurveyResponse);
     }
@@ -83,15 +84,14 @@ let SurveyResponseService = SurveyResponseService_1 = class SurveyResponseServic
     }
     async remove(id) {
         const surveyResponse = await this.findOne(id);
-        return this.dataSource.manager.remove(surveyResponse);
+        return this.entityManager.remove(surveyResponse);
     }
 };
 SurveyResponseService = SurveyResponseService_1 = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(survey_response_entity_1.SurveyResponse)),
     __metadata("design:paramtypes", [typeorm_2.Repository,
-        typeorm_2.EntityManager,
-        typeorm_2.DataSource])
+        typeorm_2.EntityManager])
 ], SurveyResponseService);
 exports.SurveyResponseService = SurveyResponseService;
 //# sourceMappingURL=survey-response.service.js.map

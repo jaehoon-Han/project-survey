@@ -22,15 +22,16 @@ const survey_response_entity_1 = require("../survey-response/entities/survey-res
 const typeorm_2 = require("typeorm");
 const answer_entity_1 = require("./entities/answer.entity");
 let AnswerService = AnswerService_1 = class AnswerService {
-    constructor(answerRepository, entityManager, dataSource) {
+    constructor(answerRepository, entityManager) {
         this.answerRepository = answerRepository;
         this.entityManager = entityManager;
-        this.dataSource = dataSource;
         this.logger = new common_1.Logger(AnswerService_1.name);
     }
     async create(createAnswerInput, questionOptionId) {
         const newAnswer = this.answerRepository.create(createAnswerInput);
-        const surveyResponse = await this.entityManager.findOneById(survey_response_entity_1.SurveyResponse, createAnswerInput.surveyResponseId);
+        const surveyResponse = await this.entityManager.findOneBy(survey_response_entity_1.SurveyResponse, {
+            id: createAnswerInput.surveyResponseId,
+        });
         this.checkComplete(surveyResponse, createAnswerInput.surveyResponseId);
         newAnswer.questionOption = await this.findQuestionOptionContent(questionOptionId);
         newAnswer.score = await this.findQuestionOptionScore(questionOptionId);
@@ -58,19 +59,18 @@ let AnswerService = AnswerService_1 = class AnswerService {
     }
     async remove(id) {
         const answer = await this.findOne(id);
-        return this.dataSource.manager.remove(answer);
+        return this.entityManager.remove(answer);
     }
     async findQuestion(questionId) {
-        return await this.entityManager.findOneById(question_entity_1.Question, questionId);
-    }
-    async findQuestionId(questionOptionId) {
-        return (await this.findQuestionOption(questionOptionId)).questionId;
+        return await this.entityManager.findOneBy(question_entity_1.Question, { id: questionId });
     }
     async findQuestionContent(questionId) {
         return (await this.findQuestion(questionId)).content;
     }
     async findQuestionOption(questionOptionId) {
-        return this.entityManager.findOneById(question_option_entity_1.QuestionOption, questionOptionId);
+        return this.entityManager.findOneBy(question_option_entity_1.QuestionOption, {
+            id: questionOptionId,
+        });
     }
     async findQuestionOptionContent(questionOptionId) {
         return (await this.findQuestionOption(questionOptionId)).content;
@@ -78,9 +78,12 @@ let AnswerService = AnswerService_1 = class AnswerService {
     async findQuestionOptionScore(questionOptionId) {
         return (await this.findQuestionOption(questionOptionId)).score;
     }
+    async findQuestionId(questionOptionId) {
+        return (await this.findQuestionOption(questionOptionId)).questionId;
+    }
     async checkComplete(surveyResponse, surveyResponseId) {
         if (!surveyResponse)
-            throw new common_1.BadRequestException(`🍚 NOT FOUND SURVEY RESPONSE ID: ${surveyResponseId} 🍚`);
+            throw new common_1.BadRequestException(`NOT FOUND SURVEY RESPONSE ID: ${surveyResponseId}`);
         if (surveyResponse.amountAnswer === surveyResponse.amountQuestion) {
             surveyResponse.isComplete = true;
         }
@@ -92,8 +95,7 @@ AnswerService = AnswerService_1 = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(answer_entity_1.Answer)),
     __metadata("design:paramtypes", [typeorm_2.Repository,
-        typeorm_2.EntityManager,
-        typeorm_2.DataSource])
+        typeorm_2.EntityManager])
 ], AnswerService);
 exports.AnswerService = AnswerService;
 //# sourceMappingURL=answer.service.js.map

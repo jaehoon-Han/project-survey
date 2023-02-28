@@ -20,9 +20,9 @@ const survey_response_entity_1 = require("../survey-response/entities/survey-res
 const typeorm_2 = require("typeorm");
 const user_entity_1 = require("./entities/user.entity");
 let UserService = UserService_1 = class UserService {
-    constructor(userRepository, dataSource) {
+    constructor(userRepository, entityManager) {
         this.userRepository = userRepository;
-        this.dataSource = dataSource;
+        this.entityManager = entityManager;
         this.logger = new common_1.Logger(UserService_1.name);
     }
     async create(createUserInput) {
@@ -38,7 +38,7 @@ let UserService = UserService_1 = class UserService {
             .createQueryBuilder('user')
             .leftJoinAndSelect('user.surveyResponse', 'surveyResponse')
             .where('user.id= :id', { id: id })
-            .getMany();
+            .getOne();
         return result;
     }
     async findOne(id) {
@@ -58,17 +58,17 @@ let UserService = UserService_1 = class UserService {
     }
     async remove(id) {
         const user = await this.findOne(id);
-        return this.dataSource.manager.remove(user);
+        return this.entityManager.remove(user);
     }
     async removeSurveyResponse(id) {
-        return await this.dataSource.manager.delete(survey_response_entity_1.SurveyResponse, { userId: id });
+        return await this.entityManager.delete(survey_response_entity_1.SurveyResponse, { userId: id });
     }
 };
 UserService = UserService_1 = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(user_entity_1.User)),
     __metadata("design:paramtypes", [typeorm_2.Repository,
-        typeorm_2.DataSource])
+        typeorm_2.EntityManager])
 ], UserService);
 exports.UserService = UserService;
 //# sourceMappingURL=user.service.js.map
