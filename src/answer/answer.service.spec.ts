@@ -64,10 +64,10 @@ describe('AnswerService', () => {
     it.todo('answer가 정상적으로 생성됐을 때');
     it.todo('answer가 비정상적으로 입력됐을 때');
     it(' Answer 가 정상적으로 생성될 때 ', async () => {
-      jest.mock('../src/mock.ts', () => ({
-        createAnswer: jest.fn(),
-        checkComplete: jest.fn(),
-      }));
+      // jest.mock('../src/mock.ts', () => ({
+      //   createAnswer: jest.fn(),
+      //   checkComplete: jest.fn(),
+      // }));
 
       const createAnswerInput = {
         surveyResponseId: 1,
