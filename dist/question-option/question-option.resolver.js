@@ -46,13 +46,13 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], QuestionOptionResolver.prototype, "createQuestionOption", null);
 __decorate([
-    (0, graphql_1.Query)(() => [question_option_entity_1.QuestionOption], { name: 'questionOption' }),
+    (0, graphql_1.Query)(() => [question_option_entity_1.QuestionOption], { name: 'findAllQuestionOption' }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
 ], QuestionOptionResolver.prototype, "findAll", null);
 __decorate([
-    (0, graphql_1.Query)(() => question_option_entity_1.QuestionOption, { name: 'questionOption' }),
+    (0, graphql_1.Query)(() => question_option_entity_1.QuestionOption, { name: 'findOneQuestionOption' }),
     __param(0, (0, graphql_1.Args)('id', { type: () => graphql_1.Int })),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),

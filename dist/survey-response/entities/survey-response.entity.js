@@ -15,7 +15,7 @@ const survey_entity_1 = require("../../survey/entities/survey.entity");
 const user_entity_1 = require("../../user/entities/user.entity");
 const typeorm_1 = require("typeorm");
 const answer_entity_1 = require("../../answer/entities/answer.entity");
-const commonentity_interface_1 = require("../../common/commonentity.interface");
+const commonentity_interface_1 = require("../../common/entities/commonentity.interface");
 let SurveyResponse = class SurveyResponse extends commonentity_interface_1.CommonEntity {
 };
 __decorate([

@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { QuestionOption } from 'src/question-option/entities/question-option.entity';
 import { Question } from 'src/question/entities/question.entity';
@@ -23,19 +23,22 @@ export class AnswerService {
   ): Promise<Answer> {
     const newAnswer = this.answerRepository.create(createAnswerInput);
 
-    const surveyResponse = await this.entityManager.findOneBy(SurveyResponse, {
-      id: createAnswerInput.surveyResponseId,
-    });
+    const surveyResponse = await this.validSurveyResponse(
+      createAnswerInput.surveyResponseId,
+    );
+
     this.checkComplete(surveyResponse, createAnswerInput.surveyResponseId);
 
-    newAnswer.questionOption = await this.findQuestionOptionContent(
+    const findQuestionOptionInfo = await this.findQuestionOption(
       questionOptionId,
     );
-    newAnswer.score = await this.findQuestionOptionScore(questionOptionId);
 
+    newAnswer.questionOption = findQuestionOptionInfo.content;
+    newAnswer.score = findQuestionOptionInfo.score;
     newAnswer.question = await this.findQuestionContent(
-      await this.findQuestionId(questionOptionId),
+      findQuestionOptionInfo.questionId,
     );
+
     return this.entityManager.save(newAnswer);
   }
 
@@ -45,14 +48,7 @@ export class AnswerService {
   }
 
   async findOne(id: number): Promise<Answer> {
-    const answer = await this.answerRepository.findOneBy({
-      id,
-    });
-    if (!answer) {
-      this.logger.error(new BadRequestException(`NOT FOUND SURVEY ID: ${id}`));
-      throw new BadRequestException(`NOT FOUND ANSWER ID: ${id}`);
-    }
-    return answer;
+    return this.validAnswer(id);
   }
 
   async update(id: number, updateAnswerInput: UpdateAnswerInput) {
@@ -66,9 +62,8 @@ export class AnswerService {
     return this.entityManager.remove(answer);
   }
 
-  //TODO : refactoring - 불러오는 횟수 줄이고, 통합할 수 있는것들 해주기.
   async findQuestion(questionId: number) {
-    return await this.entityManager.findOneBy(Question, { id: questionId });
+    return this.validQuestion(questionId);
   }
 
   async findQuestionContent(questionId: number) {
@@ -76,22 +71,9 @@ export class AnswerService {
   }
 
   async findQuestionOption(questionOptionId: number) {
-    return this.entityManager.findOneBy(QuestionOption, {
-      id: questionOptionId,
-    });
+    return this.validQuestionOption(questionOptionId);
   }
 
-  async findQuestionOptionContent(questionOptionId: number) {
-    return (await this.findQuestionOption(questionOptionId)).content;
-  }
-
-  async findQuestionOptionScore(questionOptionId: number) {
-    return (await this.findQuestionOption(questionOptionId)).score;
-  }
-
-  async findQuestionId(questionOptionId: number) {
-    return (await this.findQuestionOption(questionOptionId)).questionId;
-  }
   /**
    * @description "설문이 완료되었는지 확인"
    * @param id
@@ -100,11 +82,7 @@ export class AnswerService {
     surveyResponse: SurveyResponse,
     surveyResponseId: number,
   ) {
-    if (!surveyResponse)
-      throw new BadRequestException(
-        `NOT FOUND SURVEY RESPONSE ID: ${surveyResponseId}`,
-      );
-    if (surveyResponse.amountAnswer === surveyResponse.amountQuestion) {
+    if (surveyResponse.amountAnswer >= surveyResponse.amountQuestion) {
       surveyResponse.isComplete = true;
     }
     surveyResponse.amountAnswer = surveyResponse.amountAnswer + 1;
@@ -112,7 +90,50 @@ export class AnswerService {
     await this.entityManager.update(
       SurveyResponse,
       surveyResponseId,
-      await surveyResponse,
+      surveyResponse,
     );
+  }
+
+  async validAnswer(id: number) {
+    const answer = await this.answerRepository.findOneBy({ id });
+    if (!answer) {
+      throw new Error(`CAN NOT FIND ANSWER! ID: ${id}`);
+    }
+    return answer;
+  }
+
+  async validSurveyResponse(surveyResponseId: number) {
+    const surveyResponse = await this.entityManager.findOneBy(SurveyResponse, {
+      id: surveyResponseId,
+    });
+    if (!surveyResponse) {
+      throw new Error(`CAN NOT FIND THE SURVEY! ID: ${surveyResponseId}`);
+    } else {
+      return surveyResponse;
+    }
+  }
+
+  async validQuestion(questionId: number) {
+    const question = await this.entityManager.findOneBy(Question, {
+      id: questionId,
+    });
+    if (!question) {
+      throw new Error(`CAN NOT FIND THE QUESTION! ID: ${question}`);
+    } else {
+      return question;
+    }
+  }
+
+  async validQuestionOption(questionOptionId: number) {
+    const questionOption = await this.entityManager.findOneBy(QuestionOption, {
+      id: questionOptionId,
+    });
+    if (!questionOption) {
+      throw new Error(
+        `CAN NOT FIND THE QUESTION OPTION! ID: ${questionOption}`,
+      );
+    } else {
+      return questionOption;
+    }
   }
 }

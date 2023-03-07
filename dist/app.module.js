@@ -15,13 +15,13 @@ const user_module_1 = require("./user/user.module");
 const graphql_1 = require("@nestjs/graphql");
 const apollo_1 = require("@nestjs/apollo");
 const typeorm_1 = require("@nestjs/typeorm");
-const typeorm_config_1 = require("./configs/typeorm.config");
+const dev_typeorm_config_1 = require("./configs/dev-typeorm.config");
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
     (0, common_1.Module)({
         imports: [
-            typeorm_1.TypeOrmModule.forRoot(typeorm_config_1.typeORMConfig),
+            typeorm_1.TypeOrmModule.forRoot(dev_typeorm_config_1.TypeORMConfig),
             graphql_1.GraphQLModule.forRoot({
                 driver: apollo_1.ApolloDriver,
                 autoSchemaFile: 'src/schema.gql',

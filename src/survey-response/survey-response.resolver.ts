@@ -16,17 +16,17 @@ export class SurveyResponseResolver {
     return this.surveyResponseService.create(createSurveyResponseInput);
   }
 
-  @Query(() => [SurveyResponse], { name: 'surveyResponse' })
+  @Query(() => [SurveyResponse], { name: 'findAllSurveyResponse' })
   findAll() {
     return this.surveyResponseService.findAll();
   }
 
-  @Query(() => SurveyResponse, { name: 'surveyResponse' })
+  @Query(() => SurveyResponse, { name: 'findSurveyResponse' })
   findOne(@Args('id', { type: () => Int }) id: number) {
     return this.surveyResponseService.findOne(id);
   }
 
-  @Query(() => [SurveyResponse])
+  @Query(() => [SurveyResponse], { name: 'findDetail' })
   findDetail(@Args('id', { type: () => Int }) id: number) {
     return this.surveyResponseService.findDetail(id);
   }

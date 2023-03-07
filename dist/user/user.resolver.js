@@ -25,13 +25,13 @@ let UserResolver = class UserResolver {
     createUser(createUserInput) {
         return this.userService.create(createUserInput);
     }
-    findAllUser() {
+    findAll() {
         return this.userService.findAll();
     }
     getUserWithResponse(id) {
         return this.userService.getUserWithResponse(id);
     }
-    findOneUser(id) {
+    findOne(id) {
         return this.userService.findOne(id);
     }
     updateUser(updateUserInput) {
@@ -49,11 +49,11 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], UserResolver.prototype, "createUser", null);
 __decorate([
-    (0, graphql_1.Query)(() => [user_entity_1.User]),
+    (0, graphql_1.Query)(() => [user_entity_1.User], { name: 'findAllUser' }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
-], UserResolver.prototype, "findAllUser", null);
+], UserResolver.prototype, "findAll", null);
 __decorate([
     (0, graphql_1.Query)(() => [user_entity_1.User]),
     __param(0, (0, graphql_1.Args)('id', { type: () => graphql_1.Int })),
@@ -62,12 +62,12 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], UserResolver.prototype, "getUserWithResponse", null);
 __decorate([
-    (0, graphql_1.Query)(() => user_entity_1.User),
+    (0, graphql_1.Query)(() => user_entity_1.User, { name: 'findOneUser' }),
     __param(0, (0, graphql_1.Args)('id', { type: () => graphql_1.Int })),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", void 0)
-], UserResolver.prototype, "findOneUser", null);
+], UserResolver.prototype, "findOne", null);
 __decorate([
     (0, graphql_1.Mutation)(() => user_entity_1.User),
     __param(0, (0, graphql_1.Args)('updateUserInput')),

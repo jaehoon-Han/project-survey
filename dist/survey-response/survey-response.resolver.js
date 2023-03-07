@@ -52,20 +52,20 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], SurveyResponseResolver.prototype, "createSurveyResponse", null);
 __decorate([
-    (0, graphql_1.Query)(() => [survey_response_entity_1.SurveyResponse], { name: 'surveyResponse' }),
+    (0, graphql_1.Query)(() => [survey_response_entity_1.SurveyResponse], { name: 'findAllSurveyResponse' }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
 ], SurveyResponseResolver.prototype, "findAll", null);
 __decorate([
-    (0, graphql_1.Query)(() => survey_response_entity_1.SurveyResponse, { name: 'surveyResponse' }),
+    (0, graphql_1.Query)(() => survey_response_entity_1.SurveyResponse, { name: 'findSurveyResponse' }),
     __param(0, (0, graphql_1.Args)('id', { type: () => graphql_1.Int })),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", void 0)
 ], SurveyResponseResolver.prototype, "findOne", null);
 __decorate([
-    (0, graphql_1.Query)(() => [survey_response_entity_1.SurveyResponse]),
+    (0, graphql_1.Query)(() => [survey_response_entity_1.SurveyResponse], { name: 'findDetail' }),
     __param(0, (0, graphql_1.Args)('id', { type: () => graphql_1.Int })),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),

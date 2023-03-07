@@ -1,4 +1,4 @@
-import { CommonEntity } from 'src/common/commonentity.interface';
+import { CommonEntity } from 'src/common/entities/commonentity.interface';
 import { QuestionOption } from 'src/question-option/entities/question-option.entity';
 import { Survey } from 'src/survey/entities/survey.entity';
 export declare class Question extends CommonEntity {

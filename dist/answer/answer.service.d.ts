@@ -18,8 +18,9 @@ export declare class AnswerService {
     findQuestion(questionId: number): Promise<Question>;
     findQuestionContent(questionId: number): Promise<string>;
     findQuestionOption(questionOptionId: number): Promise<QuestionOption>;
-    findQuestionOptionContent(questionOptionId: number): Promise<string>;
-    findQuestionOptionScore(questionOptionId: number): Promise<number>;
-    findQuestionId(questionOptionId: number): Promise<number>;
     checkComplete(surveyResponse: SurveyResponse, surveyResponseId: number): Promise<void>;
+    validAnswer(id: number): Promise<Answer>;
+    validSurveyResponse(surveyResponseId: number): Promise<SurveyResponse>;
+    validQuestion(questionId: number): Promise<Question>;
+    validQuestionOption(questionOptionId: number): Promise<QuestionOption>;
 }

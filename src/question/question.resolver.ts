@@ -15,18 +15,18 @@ export class QuestionResolver {
     return this.questionService.create(createQuestionInput);
   }
 
-  @Query(() => [Question])
+  @Query(() => [Question], { name: 'findAllQuestion' })
   findAllQuestion() {
     return this.questionService.findAll();
   }
 
-  @Query(() => Question, { name: 'question' })
+  @Query(() => Question, { name: 'findOneQuestion' })
   findOne(@Args('id', { type: () => Int }) id: number) {
     return this.questionService.findOne(id);
   }
 
-  @Query(() => [Question])
-  findDetailQuestion(@Args('id', { type: () => Int }) id: number) {
+  @Query(() => [Question], { name: 'findDetail' })
+  findDetail(@Args('id', { type: () => Int }) id: number) {
     return this.questionService.findDetail(id);
   }
 

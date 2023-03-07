@@ -16,12 +16,12 @@ export class QuestionOptionResolver {
     return this.questionOptionService.create(createQuestionOptionInput);
   }
 
-  @Query(() => [QuestionOption], { name: 'questionOption' })
+  @Query(() => [QuestionOption], { name: 'findAllQuestionOption' })
   findAll() {
     return this.questionOptionService.findAll();
   }
 
-  @Query(() => QuestionOption, { name: 'questionOption' })
+  @Query(() => QuestionOption, { name: 'findOneQuestionOption' })
   findOne(@Args('id', { type: () => Int }) id: number) {
     return this.questionOptionService.findOne(id);
   }

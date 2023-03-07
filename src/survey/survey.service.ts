@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EntityManager, Repository } from 'typeorm';
 import { CreateSurveyInput } from './dto/create-survey.input';
@@ -31,12 +31,7 @@ export class SurveyService {
   }
 
   async findOne(id: number): Promise<Survey> {
-    const survey = await this.surveyRepository.findOneBy({ id });
-    if (!survey) {
-      this.logger.error(new BadRequestException(`NOT FOUND SURVEY ID: ${id}`));
-      throw new BadRequestException(`NOT FOUND SURVEY ID: ${id}`);
-    }
-    return survey;
+    return this.validSurvey(id);
   }
 
   /**
@@ -52,8 +47,8 @@ export class SurveyService {
       .where('survey.id= :id', { id: id })
       .getMany();
     if (!result) {
-      this.logger.error(new BadRequestException(`NOT FOUND SURVEY ID: ${id}`));
-      throw new BadRequestException(`NOT FOUND SURVEY ID: ${id}`);
+      this.logger.error(new Error(`NOT FOUND SURVEY ID: ${id}`));
+      throw new Error(`CAN NOT FOUND SURVEY ID: ${id}`);
     }
     return result;
   }
@@ -67,5 +62,13 @@ export class SurveyService {
   async remove(id: number) {
     const survey = await this.findOne(id);
     return this.entityManager.remove(survey);
+  }
+
+  async validSurvey(id: number) {
+    const survey = await this.surveyRepository.findOneBy({ id });
+    if (!survey) {
+      throw new Error(`CAN NOT FIND SURVEY! ID: ${id}`);
+    }
+    return survey;
   }
 }

@@ -3,19 +3,22 @@ import { SurveyService } from './survey.service';
 import { EntityManager, Repository } from 'typeorm';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Survey } from './entities/survey.entity';
-
-type MockRepository<T = any> = Partial<Record<keyof T, jest.Mock>>;
-
-const surveyRepositoryMock = {
-  create: jest.fn().mockReturnValue({}),
-  save: jest.fn(),
-  findOne: jest.fn(),
-};
+import { MockRepo } from 'src/common/___test___/mock';
 
 describe('SurveyService', () => {
   let surveyService: SurveyService;
   let surveyRepository: Repository<Survey>;
-  let mockSurveyRepo: MockRepository<Survey>;
+  let entityManager: EntityManager;
+
+  const mockRepository = MockRepo;
+
+  const createSurveyInput = {
+    title: 'Test Title',
+    description: 'Test Description',
+  };
+  const newSurvey = new Survey();
+  newSurvey.title = 'Test TTT';
+  newSurvey.description = 'Test DDD';
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -23,114 +26,52 @@ describe('SurveyService', () => {
         SurveyService,
         {
           provide: getRepositoryToken(Survey),
-          useValue: surveyRepositoryMock,
+          useValue: mockRepository(),
         },
         {
           provide: EntityManager,
-          useValue: surveyRepositoryMock,
+          useValue: mockRepository(),
         },
       ],
     }).compile();
 
     surveyService = module.get<SurveyService>(SurveyService);
-    mockSurveyRepo = module.get<MockRepository<Survey>>(
-      getRepositoryToken(Survey),
-    );
+    entityManager = module.get<EntityManager>(EntityManager);
     surveyRepository = module.get<Repository<Survey>>(
       getRepositoryToken(Survey),
     );
   });
 
-  it('to be defined ??', () => {
+  it('TO BE DEFINED ?', () => {
     expect(surveyRepository).toBeDefined();
     expect(surveyService).toBeDefined();
-    expect(mockSurveyRepo).toBeDefined();
+    expect(entityManager).toBeDefined();
   });
 
-  it('정상적으로 설문이 생성되는 경우', async () => {
-    const newSurvey = new Survey();
-    const createSurveyInput = {
-      title: 'My Survey',
-      description: 'This is my survey',
-    };
-    const result = await surveyService.create(createSurveyInput);
-    const surveyRepositorySaveSpy = jest
-      .spyOn(surveyRepository, 'save')
-      .mockResolvedValue(newSurvey);
-    console.log('surveyRepoSaveSpy : ', surveyRepositorySaveSpy);
+  describe('Create', () => {
+    it('정상적으로 설문이 생성되는 경우', async () => {
+      // Arrange
+      jest.spyOn(surveyRepository, 'create').mockReturnValueOnce(newSurvey);
+      // jest.spyOn(entityMa);
+      jest.spyOn(surveyRepository, 'save').mockResolvedValue(newSurvey);
 
-    newSurvey.title = createSurveyInput.title;
-    newSurvey.description = createSurveyInput.description;
-    newSurvey.amountQuestion = 0;
+      // Act
+      const result = await surveyService.create(createSurveyInput);
 
-    // const saveSpy = jest.spyOn(surveyRepositoryMock, 'save');
-
-    expect(newSurvey.amountQuestion).toBe(0);
-
-    // const saveSpy = jest.spyOn(surveyRepository, 'save');
-    // console.log('saveSpy : ', saveSpy);
-    expect(result).toEqual(newSurvey);
-    // expect(saveSpy).toHaveBeenCalled();
-    // expect(saveSpy).toHaveBeenCalledWith(newSurvey);
-    // expect(saveSpy).toHaveBeenCalledWith(result);
+      // Assert
+      expect(result).toEqual(newSurvey);
+      expect(result.amountQuestion).toBe(0);
+    });
   });
 
-  it('title이나 describe를 입력하지 않았을 때 예외를 던진다', async () => {
-    // const id = 1;
-    // const createSurveyInput = {
-    //   title: '',
-    //   description: '',
-    // };
+  describe('Update', () => {
+    it('업데이트 되는지', async () => {
+      // Arrange
+      const newSurvey = new Survey();
+
+      // Act
+
+      // Assert
+    });
   });
 });
-
-// import { Repository } from 'typeorm';
-// import { getRepositoryToken } from '@nestjs/typeorm';
-// import { SurveyService } from 'src/survey/survey.service';
-// import { Survey } from 'src/survey/entities/survey.entity';
-// import { CreateSurveyInput } from 'src/survey/dto/create-survey.input';
-// import { Test, TestingModule } from '@nestjs/testing';
-
-// describe('SurveyService', () => {
-//   let service: SurveyService;
-//   let repository: Repository<Survey>;
-
-//   beforeEach(async () => {
-//     const module: TestingModule = await Test.createTestingModule({
-//       providers: [
-//         SurveyService,
-//         {
-//           provide: getRepositoryToken(Survey),
-//           useClass: Repository,
-//         },
-//       ],
-//     }).compile();
-
-//     service = module.get<SurveyService>(SurveyService);
-//     repository = module.get<Repository<Survey>>(getRepositoryToken(Survey));
-//   });
-
-//   describe('create', () => {
-//     it('should create a new survey', async () => {
-//       const surveyInput: CreateSurveyInput = { title: 'Survey 1' };
-
-//       // Create a mock survey that the repository's save method will return
-//       const mockSurvey = new Survey();
-//       mockSurvey.id = 1;
-//       mockSurvey.title = surveyInput.title;
-//       mockSurvey.amountQuestion = 0;
-//       jest.spyOn(repository, 'create').mockReturnValue(mockSurvey);
-//       jest.spyOn(repository, 'save').mockResolvedValue(mockSurvey);
-
-//       // Call the service's create method with the input
-//       const result = await service.create(surveyInput);
-
-//       // Check that the repository's create and save methods were called with the correct arguments
-//       expect(repository.create).toHaveBeenCalledWith(surveyInput);
-//       expect(repository.save).toHaveBeenCalledWith(mockSurvey);
-
-//       // Check that the result returned by the service is the same as the mock survey returned by the repository
-//       expect(result).toEqual(mockSurvey);
-//     });
-//   });
-// });

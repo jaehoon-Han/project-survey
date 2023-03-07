@@ -27,14 +27,10 @@ let QuestionService = QuestionService_1 = class QuestionService {
     }
     async create(createQuestionInput) {
         const newQuestion = this.questionRepository.create(createQuestionInput);
-        newQuestion.survey = await this.entityManager.findOneBy(survey_entity_1.Survey, {
-            id: createQuestionInput.surveyId,
-        });
-        const survey = await this.entityManager.findOneBy(survey_entity_1.Survey, {
-            id: createQuestionInput.surveyId,
-        });
-        survey.amountQuestion + 1;
-        this.entityManager.update(survey_entity_1.Survey, createQuestionInput.surveyId, await survey);
+        const survey = await this.validSurvey(createQuestionInput.surveyId);
+        newQuestion.survey = survey;
+        survey.amountQuestion = survey.amountQuestion + 1;
+        this.entityManager.update(survey_entity_1.Survey, createQuestionInput.surveyId, survey);
         return this.entityManager.save(newQuestion);
     }
     async findAll() {
@@ -46,14 +42,7 @@ let QuestionService = QuestionService_1 = class QuestionService {
         return result;
     }
     async findOne(id) {
-        const question = await this.questionRepository.findOneBy({
-            id,
-        });
-        if (!question) {
-            this.logger.error(new common_1.BadRequestException(`NOT FOUND QUESTION ID: ${id}`));
-            throw new common_1.BadRequestException(`NOT FOUND QUESTION ID: ${id}`);
-        }
-        return question;
+        return this.validQuestion(id);
     }
     async findDetail(id) {
         const result = await this.questionRepository
@@ -72,6 +61,24 @@ let QuestionService = QuestionService_1 = class QuestionService {
     async remove(id) {
         const question = await this.findOne(id);
         return this.entityManager.remove(question);
+    }
+    async validQuestion(id) {
+        const question = await this.questionRepository.findOneBy({ id });
+        if (!question) {
+            throw new Error(`CAN NOT FIND QUESTION! ID: ${id}`);
+        }
+        return question;
+    }
+    async validSurvey(surveyId) {
+        const survey = await this.entityManager.findOneBy(survey_entity_1.Survey, {
+            id: surveyId,
+        });
+        if (!survey) {
+            throw new Error(`CAN NOT FIND THE SURVEY! ID: ${surveyId}`);
+        }
+        else {
+            return survey;
+        }
     }
 };
 QuestionService = QuestionService_1 = __decorate([

@@ -12,7 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Answer = void 0;
 const graphql_1 = require("@nestjs/graphql");
 const class_validator_1 = require("class-validator");
-const commonentity_interface_1 = require("../../common/commonentity.interface");
+const commonentity_interface_1 = require("../../common/entities/commonentity.interface");
 const survey_response_entity_1 = require("../../survey-response/entities/survey-response.entity");
 const typeorm_1 = require("typeorm");
 let Answer = class Answer extends commonentity_interface_1.CommonEntity {

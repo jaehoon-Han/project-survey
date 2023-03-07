@@ -42,14 +42,7 @@ let UserService = UserService_1 = class UserService {
         return result;
     }
     async findOne(id) {
-        const user = await this.userRepository.findOneBy({
-            id,
-        });
-        if (!user) {
-            this.logger.error(new common_1.BadRequestException(`NOT FOUND USER ID: ${id}`));
-            throw new common_1.BadRequestException(`NOT FOUND USER ID: ${id}`);
-        }
-        return user;
+        return this.validUser(id);
     }
     async update(id, updateUserInput) {
         const user = await this.findOne(id);
@@ -62,6 +55,13 @@ let UserService = UserService_1 = class UserService {
     }
     async removeSurveyResponse(id) {
         return await this.entityManager.delete(survey_response_entity_1.SurveyResponse, { userId: id });
+    }
+    async validUser(id) {
+        const user = await this.userRepository.findOneBy({ id });
+        if (!user) {
+            throw new Error(`CAN NOT FIND USER! ID: ${id}`);
+        }
+        return user;
     }
 };
 UserService = UserService_1 = __decorate([

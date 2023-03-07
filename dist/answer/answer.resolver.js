@@ -25,10 +25,10 @@ let AnswerResolver = class AnswerResolver {
     createAnswer(createAnswerInput, questionOptionid) {
         return this.answerService.create(createAnswerInput, questionOptionid);
     }
-    findAllAnswer() {
+    findAll() {
         return this.answerService.findAll();
     }
-    findOneAnswer(id) {
+    findOne(id) {
         return this.answerService.findOne(id);
     }
     updateAnswer(updateAnswerInput) {
@@ -47,18 +47,18 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], AnswerResolver.prototype, "createAnswer", null);
 __decorate([
-    (0, graphql_1.Query)(() => [answer_entity_1.Answer]),
+    (0, graphql_1.Query)(() => [answer_entity_1.Answer], { name: 'findAllAnswer' }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
-], AnswerResolver.prototype, "findAllAnswer", null);
+], AnswerResolver.prototype, "findAll", null);
 __decorate([
-    (0, graphql_1.Query)(() => answer_entity_1.Answer),
+    (0, graphql_1.Query)(() => answer_entity_1.Answer, { name: 'findOneAnswer' }),
     __param(0, (0, graphql_1.Args)('id', { type: () => graphql_1.Int })),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", void 0)
-], AnswerResolver.prototype, "findOneAnswer", null);
+], AnswerResolver.prototype, "findOne", null);
 __decorate([
     (0, graphql_1.Mutation)(() => answer_entity_1.Answer),
     __param(0, (0, graphql_1.Args)('updateAnswerInput')),

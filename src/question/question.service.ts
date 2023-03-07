@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Survey } from 'src/survey/entities/survey.entity';
 import { EntityManager, Repository } from 'typeorm';
@@ -17,18 +17,14 @@ export class QuestionService {
 
   async create(createQuestionInput: CreateQuestionInput) {
     const newQuestion = this.questionRepository.create(createQuestionInput);
-    newQuestion.survey = await this.entityManager.findOneBy(Survey, {
-      id: createQuestionInput.surveyId,
-    });
-    const survey = await this.entityManager.findOneBy(Survey, {
-      id: createQuestionInput.surveyId,
-    });
-    survey.amountQuestion + 1;
-    this.entityManager.update(
-      Survey,
-      createQuestionInput.surveyId,
-      await survey,
-    );
+
+    const survey = await this.validSurvey(createQuestionInput.surveyId);
+
+    newQuestion.survey = survey;
+
+    survey.amountQuestion = survey.amountQuestion + 1;
+
+    this.entityManager.update(Survey, createQuestionInput.surveyId, survey);
     return this.entityManager.save(newQuestion);
   }
 
@@ -43,16 +39,7 @@ export class QuestionService {
   }
 
   async findOne(id: number): Promise<Question> {
-    const question = await this.questionRepository.findOneBy({
-      id,
-    });
-    if (!question) {
-      this.logger.error(
-        new BadRequestException(`NOT FOUND QUESTION ID: ${id}`),
-      );
-      throw new BadRequestException(`NOT FOUND QUESTION ID: ${id}`);
-    }
-    return question;
+    return this.validQuestion(id);
   }
 
   /**
@@ -80,5 +67,24 @@ export class QuestionService {
   async remove(id: number) {
     const question = await this.findOne(id);
     return this.entityManager.remove(question);
+  }
+
+  async validQuestion(id: number) {
+    const question = await this.questionRepository.findOneBy({ id });
+    if (!question) {
+      throw new Error(`CAN NOT FIND QUESTION! ID: ${id}`);
+    }
+    return question;
+  }
+
+  async validSurvey(surveyId: number) {
+    const survey = await this.entityManager.findOneBy(Survey, {
+      id: surveyId,
+    });
+    if (!survey) {
+      throw new Error(`CAN NOT FIND THE SURVEY! ID: ${surveyId}`);
+    } else {
+      return survey;
+    }
   }
 }

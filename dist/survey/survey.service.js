@@ -38,12 +38,7 @@ let SurveyService = SurveyService_1 = class SurveyService {
         return result;
     }
     async findOne(id) {
-        const survey = await this.surveyRepository.findOneBy({ id });
-        if (!survey) {
-            this.logger.error(new common_1.BadRequestException(`NOT FOUND SURVEY ID: ${id}`));
-            throw new common_1.BadRequestException(`NOT FOUND SURVEY ID: ${id}`);
-        }
-        return survey;
+        return this.validSurvey(id);
     }
     async findDetail(id) {
         const result = await this.surveyRepository
@@ -53,8 +48,8 @@ let SurveyService = SurveyService_1 = class SurveyService {
             .where('survey.id= :id', { id: id })
             .getMany();
         if (!result) {
-            this.logger.error(new common_1.BadRequestException(`NOT FOUND SURVEY ID: ${id}`));
-            throw new common_1.BadRequestException(`NOT FOUND SURVEY ID: ${id}`);
+            this.logger.error(new Error(`NOT FOUND SURVEY ID: ${id}`));
+            throw new Error(`CAN NOT FOUND SURVEY ID: ${id}`);
         }
         return result;
     }
@@ -66,6 +61,13 @@ let SurveyService = SurveyService_1 = class SurveyService {
     async remove(id) {
         const survey = await this.findOne(id);
         return this.entityManager.remove(survey);
+    }
+    async validSurvey(id) {
+        const survey = await this.surveyRepository.findOneBy({ id });
+        if (!survey) {
+            throw new Error(`CAN NOT FIND SURVEY! ID: ${id}`);
+        }
+        return survey;
     }
 };
 SurveyService = SurveyService_1 = __decorate([

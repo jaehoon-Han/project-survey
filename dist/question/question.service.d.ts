@@ -1,3 +1,4 @@
+import { Survey } from 'src/survey/entities/survey.entity';
 import { EntityManager, Repository } from 'typeorm';
 import { CreateQuestionInput } from './dto/create-question.input';
 import { UpdateQuestionInput } from './dto/update-question.input';
@@ -13,4 +14,6 @@ export declare class QuestionService {
     findDetail(id: number): Promise<Question[]>;
     update(id: number, updateQuestionInput: UpdateQuestionInput): Promise<import("typeorm").UpdateResult>;
     remove(id: number): Promise<Question>;
+    validQuestion(id: number): Promise<Question>;
+    validSurvey(surveyId: number): Promise<Survey>;
 }

@@ -13,8 +13,8 @@ export class UserResolver {
     return this.userService.create(createUserInput);
   }
 
-  @Query(() => [User])
-  findAllUser() {
+  @Query(() => [User], { name: 'findAllUser' })
+  findAll() {
     return this.userService.findAll();
   }
 
@@ -23,8 +23,8 @@ export class UserResolver {
     return this.userService.getUserWithResponse(id);
   }
 
-  @Query(() => User)
-  findOneUser(@Args('id', { type: () => Int }) id: number) {
+  @Query(() => User, { name: 'findOneUser' })
+  findOne(@Args('id', { type: () => Int }) id: number) {
     return this.userService.findOne(id);
   }
 

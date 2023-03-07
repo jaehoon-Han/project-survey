@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Question } from 'src/question/entities/question.entity';
 import { EntityManager, Repository } from 'typeorm';
@@ -33,16 +33,7 @@ export class QuestionOptionService {
   }
 
   async findOne(id: number): Promise<QuestionOption> {
-    const questionOption = await this.questionOptionRepository.findOneBy({
-      id,
-    });
-    if (!questionOption) {
-      this.logger.error(
-        new BadRequestException(`NOT FOUND QUESTIONOPTION ID: ${id}`),
-      );
-      throw new BadRequestException(`NOT FOUND QUESTIONOPTION ID: ${id}`);
-    }
-    return questionOption;
+    return this.validQuestionOption(id);
   }
 
   async update(
@@ -60,5 +51,26 @@ export class QuestionOptionService {
   async remove(id: number) {
     const questionOption = await this.findOne(id);
     return this.entityManager.remove(questionOption);
+  }
+
+  async validQuestionOption(id: number) {
+    const questionOption = await this.questionOptionRepository.findOneBy({
+      id,
+    });
+    if (!questionOption) {
+      throw new Error(`CAN NOT FIND QUESTION OPTION! ID: ${id}`);
+    }
+    return questionOption;
+  }
+
+  async validQuestion(questionId: number) {
+    const question = await this.entityManager.findOneBy(Question, {
+      id: questionId,
+    });
+    if (!question) {
+      throw new Error(`CAN NOT FIND THE QUESTION! ID: ${questionId}`);
+    } else {
+      return question;
+    }
   }
 }

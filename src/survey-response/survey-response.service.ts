@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Survey } from 'src/survey/entities/survey.entity';
 import { User } from 'src/user/entities/user.entity';
@@ -22,14 +22,16 @@ export class SurveyResponseService {
     const newSurveyResponse = this.surveyResponseRepository.create(
       createSurveyResponseInput,
     );
+
     const user = new User();
     user.id = createSurveyResponseInput.userId;
-    newSurveyResponse.user = user;
 
+    newSurveyResponse.user = user;
     newSurveyResponse.survey = await this.entityManager.findOneBy(Survey, {
       id: createSurveyResponseInput.surveyId,
     });
     newSurveyResponse.amountQuestion = newSurveyResponse.survey.amountQuestion;
+
     return await this.surveyResponseRepository.save(newSurveyResponse);
   }
 
@@ -39,16 +41,7 @@ export class SurveyResponseService {
   }
 
   async findOne(id: number): Promise<SurveyResponse> {
-    const surveyResponse = await this.surveyResponseRepository.findOneBy({
-      id,
-    });
-    if (!surveyResponse) {
-      this.logger.error(
-        new BadRequestException(`NOT FOUND SURVEYRESPONSE ID: ${id}`),
-      );
-      throw new BadRequestException(`NOT FOUND SURVEYRESPONSE ID: ${id}`);
-    }
-    return surveyResponse;
+    return this.validSurveyResponse(id);
   }
 
   /**
@@ -101,8 +94,19 @@ export class SurveyResponseService {
     this.logger.debug(count);
     return count.sum;
   }
+
   async remove(id: number) {
     const surveyResponse = await this.findOne(id);
     return this.entityManager.remove(surveyResponse);
+  }
+
+  async validSurveyResponse(id: number) {
+    const surveyResponse = await this.surveyResponseRepository.findOneBy({
+      id,
+    });
+    if (!surveyResponse) {
+      throw new Error(`CAN NOT FIND SURVEY RESPONSE! ID: ${id}`);
+    }
+    return surveyResponse;
   }
 }

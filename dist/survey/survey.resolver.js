@@ -25,14 +25,14 @@ let SurveyResolver = class SurveyResolver {
     createSurvey(createSurveyInput) {
         return this.surveyService.create(createSurveyInput);
     }
-    async findAllSurvey() {
+    async findAll() {
         const survey = this.surveyService.findAll();
         return survey;
     }
-    findOneSurvey(id) {
+    findOne(id) {
         return this.surveyService.findOne(id);
     }
-    findDetailSurvey(id) {
+    findDetail(id) {
         return this.surveyService.findDetail(id);
     }
     updateSurvey(updateSurveyInput) {
@@ -50,25 +50,25 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], SurveyResolver.prototype, "createSurvey", null);
 __decorate([
-    (0, graphql_1.Query)(() => [survey_entity_1.Survey]),
+    (0, graphql_1.Query)(() => [survey_entity_1.Survey], { name: 'findAllSurvey' }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
-], SurveyResolver.prototype, "findAllSurvey", null);
+], SurveyResolver.prototype, "findAll", null);
 __decorate([
-    (0, graphql_1.Query)(() => survey_entity_1.Survey),
+    (0, graphql_1.Query)(() => survey_entity_1.Survey, { name: 'findOneSurvey' }),
     __param(0, (0, graphql_1.Args)('id', { type: () => graphql_1.Int })),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", void 0)
-], SurveyResolver.prototype, "findOneSurvey", null);
+], SurveyResolver.prototype, "findOne", null);
 __decorate([
-    (0, graphql_1.Query)(() => [survey_entity_1.Survey]),
+    (0, graphql_1.Query)(() => [survey_entity_1.Survey], { name: 'findDetailSurvey' }),
     __param(0, (0, graphql_1.Args)('id', { type: () => graphql_1.Int })),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", void 0)
-], SurveyResolver.prototype, "findDetailSurvey", null);
+], SurveyResolver.prototype, "findDetail", null);
 __decorate([
     (0, graphql_1.Mutation)(() => survey_entity_1.Survey),
     __param(0, (0, graphql_1.Args)('updateSurveyInput')),

@@ -60,17 +60,18 @@ type Query {
   findAllUser: [User!]!
   getUserWithResponse(id: Int!): [User!]!
   findOneUser(id: Int!): User!
-  surveyResponse(id: Int!): SurveyResponse!
-  findDetail(id: Int!): [SurveyResponse!]!
+  findAllSurveyResponse: [SurveyResponse!]!
+  findSurveyResponse(id: Int!): SurveyResponse!
+  findDetail(id: Int!): [Question!]!
   findAllAnswer: [Answer!]!
   findOneAnswer(id: Int!): Answer!
   findAllSurvey: [Survey!]!
   findOneSurvey(id: Int!): Survey!
   findDetailSurvey(id: Int!): [Survey!]!
   findAllQuestion: [Question!]!
-  question(id: Int!): Question!
-  findDetailQuestion(id: Int!): [Question!]!
-  questionOption(id: Int!): QuestionOption!
+  findOneQuestion(id: Int!): Question!
+  findAllQuestionOption: [QuestionOption!]!
+  findOneQuestionOption(id: Int!): QuestionOption!
 }
 
 type Mutation {

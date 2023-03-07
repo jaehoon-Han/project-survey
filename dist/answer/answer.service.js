@@ -29,13 +29,12 @@ let AnswerService = AnswerService_1 = class AnswerService {
     }
     async create(createAnswerInput, questionOptionId) {
         const newAnswer = this.answerRepository.create(createAnswerInput);
-        const surveyResponse = await this.entityManager.findOneBy(survey_response_entity_1.SurveyResponse, {
-            id: createAnswerInput.surveyResponseId,
-        });
+        const surveyResponse = await this.validSurveyResponse(createAnswerInput.surveyResponseId);
         this.checkComplete(surveyResponse, createAnswerInput.surveyResponseId);
-        newAnswer.questionOption = await this.findQuestionOptionContent(questionOptionId);
-        newAnswer.score = await this.findQuestionOptionScore(questionOptionId);
-        newAnswer.question = await this.findQuestionContent(await this.findQuestionId(questionOptionId));
+        const findQuestionOptionInfo = await this.findQuestionOption(questionOptionId);
+        newAnswer.questionOption = findQuestionOptionInfo.content;
+        newAnswer.score = findQuestionOptionInfo.score;
+        newAnswer.question = await this.findQuestionContent(findQuestionOptionInfo.questionId);
         return this.entityManager.save(newAnswer);
     }
     async findAll() {
@@ -43,14 +42,7 @@ let AnswerService = AnswerService_1 = class AnswerService {
         return answers;
     }
     async findOne(id) {
-        const answer = await this.answerRepository.findOneBy({
-            id,
-        });
-        if (!answer) {
-            this.logger.error(new common_1.BadRequestException(`NOT FOUND SURVEY ID: ${id}`));
-            throw new common_1.BadRequestException(`NOT FOUND ANSWER ID: ${id}`);
-        }
-        return answer;
+        return this.validAnswer(id);
     }
     async update(id, updateAnswerInput) {
         const answer = await this.findOne(id);
@@ -62,33 +54,60 @@ let AnswerService = AnswerService_1 = class AnswerService {
         return this.entityManager.remove(answer);
     }
     async findQuestion(questionId) {
-        return await this.entityManager.findOneBy(question_entity_1.Question, { id: questionId });
+        return this.validQuestion(questionId);
     }
     async findQuestionContent(questionId) {
         return (await this.findQuestion(questionId)).content;
     }
     async findQuestionOption(questionOptionId) {
-        return this.entityManager.findOneBy(question_option_entity_1.QuestionOption, {
-            id: questionOptionId,
-        });
-    }
-    async findQuestionOptionContent(questionOptionId) {
-        return (await this.findQuestionOption(questionOptionId)).content;
-    }
-    async findQuestionOptionScore(questionOptionId) {
-        return (await this.findQuestionOption(questionOptionId)).score;
-    }
-    async findQuestionId(questionOptionId) {
-        return (await this.findQuestionOption(questionOptionId)).questionId;
+        return this.validQuestionOption(questionOptionId);
     }
     async checkComplete(surveyResponse, surveyResponseId) {
-        if (!surveyResponse)
-            throw new common_1.BadRequestException(`NOT FOUND SURVEY RESPONSE ID: ${surveyResponseId}`);
-        if (surveyResponse.amountAnswer === surveyResponse.amountQuestion) {
+        if (surveyResponse.amountAnswer >= surveyResponse.amountQuestion) {
             surveyResponse.isComplete = true;
         }
         surveyResponse.amountAnswer = surveyResponse.amountAnswer + 1;
-        await this.entityManager.update(survey_response_entity_1.SurveyResponse, surveyResponseId, await surveyResponse);
+        await this.entityManager.update(survey_response_entity_1.SurveyResponse, surveyResponseId, surveyResponse);
+    }
+    async validAnswer(id) {
+        const answer = await this.answerRepository.findOneBy({ id });
+        if (!answer) {
+            throw new Error(`CAN NOT FIND ANSWER! ID: ${id}`);
+        }
+        return answer;
+    }
+    async validSurveyResponse(surveyResponseId) {
+        const surveyResponse = await this.entityManager.findOneBy(survey_response_entity_1.SurveyResponse, {
+            id: surveyResponseId,
+        });
+        if (!surveyResponse) {
+            throw new Error(`CAN NOT FIND THE SURVEY! ID: ${surveyResponseId}`);
+        }
+        else {
+            return surveyResponse;
+        }
+    }
+    async validQuestion(questionId) {
+        const question = await this.entityManager.findOneBy(question_entity_1.Question, {
+            id: questionId,
+        });
+        if (!question) {
+            throw new Error(`CAN NOT FIND THE QUESTION! ID: ${question}`);
+        }
+        else {
+            return question;
+        }
+    }
+    async validQuestionOption(questionOptionId) {
+        const questionOption = await this.entityManager.findOneBy(question_option_entity_1.QuestionOption, {
+            id: questionOptionId,
+        });
+        if (!questionOption) {
+            throw new Error(`CAN NOT FIND THE QUESTION OPTION! ID: ${questionOption}`);
+        }
+        else {
+            return questionOption;
+        }
     }
 };
 AnswerService = AnswerService_1 = __decorate([

@@ -6,9 +6,9 @@ export declare class SurveyResolver {
     private readonly surveyService;
     constructor(surveyService: SurveyService);
     createSurvey(createSurveyInput: CreateSurveyInput): Promise<Survey>;
-    findAllSurvey(): Promise<Survey[]>;
-    findOneSurvey(id: number): Promise<Survey>;
-    findDetailSurvey(id: number): Promise<Survey[]>;
+    findAll(): Promise<Survey[]>;
+    findOne(id: number): Promise<Survey>;
+    findDetail(id: number): Promise<Survey[]>;
     updateSurvey(updateSurveyInput: UpdateSurveyInput): Promise<import("typeorm").UpdateResult>;
     removeSurvey(id: number): Promise<Survey>;
 }

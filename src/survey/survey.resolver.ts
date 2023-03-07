@@ -15,19 +15,19 @@ export class SurveyResolver {
     return this.surveyService.create(createSurveyInput);
   }
 
-  @Query(() => [Survey])
-  async findAllSurvey() {
+  @Query(() => [Survey], { name: 'findAllSurvey' })
+  async findAll() {
     const survey = this.surveyService.findAll();
     return survey;
   }
 
-  @Query(() => Survey)
-  findOneSurvey(@Args('id', { type: () => Int }) id: number) {
+  @Query(() => Survey, { name: 'findOneSurvey' })
+  findOne(@Args('id', { type: () => Int }) id: number) {
     return this.surveyService.findOne(id);
   }
 
-  @Query(() => [Survey])
-  findDetailSurvey(@Args('id', { type: () => Int }) id: number) {
+  @Query(() => [Survey], { name: 'findDetailSurvey' })
+  findDetail(@Args('id', { type: () => Int }) id: number) {
     return this.surveyService.findDetail(id);
   }
 

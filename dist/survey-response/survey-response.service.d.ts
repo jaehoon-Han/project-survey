@@ -15,4 +15,5 @@ export declare class SurveyResponseService {
     updateScore(id: number): Promise<import("typeorm").UpdateResult>;
     countScore(id: number): Promise<number>;
     remove(id: number): Promise<SurveyResponse>;
+    validSurveyResponse(id: number): Promise<SurveyResponse>;
 }

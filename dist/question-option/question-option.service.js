@@ -37,14 +37,7 @@ let QuestionOptionService = QuestionOptionService_1 = class QuestionOptionServic
         return questionOption;
     }
     async findOne(id) {
-        const questionOption = await this.questionOptionRepository.findOneBy({
-            id,
-        });
-        if (!questionOption) {
-            this.logger.error(new common_1.BadRequestException(`NOT FOUND QUESTIONOPTION ID: ${id}`));
-            throw new common_1.BadRequestException(`NOT FOUND QUESTIONOPTION ID: ${id}`);
-        }
-        return questionOption;
+        return this.validQuestionOption(id);
     }
     async update(id, updateQuestionOptionInput) {
         const questionOption = await this.findOne(id);
@@ -54,6 +47,26 @@ let QuestionOptionService = QuestionOptionService_1 = class QuestionOptionServic
     async remove(id) {
         const questionOption = await this.findOne(id);
         return this.entityManager.remove(questionOption);
+    }
+    async validQuestionOption(id) {
+        const questionOption = await this.questionOptionRepository.findOneBy({
+            id,
+        });
+        if (!questionOption) {
+            throw new Error(`CAN NOT FIND QUESTION OPTION! ID: ${id}`);
+        }
+        return questionOption;
+    }
+    async validQuestion(questionId) {
+        const question = await this.entityManager.findOneBy(question_entity_1.Question, {
+            id: questionId,
+        });
+        if (!question) {
+            throw new Error(`CAN NOT FIND THE QUESTION! ID: ${questionId}`);
+        }
+        else {
+            return question;
+        }
     }
 };
 QuestionOptionService = QuestionOptionService_1 = __decorate([

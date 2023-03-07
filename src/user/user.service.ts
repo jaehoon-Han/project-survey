@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { SurveyResponse } from 'src/survey-response/entities/survey-response.entity';
 import { EntityManager, Repository } from 'typeorm';
@@ -17,7 +17,6 @@ export class UserService {
   private readonly logger = new Logger(UserService.name);
   async create(createUserInput: CreateUserInput): Promise<User> {
     const newUser = this.userRepository.create(createUserInput);
-
     return await this.userRepository.save(newUser);
   }
 
@@ -42,14 +41,7 @@ export class UserService {
   }
 
   async findOne(id: number): Promise<User> {
-    const user = await this.userRepository.findOneBy({
-      id,
-    });
-    if (!user) {
-      this.logger.error(new BadRequestException(`NOT FOUND USER ID: ${id}`));
-      throw new BadRequestException(`NOT FOUND USER ID: ${id}`);
-    }
-    return user;
+    return this.validUser(id);
   }
 
   async update(id: number, updateUserInput: UpdateUserInput) {
@@ -64,5 +56,13 @@ export class UserService {
   }
   async removeSurveyResponse(id: number) {
     return await this.entityManager.delete(SurveyResponse, { userId: id });
+  }
+
+  async validUser(id: number) {
+    const user = await this.userRepository.findOneBy({ id });
+    if (!user) {
+      throw new Error(`CAN NOT FIND USER! ID: ${id}`);
+    }
+    return user;
   }
 }

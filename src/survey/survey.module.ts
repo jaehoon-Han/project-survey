@@ -13,6 +13,5 @@ import { QuestionModule } from 'src/question/question.module';
     QuestionModule,
   ],
   providers: [SurveyResolver, SurveyService],
-  exports: [TypeOrmModule],
 })
 export class SurveyModule {}

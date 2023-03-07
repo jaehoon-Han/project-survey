@@ -1,21 +1,30 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
+import { MockRepo, MockSurvey } from 'src/common/___test___/mock';
+import { Survey } from 'src/survey/entities/survey.entity';
 import { EntityManager, Repository } from 'typeorm';
 import { CreateQuestionInput } from './dto/create-question.input';
 import { Question } from './entities/question.entity';
 import { QuestionService } from './question.service';
 
-type MockRepository<T = any> = Partial<Record<keyof T, jest.Mock>>;
-
 describe(' Question Service', () => {
-  let questionService: QuestionService;
+  let service: QuestionService;
   let questionRepository: Repository<Question>;
   let entityManager: EntityManager;
 
-  const mockRepository = {
-    create: jest.fn(),
-    save: jest.fn(),
+  const mockRepository = MockRepo;
+
+  const questionInput: CreateQuestionInput = {
+    surveyId: 1,
+    content: '테스트',
   };
+  const mockSurvey = MockSurvey;
+
+  const mockQuestion = new Question();
+  mockQuestion.id = 1;
+  mockQuestion.content = questionInput.content;
+  mockQuestion.surveyId = questionInput.surveyId;
+  console.log(`BEFORE AMOUNT QUESTION : ${mockSurvey.amountQuestion}`);
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -23,66 +32,46 @@ describe(' Question Service', () => {
         QuestionService,
         {
           provide: getRepositoryToken(Question),
-          useValue: mockRepository,
+          useValue: mockRepository(),
         },
         {
           provide: EntityManager,
-          useValue: mockRepository,
+          useValue: mockRepository(),
         },
       ],
     }).compile();
 
-    questionService = module.get<QuestionService>(QuestionService);
+    service = module.get<QuestionService>(QuestionService);
     questionRepository = module.get<Repository<Question>>(
       getRepositoryToken(Question),
     );
     entityManager = module.get<EntityManager>(EntityManager);
   });
 
-  it(' to be defined ?? ', () => {
+  it('TO BE DEFINED ?', () => {
     expect(questionRepository).toBeDefined();
-    expect(questionService).toBeDefined();
+    expect(service).toBeDefined();
     expect(entityManager).toBeDefined();
   });
 
   describe('create', () => {
-    it(' 질문이 정상적으로 생성됐습니다.', async () => {
-      const questionInput: CreateQuestionInput = {
-        surveyId: 1,
-        content: '테스트',
-      };
-
-      const mockSurvey = {
-        id: 1,
-        title: '테스트',
-        description: '테스트',
-        amountQuestion: 0,
-      };
-
-      const mockQuestionOption = {
-        id: 1,
-        questionId: 1,
-        content: '테스트',
-        score: 5,
-      };
-
-      const mockQuestion = new Question();
-
-      mockQuestion.id = 1;
-      mockQuestion.content = questionInput.content;
-      mockQuestion.surveyId = questionInput.surveyId;
-
+    it(' 질문이 정상적으로 생성될 때 Survey의 amountQuestion이 증가.', async () => {
+      // Arrange
       jest.spyOn(questionRepository, 'create').mockReturnValue(mockQuestion);
-      jest.spyOn(questionRepository, 'save').mockResolvedValue(mockQuestion);
+      jest.spyOn(entityManager, 'findOneBy').mockResolvedValueOnce(mockSurvey);
+      jest.spyOn(entityManager, 'save').mockResolvedValue(mockQuestion);
 
-      const result = await questionService.create(questionInput);
+      // Act
+      const result = await service.create(questionInput);
 
-      expect(questionRepository.create).toHaveBeenCalledWith(questionInput);
-      expect(questionRepository.save).toHaveBeenCalledWith(mockQuestion);
-
-      console.log('mockQuestion : ', mockQuestion);
-
+      // Assert
+      expect(entityManager.findOneBy).toHaveBeenCalledWith(Survey, {
+        id: questionInput.surveyId,
+      });
+      expect(mockSurvey.amountQuestion).toBe(2);
       expect(result).toEqual(mockQuestion);
+
+      console.log(`AFTER AMOUNT QUESTION : ${mockSurvey.amountQuestion}`);
     });
   });
 });

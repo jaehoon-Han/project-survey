@@ -1,6 +1,6 @@
 import { ObjectType, Field, Int } from '@nestjs/graphql';
 import { IsNumber, IsString, MinLength } from 'class-validator';
-import { CommonEntity } from 'src/common/commonentity.interface';
+import { CommonEntity } from 'src/common/entities/commonentity.interface';
 import { Question } from 'src/question/entities/question.entity';
 import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 
