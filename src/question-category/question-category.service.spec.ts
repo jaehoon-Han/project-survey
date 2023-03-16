@@ -15,10 +15,12 @@ import { QuestionCategoryService } from './question-category.service';
 
 const mockRepository = MockRepo;
 
+type MockRepository<T = any> = Partial<Record<keyof Repository<T>, jest.Mock>>;
+
 describe('CategoryService', () => {
   let service: QuestionCategoryService;
   let entityManager: EntityManager;
-  let categoryRepository: Repository<QuestionCategory>;
+  let categoryRepository: MockRepository<QuestionCategory>;
 
   const questionCategory: QuestionCategory = mockQuestionCategory();
   const question: Question = mockQuestion();
@@ -41,7 +43,7 @@ describe('CategoryService', () => {
 
     service = module.get<QuestionCategoryService>(QuestionCategoryService);
     entityManager = module.get<EntityManager>(EntityManager);
-    categoryRepository = module.get<Repository<QuestionCategory>>(
+    categoryRepository = module.get<MockRepository<QuestionCategory>>(
       getRepositoryToken(QuestionCategory),
     );
   });

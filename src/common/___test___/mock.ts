@@ -18,6 +18,13 @@ export const MockRepo = () => ({
   findBy: jest.fn(),
   update: jest.fn(),
   remove: jest.fn(),
+
+  createQueryBuilder: jest.fn().mockReturnValue({
+    leftJoinAndSelect: jest.fn().mockReturnThis(),
+    innerJoinAndSelect: jest.fn().mockReturnThis(),
+    where: jest.fn().mockReturnThis(),
+    getMany: jest.fn().mockReturnThis(),
+  }),
 });
 
 export const mockQuestionOption = (): QuestionOption => {

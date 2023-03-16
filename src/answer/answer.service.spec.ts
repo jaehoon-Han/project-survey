@@ -15,10 +15,12 @@ import { CreateAnswerInput } from './dto/create-answer.input';
 
 const mockRepository = MockRepo;
 
+type MockRepository<T = any> = Partial<Record<keyof Repository<T>, jest.Mock>>;
+
 describe('AnswerService', () => {
   let service: AnswerService;
   let entityManager: EntityManager;
-  let answerRepository: Repository<Answer>;
+  let answerRepository: MockRepository<Answer>;
 
   const createAnswerInput: CreateAnswerInput = { surveyResponseId: 1 };
   const questionOptionId = 2;
@@ -45,7 +47,7 @@ describe('AnswerService', () => {
 
     service = module.get<AnswerService>(AnswerService);
     entityManager = module.get<EntityManager>(EntityManager);
-    answerRepository = module.get<Repository<Answer>>(
+    answerRepository = module.get<MockRepository<Answer>>(
       getRepositoryToken(Answer),
     );
   });
@@ -101,9 +103,7 @@ describe('AnswerService', () => {
 
         // Assert
         expect(surveyResponse.isComplete).toBe(true);
-        expect(surveyResponse.amountAnswer).toBe(
-          surveyResponse.amountAnswer + 1,
-        );
+        expect(surveyResponse.amountAnswer).toBe(6);
 
         expect(updateSpy).toBeCalledWith(SurveyResponse, 1, surveyResponse);
       });
@@ -123,9 +123,7 @@ describe('AnswerService', () => {
         await service.checkComplete(surveyResponse, 1);
 
         // Assert
-        expect(surveyResponse.amountAnswer).toBe(
-          surveyResponse.amountAnswer + 1,
-        );
+        expect(surveyResponse.amountAnswer).toBe(4);
         expect(updateSpy).toBeCalledWith(SurveyResponse, 1, surveyResponse);
       });
     });

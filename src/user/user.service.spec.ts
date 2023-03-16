@@ -7,9 +7,11 @@ import { UserService } from './user.service';
 
 const mockRepository = MockRepo;
 
+type MockRepository<T = any> = Partial<Record<keyof Repository<T>, jest.Mock>>;
+
 describe('UserService', () => {
   let service: UserService;
-  let userRepository: Repository<User>;
+  let userRepository: MockRepository<User>;
   let entityManager: EntityManager;
 
   const createUserInput = { name: 'Test Name' };
@@ -31,7 +33,7 @@ describe('UserService', () => {
       ],
     }).compile();
     service = module.get<UserService>(UserService);
-    userRepository = module.get<Repository<User>>(getRepositoryToken(User));
+    userRepository = module.get<MockRepository<User>>(getRepositoryToken(User));
     entityManager = module.get<EntityManager>(EntityManager);
   });
 

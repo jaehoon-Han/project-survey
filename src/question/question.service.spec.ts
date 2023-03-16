@@ -18,9 +18,11 @@ import { QuestionService } from './question.service';
 
 const mockRepository = MockRepo;
 
+type MockRepository<T = any> = Partial<Record<keyof Repository<T>, jest.Mock>>;
+
 describe(' Question Service', () => {
   let service: QuestionService;
-  let questionRepository: Repository<Question>;
+  let questionRepository: MockRepository<Question>;
   let entityManager: EntityManager;
 
   // Arrange
@@ -49,7 +51,7 @@ describe(' Question Service', () => {
     }).compile();
 
     service = module.get<QuestionService>(QuestionService);
-    questionRepository = module.get<Repository<Question>>(
+    questionRepository = module.get<MockRepository<Question>>(
       getRepositoryToken(Question),
     );
     entityManager = module.get<EntityManager>(EntityManager);

@@ -135,6 +135,8 @@ type Mutation {
   updateAnswer(updateAnswerInput: UpdateAnswerInput!): Answer!
   removeAnswer(id: Int!): Answer!
   createResponseCategory(input: CreateResponseCategoryInput!): ResponseCategory!
+  updateResponseCategory(input: UpdateResponseCategoryInput!): ResponseCategory!
+  removeResponseCategory(id: Int!): ResponseCategory!
   createSurvey(input: CreateSurveyInput!): Survey!
   updateSurvey(updateSurveyInput: UpdateSurveyInput!): Survey!
   removeSurvey(id: Int!): Survey!
@@ -189,6 +191,10 @@ input UpdateAnswerInput {
 input CreateResponseCategoryInput {
   surveyResponseId: Int!
   surveyId: Int!
+}
+
+input UpdateResponseCategoryInput {
+  id: Int!
 }
 
 input CreateSurveyInput {

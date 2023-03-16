@@ -13,10 +13,12 @@ import { ResponseCategoryService } from './response-category.service';
 
 const mockRepository = MockRepo;
 
+type MockRepository<T = any> = Partial<Record<keyof Repository<T>, jest.Mock>>;
+
 describe('ResponseCategoryService', () => {
   let service: ResponseCategoryService;
   let entityManager: EntityManager;
-  let repository: Repository<ResponseCategory>;
+  let repository: MockRepository<ResponseCategory>;
 
   const category = mockCategory();
   const responseCategory = mockResponseCategory();
@@ -41,7 +43,7 @@ describe('ResponseCategoryService', () => {
 
     service = module.get<ResponseCategoryService>(ResponseCategoryService);
     entityManager = module.get<EntityManager>(EntityManager);
-    repository = module.get<Repository<ResponseCategory>>(
+    repository = module.get<MockRepository<ResponseCategory>>(
       getRepositoryToken(ResponseCategory),
     );
   });
@@ -70,6 +72,10 @@ describe('ResponseCategoryService', () => {
       expect(repository.create).toHaveBeenCalledWith(input);
       expect(repository.save).toHaveBeenCalledWith(responseCategory);
     });
+
+    // it('map Unit Test', async () => {
+
+    // });
     it('유형별로 분류된 점수들의 합산이 제대로 이루어지고 바인딩 되는지', async () => {
       // QUERY BUILDER가 사용되는데..
       // Arrange

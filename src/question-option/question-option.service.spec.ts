@@ -13,10 +13,12 @@ import {
 
 const mockRepository = MockRepo;
 
+type MockRepository<T = any> = Partial<Record<keyof Repository<T>, jest.Mock>>;
+
 describe('QuestionOptionService', () => {
   let service: QuestionOptionService;
   let entityManager: EntityManager;
-  let questionOptionRepository: Repository<QuestionOption>;
+  let questionOptionRepository: MockRepository<QuestionOption>;
 
   const questionOption = mockQuestionOption();
   const question = mockQuestion();
@@ -42,8 +44,10 @@ describe('QuestionOptionService', () => {
     }).compile();
 
     service = module.get<QuestionOptionService>(QuestionOptionService);
-    questionOptionRepository = module.get(getRepositoryToken(QuestionOption));
     entityManager = module.get<EntityManager>(EntityManager);
+    questionOptionRepository = module.get<MockRepository<QuestionOption>>(
+      getRepositoryToken(QuestionOption),
+    );
   });
 
   it('TO BE DEFINED ?', () => {

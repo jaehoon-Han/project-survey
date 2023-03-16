@@ -31,17 +31,17 @@ export class ResponseCategoryService {
       ),
     );
     //
-    const fofo = await this.findQuestionOfSurveyWithCategory(input.surveyId);
-    const fosho = [];
-    fosho.push(fofo.map((question) => question.questionCategory));
-    const foshoName = [];
-    foshoName.push(
-      fosho.map((questionCategory) => questionCategory.categoryName),
-    );
+    const test = await this.findQuestionOfSurveyWithCategory(input.surveyId);
+    const testArray = [];
+    testArray.push(test.map((question) => question.questionCategory));
 
-    console.log(`fosho :`, fosho);
-    console.log(fofo);
-    console.log(`foshoName :`, foshoName[0]);
+    const testName = [];
+    testName.push(
+      testArray.map((questionCategory) => questionCategory.categoryName),
+    );
+    console.log(`testArray :`, testArray);
+    console.log(test);
+    console.log(`testName :`, testName);
     //
 
     return this.repository.save(responseCategories);
@@ -71,16 +71,29 @@ export class ResponseCategoryService {
     return result;
   }
 
-  async findAll() {
+  findAll() {
     return this.repository.find();
   }
 
-  async findOne(id: number) {
-    return await this.validResponseCategory(id);
+  findOne(id: number) {
+    return this.validResponseCategory(id);
   }
 
-  async findSurvey(id: number) {
-    return await this.validSurvey(id);
+  findSurvey(id: number) {
+    return this.validSurvey(id);
+  }
+
+  async update(input: UpdateResponseCategoryInput) {
+    const responseCategory = await this.validResponseCategory(input.id);
+    const result = this.repository.merge(responseCategory, input);
+    this.repository.update(input.id, responseCategory);
+    return result;
+  }
+
+  remove(id: number) {
+    const responseCategory = this.findOne(id);
+    this.entityManager.remove(responseCategory);
+    return responseCategory;
   }
 
   /**
@@ -94,7 +107,6 @@ export class ResponseCategoryService {
       .leftJoinAndSelect('question.questionCategory', 'questionCategory')
       .where('question.surveyId= :surveyId', { surveyId: surveyId })
       .getMany();
-
     return question;
   }
 
@@ -171,10 +183,6 @@ export class ResponseCategoryService {
     if (!categoryScore) {
       throw new Error(`CAN NOT FIND CATEGORY! ID: ${categoryId}`);
     }
-
-    console.log('sss', categoryScore);
-    console.log('ddd', categoryScore.message);
-    console.log('fff', categoryScore.minScore);
     return categoryScore;
   }
 }

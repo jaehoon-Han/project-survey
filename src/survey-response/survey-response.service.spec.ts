@@ -13,17 +13,17 @@ import { SurveyResponseService } from './survey-response.service';
 
 const mockRepository = MockRepo;
 
+type MockRepository<T = any> = Partial<Record<keyof Repository<T>, jest.Mock>>;
+
 describe('SurveyResponseService', () => {
   let service: SurveyResponseService;
-  let surveyResponseRepo: Repository<SurveyResponse>;
+  let surveyResponseRepo: MockRepository<SurveyResponse>;
   let entityManager: EntityManager;
 
   const survey: Survey = mockSurvey();
   const input = { surveyId: 1, userId: 1, totalScore: 0 };
 
   const mockSurveyRespo: SurveyResponse = mockSurveyResponse();
-  console.log(`mockSurvey : ${mockSurveyRespo}`);
-
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -40,7 +40,7 @@ describe('SurveyResponseService', () => {
     }).compile();
 
     service = await module.get<SurveyResponseService>(SurveyResponseService);
-    surveyResponseRepo = await module.get<Repository<SurveyResponse>>(
+    surveyResponseRepo = await module.get<MockRepository<SurveyResponse>>(
       getRepositoryToken(SurveyResponse),
     );
     entityManager = await module.get<EntityManager>(EntityManager);

@@ -13,10 +13,12 @@ import { CategoryScore } from './entities/category-score.entity';
 
 const mockRepository = MockRepo;
 
+type MockRepository<T = any> = Partial<Record<keyof Repository<T>, jest.Mock>>;
+
 describe('CategoryScoreService', () => {
   let service: CategoryScoreService;
   let entityManager: EntityManager;
-  let repository: Repository<CategoryScore>;
+  let repository: MockRepository<CategoryScore>;
 
   const categoryScore: CategoryScore = mockCategoryScore();
   const category: Category = mockCategory();
@@ -38,7 +40,7 @@ describe('CategoryScoreService', () => {
 
     service = module.get<CategoryScoreService>(CategoryScoreService);
     entityManager = module.get<EntityManager>(EntityManager);
-    repository = module.get<Repository<CategoryScore>>(
+    repository = module.get<MockRepository<CategoryScore>>(
       getRepositoryToken(CategoryScore),
     );
   });

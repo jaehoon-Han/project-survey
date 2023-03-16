@@ -7,9 +7,11 @@ import { MockRepo, mockSurvey } from 'src/common/___test___/mock';
 
 const mockRepository = MockRepo;
 
+type MockRepository<T = any> = Partial<Record<keyof Repository<T>, jest.Mock>>;
+
 describe('SurveyService', () => {
   let surveyService: SurveyService;
-  let surveyRepository: Repository<Survey>;
+  let surveyRepository: MockRepository<Survey>;
   let entityManager: EntityManager;
 
   const survey = mockSurvey();
@@ -35,7 +37,7 @@ describe('SurveyService', () => {
 
     surveyService = module.get<SurveyService>(SurveyService);
     entityManager = module.get<EntityManager>(EntityManager);
-    surveyRepository = module.get<Repository<Survey>>(
+    surveyRepository = module.get<MockRepository<Survey>>(
       getRepositoryToken(Survey),
     );
   });

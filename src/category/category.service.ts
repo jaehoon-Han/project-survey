@@ -55,6 +55,20 @@ export class CategoryService {
     return result;
   }
 
+  async testingQueryBuilder(id: number) {
+    const category = await this.findOne(id);
+    const result = await this.categoryRepository
+      .createQueryBuilder('category')
+      .leftJoinAndSelect('category.questionCategory', 'questionCategory')
+      .innerJoinAndSelect('questionCategory.question', 'question')
+      .where('category.id= :id', {
+        id: id,
+      })
+      .getMany();
+
+    return result;
+  }
+
   /**
    * @description "설문(질문)이 어떤 Category를 포함하는지"
    * @param
