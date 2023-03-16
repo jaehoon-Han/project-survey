@@ -1,9 +1,10 @@
-import { ObjectType, Field } from '@nestjs/graphql';
+import { ObjectType, Field, Int } from '@nestjs/graphql';
 import { IsNumber, MinLength } from 'class-validator';
 import { CommonEntity } from 'src/common/entities/commonentity.interface';
+import { QuestionCategory } from 'src/question-category/entities/question-category.entity';
 import { QuestionOption } from 'src/question-option/entities/question-option.entity';
 import { Survey } from 'src/survey/entities/survey.entity';
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
+import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
 
 @ObjectType()
 @Entity()
@@ -13,14 +14,14 @@ export class Question extends CommonEntity {
   @MinLength(1, { message: 'Content is too short!' })
   content: string;
 
-  @ManyToOne(() => Survey, (survey) => survey.question, { onDelete: 'CASCADE' })
-  @Field(() => Survey)
-  @JoinColumn({ name: 'surveyId' })
-  survey: Survey;
-
+  @Field(() => Int)
   @Column()
   @IsNumber()
   surveyId: number;
+
+  @Field(() => Survey)
+  @ManyToOne(() => Survey, (survey) => survey.question, { onDelete: 'CASCADE' })
+  survey: Survey;
 
   @Field(() => [QuestionOption])
   @OneToMany(
@@ -29,4 +30,12 @@ export class Question extends CommonEntity {
     { cascade: true },
   )
   questionOption: QuestionOption[];
+
+  @Field(() => [QuestionCategory])
+  @OneToMany(
+    () => QuestionCategory,
+    (questionCategory) => questionCategory.question,
+    { cascade: true },
+  )
+  questionCategory: QuestionCategory[];
 }

@@ -22,8 +22,8 @@ let SurveyResponseResolver = class SurveyResponseResolver {
     constructor(surveyResponseService) {
         this.surveyResponseService = surveyResponseService;
     }
-    createSurveyResponse(createSurveyResponseInput) {
-        return this.surveyResponseService.create(createSurveyResponseInput);
+    create(input) {
+        return this.surveyResponseService.create(input);
     }
     findAll() {
         return this.surveyResponseService.findAll();
@@ -34,23 +34,26 @@ let SurveyResponseResolver = class SurveyResponseResolver {
     findDetail(id) {
         return this.surveyResponseService.findDetail(id);
     }
-    updateSurveyResponse(updateSurveyResponseInput) {
+    findComplete() {
+        return this.surveyResponseService.findComplete();
+    }
+    update(updateSurveyResponseInput) {
         return this.surveyResponseService.update(updateSurveyResponseInput.id, updateSurveyResponseInput);
     }
     updateCount(id) {
         return this.surveyResponseService.updateScore(id);
     }
-    removeSurveyResponse(id) {
+    remove(id) {
         return this.surveyResponseService.remove(id);
     }
 };
 __decorate([
-    (0, graphql_1.Mutation)(() => survey_response_entity_1.SurveyResponse),
-    __param(0, (0, graphql_1.Args)('createSurveyResponseInput')),
+    (0, graphql_1.Mutation)(() => survey_response_entity_1.SurveyResponse, { name: 'createSurveyResponse' }),
+    __param(0, (0, graphql_1.Args)('input')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_survey_response_input_1.CreateSurveyResponseInput]),
     __metadata("design:returntype", void 0)
-], SurveyResponseResolver.prototype, "createSurveyResponse", null);
+], SurveyResponseResolver.prototype, "create", null);
 __decorate([
     (0, graphql_1.Query)(() => [survey_response_entity_1.SurveyResponse], { name: 'findAllSurveyResponse' }),
     __metadata("design:type", Function),
@@ -72,26 +75,32 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], SurveyResponseResolver.prototype, "findDetail", null);
 __decorate([
-    (0, graphql_1.Mutation)(() => survey_response_entity_1.SurveyResponse),
+    (0, graphql_1.Query)(() => [survey_response_entity_1.SurveyResponse], { name: 'findComplete' }),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", void 0)
+], SurveyResponseResolver.prototype, "findComplete", null);
+__decorate([
+    (0, graphql_1.Mutation)(() => survey_response_entity_1.SurveyResponse, { name: 'updateSurveyResponse' }),
     __param(0, (0, graphql_1.Args)('updateSurveyResponseInput')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [update_survey_response_input_1.UpdateSurveyResponseInput]),
     __metadata("design:returntype", void 0)
-], SurveyResponseResolver.prototype, "updateSurveyResponse", null);
+], SurveyResponseResolver.prototype, "update", null);
 __decorate([
-    (0, graphql_1.Mutation)(() => survey_response_entity_1.SurveyResponse),
+    (0, graphql_1.Mutation)(() => survey_response_entity_1.SurveyResponse, { name: 'updateCount' }),
     __param(0, (0, graphql_1.Args)('id', { type: () => graphql_1.Int })),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", void 0)
 ], SurveyResponseResolver.prototype, "updateCount", null);
 __decorate([
-    (0, graphql_1.Mutation)(() => survey_response_entity_1.SurveyResponse),
+    (0, graphql_1.Mutation)(() => survey_response_entity_1.SurveyResponse, { name: 'removeSurveyResponse' }),
     __param(0, (0, graphql_1.Args)('id', { type: () => graphql_1.Int })),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", void 0)
-], SurveyResponseResolver.prototype, "removeSurveyResponse", null);
+], SurveyResponseResolver.prototype, "remove", null);
 SurveyResponseResolver = __decorate([
     (0, graphql_1.Resolver)(() => survey_response_entity_1.SurveyResponse),
     __metadata("design:paramtypes", [survey_response_service_1.SurveyResponseService])

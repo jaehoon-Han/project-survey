@@ -22,8 +22,8 @@ let SurveyResolver = class SurveyResolver {
     constructor(surveyService) {
         this.surveyService = surveyService;
     }
-    createSurvey(createSurveyInput) {
-        return this.surveyService.create(createSurveyInput);
+    create(input) {
+        return this.surveyService.create(input);
     }
     async findAll() {
         const survey = this.surveyService.findAll();
@@ -32,23 +32,23 @@ let SurveyResolver = class SurveyResolver {
     findOne(id) {
         return this.surveyService.findOne(id);
     }
-    findDetail(id) {
-        return this.surveyService.findDetail(id);
+    findQuestionAndOptionOfSurvey(id) {
+        return this.surveyService.findQuestionAndOptionOfSurvey(id);
     }
-    updateSurvey(updateSurveyInput) {
+    update(updateSurveyInput) {
         return this.surveyService.update(updateSurveyInput.id, updateSurveyInput);
     }
-    removeSurvey(id) {
+    remove(id) {
         return this.surveyService.remove(id);
     }
 };
 __decorate([
-    (0, graphql_1.Mutation)(() => survey_entity_1.Survey),
-    __param(0, (0, graphql_1.Args)('createSurveyInput')),
+    (0, graphql_1.Mutation)(() => survey_entity_1.Survey, { name: 'createSurvey' }),
+    __param(0, (0, graphql_1.Args)('input')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_survey_input_1.CreateSurveyInput]),
     __metadata("design:returntype", void 0)
-], SurveyResolver.prototype, "createSurvey", null);
+], SurveyResolver.prototype, "create", null);
 __decorate([
     (0, graphql_1.Query)(() => [survey_entity_1.Survey], { name: 'findAllSurvey' }),
     __metadata("design:type", Function),
@@ -68,21 +68,21 @@ __decorate([
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", void 0)
-], SurveyResolver.prototype, "findDetail", null);
+], SurveyResolver.prototype, "findQuestionAndOptionOfSurvey", null);
 __decorate([
-    (0, graphql_1.Mutation)(() => survey_entity_1.Survey),
+    (0, graphql_1.Mutation)(() => survey_entity_1.Survey, { name: 'updateSurvey' }),
     __param(0, (0, graphql_1.Args)('updateSurveyInput')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [update_survey_input_1.UpdateSurveyInput]),
     __metadata("design:returntype", void 0)
-], SurveyResolver.prototype, "updateSurvey", null);
+], SurveyResolver.prototype, "update", null);
 __decorate([
-    (0, graphql_1.Mutation)(() => survey_entity_1.Survey),
+    (0, graphql_1.Mutation)(() => survey_entity_1.Survey, { name: 'removeSurvey' }),
     __param(0, (0, graphql_1.Args)('id', { type: () => graphql_1.Int })),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", void 0)
-], SurveyResolver.prototype, "removeSurvey", null);
+], SurveyResolver.prototype, "remove", null);
 SurveyResolver = __decorate([
     (0, graphql_1.Resolver)(() => survey_entity_1.Survey),
     __metadata("design:paramtypes", [survey_service_1.SurveyService])

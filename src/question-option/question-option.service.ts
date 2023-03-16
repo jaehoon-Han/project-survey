@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Question } from 'src/question/entities/question.entity';
 import { EntityManager, Repository } from 'typeorm';
@@ -13,7 +13,6 @@ export class QuestionOptionService {
     private questionOptionRepository: Repository<QuestionOption>,
     private entityManager: EntityManager,
   ) {}
-  private readonly logger = new Logger(QuestionOptionService.name);
 
   async create(
     createQuestionOptionInput: CreateQuestionOptionInput,
@@ -27,13 +26,12 @@ export class QuestionOptionService {
     return this.entityManager.save(newQuestionOption);
   }
 
-  async findAll(): Promise<QuestionOption[]> {
-    const questionOption = await this.questionOptionRepository.find();
-    return questionOption;
+  async findAll() {
+    return await this.questionOptionRepository.find();
   }
 
-  async findOne(id: number): Promise<QuestionOption> {
-    return this.validQuestionOption(id);
+  async findOne(id: number) {
+    return await this.validQuestionOption(id);
   }
 
   async update(
@@ -69,8 +67,7 @@ export class QuestionOptionService {
     });
     if (!question) {
       throw new Error(`CAN NOT FIND THE QUESTION! ID: ${questionId}`);
-    } else {
-      return question;
     }
+    return question;
   }
 }

@@ -18,11 +18,12 @@ const answer_service_1 = require("./answer.service");
 const answer_entity_1 = require("./entities/answer.entity");
 const create_answer_input_1 = require("./dto/create-answer.input");
 const update_answer_input_1 = require("./dto/update-answer.input");
+const category_entity_1 = require("../category/entities/category.entity");
 let AnswerResolver = class AnswerResolver {
     constructor(answerService) {
         this.answerService = answerService;
     }
-    createAnswer(createAnswerInput, questionOptionid) {
+    create(createAnswerInput, questionOptionid) {
         return this.answerService.create(createAnswerInput, questionOptionid);
     }
     findAll() {
@@ -31,21 +32,24 @@ let AnswerResolver = class AnswerResolver {
     findOne(id) {
         return this.answerService.findOne(id);
     }
-    updateAnswer(updateAnswerInput) {
-        return this.answerService.update(updateAnswerInput.id, updateAnswerInput);
+    findOneTest(id) {
+        return this.answerService.findQuestionCategory(id);
     }
-    removeAnswer(id) {
+    update(input) {
+        return this.answerService.update(input);
+    }
+    remove(id) {
         return this.answerService.remove(id);
     }
 };
 __decorate([
-    (0, graphql_1.Mutation)(() => answer_entity_1.Answer),
+    (0, graphql_1.Mutation)(() => answer_entity_1.Answer, { name: 'createAnswer' }),
     __param(0, (0, graphql_1.Args)('createAnswerInput')),
     __param(1, (0, graphql_1.Args)('questionOptionId')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_answer_input_1.CreateAnswerInput, Number]),
     __metadata("design:returntype", void 0)
-], AnswerResolver.prototype, "createAnswer", null);
+], AnswerResolver.prototype, "create", null);
 __decorate([
     (0, graphql_1.Query)(() => [answer_entity_1.Answer], { name: 'findAllAnswer' }),
     __metadata("design:type", Function),
@@ -60,19 +64,26 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], AnswerResolver.prototype, "findOne", null);
 __decorate([
-    (0, graphql_1.Mutation)(() => answer_entity_1.Answer),
-    __param(0, (0, graphql_1.Args)('updateAnswerInput')),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [update_answer_input_1.UpdateAnswerInput]),
-    __metadata("design:returntype", void 0)
-], AnswerResolver.prototype, "updateAnswer", null);
-__decorate([
-    (0, graphql_1.Mutation)(() => answer_entity_1.Answer),
+    (0, graphql_1.Query)(() => [category_entity_1.Category], { name: 'testFindQuestionCategory' }),
     __param(0, (0, graphql_1.Args)('id', { type: () => graphql_1.Int })),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", void 0)
-], AnswerResolver.prototype, "removeAnswer", null);
+], AnswerResolver.prototype, "findOneTest", null);
+__decorate([
+    (0, graphql_1.Mutation)(() => answer_entity_1.Answer, { name: 'updateAnswer' }),
+    __param(0, (0, graphql_1.Args)('updateAnswerInput')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [update_answer_input_1.UpdateAnswerInput]),
+    __metadata("design:returntype", void 0)
+], AnswerResolver.prototype, "update", null);
+__decorate([
+    (0, graphql_1.Mutation)(() => answer_entity_1.Answer, { name: 'removeAnswer' }),
+    __param(0, (0, graphql_1.Args)('id', { type: () => graphql_1.Int })),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number]),
+    __metadata("design:returntype", void 0)
+], AnswerResolver.prototype, "remove", null);
 AnswerResolver = __decorate([
     (0, graphql_1.Resolver)(() => answer_entity_1.Answer),
     __metadata("design:paramtypes", [answer_service_1.AnswerService])

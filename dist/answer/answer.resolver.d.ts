@@ -5,9 +5,10 @@ import { UpdateAnswerInput } from './dto/update-answer.input';
 export declare class AnswerResolver {
     private readonly answerService;
     constructor(answerService: AnswerService);
-    createAnswer(createAnswerInput: CreateAnswerInput, questionOptionid: number): Promise<Answer>;
+    create(createAnswerInput: CreateAnswerInput, questionOptionid: number): Promise<Answer>;
     findAll(): Promise<Answer[]>;
     findOne(id: number): Promise<Answer>;
-    updateAnswer(updateAnswerInput: UpdateAnswerInput): Promise<import("typeorm").UpdateResult>;
-    removeAnswer(id: number): Promise<Answer>;
+    findOneTest(id: number): Promise<import("../question-category/entities/question-category.entity").QuestionCategory[]>;
+    update(input: UpdateAnswerInput): Promise<Answer>;
+    remove(id: number): Promise<Answer>;
 }

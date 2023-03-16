@@ -5,9 +5,9 @@ import { UpdateQuestionOptionInput } from './dto/update-question-option.input';
 export declare class QuestionOptionResolver {
     private readonly questionOptionService;
     constructor(questionOptionService: QuestionOptionService);
-    createQuestionOption(createQuestionOptionInput: CreateQuestionOptionInput): Promise<QuestionOption>;
+    create(input: CreateQuestionOptionInput): Promise<QuestionOption>;
     findAll(): Promise<QuestionOption[]>;
     findOne(id: number): Promise<QuestionOption>;
-    updateQuestionOption(updateQuestionOptionInput: UpdateQuestionOptionInput): Promise<import("typeorm").UpdateResult>;
-    removeQuestionOption(id: number): Promise<QuestionOption>;
+    update(updateQuestionOptionInput: UpdateQuestionOptionInput): Promise<import("typeorm").UpdateResult>;
+    remove(id: number): Promise<QuestionOption>;
 }

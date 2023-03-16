@@ -4,6 +4,7 @@ import { User } from 'src/user/entities/user.entity';
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 import { Answer } from 'src/answer/entities/answer.entity';
 import { CommonEntity } from 'src/common/entities/commonentity.interface';
+import { ResponseCategory } from 'src/response-category/entities/response-category.entity';
 
 @ObjectType()
 @Entity()
@@ -12,13 +13,23 @@ export class SurveyResponse extends CommonEntity {
   @Column({ default: 0 })
   totalScore: number;
 
-  @Column({ default: 0 })
   @Field(() => Int)
+  @Column({ default: 0 })
   amountAnswer: number;
 
-  @Column()
   @Field(() => Int)
+  @Column()
   amountQuestion: number;
+
+  @Field(() => Boolean)
+  @Column({ default: false })
+  isComplete: boolean;
+
+  @Column()
+  surveyId: number;
+
+  @Column()
+  userId: number;
 
   @ManyToOne(() => Survey, (survey) => survey.surveyResponse, {
     onDelete: 'CASCADE',
@@ -30,14 +41,15 @@ export class SurveyResponse extends CommonEntity {
   @JoinColumn({ name: 'userId' })
   user: User;
 
-  @Field(() => [Answer])
   @OneToMany(() => Answer, (answer) => answer.surveyResponse, { cascade: true })
+  @Field(() => [Answer])
   answer: Answer[];
 
-  /**
-   * @description 설문 완료 여부
-   */
-  @Field(() => Boolean)
-  @Column({ default: false })
-  isComplete: boolean;
+  @OneToMany(
+    () => ResponseCategory,
+    (responseCategory) => responseCategory.surveyResponse,
+    { cascade: true },
+  )
+  @Field(() => [ResponseCategory])
+  responseCategory: ResponseCategory[];
 }

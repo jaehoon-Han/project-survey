@@ -11,18 +11,16 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-var SurveyService_1;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SurveyService = void 0;
 const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
 const typeorm_2 = require("typeorm");
 const survey_entity_1 = require("./entities/survey.entity");
-let SurveyService = SurveyService_1 = class SurveyService {
+let SurveyService = class SurveyService {
     constructor(surveyRepository, entityManager) {
         this.surveyRepository = surveyRepository;
         this.entityManager = entityManager;
-        this.logger = new common_1.Logger(SurveyService_1.name);
     }
     async create(createSurveyInput) {
         const newSurvey = this.surveyRepository.create(createSurveyInput);
@@ -31,16 +29,12 @@ let SurveyService = SurveyService_1 = class SurveyService {
         return newSurvey;
     }
     async findAll() {
-        const result = await this.surveyRepository
-            .createQueryBuilder('survey')
-            .leftJoinAndSelect('survey.question', 'question')
-            .getMany();
-        return result;
+        return this.surveyRepository.find();
     }
     async findOne(id) {
         return this.validSurvey(id);
     }
-    async findDetail(id) {
+    async findQuestionAndOptionOfSurvey(id) {
         const result = await this.surveyRepository
             .createQueryBuilder('survey')
             .leftJoinAndSelect('survey.question', 'question')
@@ -48,7 +42,6 @@ let SurveyService = SurveyService_1 = class SurveyService {
             .where('survey.id= :id', { id: id })
             .getMany();
         if (!result) {
-            this.logger.error(new Error(`NOT FOUND SURVEY ID: ${id}`));
             throw new Error(`CAN NOT FOUND SURVEY ID: ${id}`);
         }
         return result;
@@ -70,7 +63,7 @@ let SurveyService = SurveyService_1 = class SurveyService {
         return survey;
     }
 };
-SurveyService = SurveyService_1 = __decorate([
+SurveyService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(survey_entity_1.Survey)),
     __metadata("design:paramtypes", [typeorm_2.Repository,

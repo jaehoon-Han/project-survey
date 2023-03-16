@@ -8,12 +8,12 @@ import { UpdateQuestionOptionInput } from './dto/update-question-option.input';
 export class QuestionOptionResolver {
   constructor(private readonly questionOptionService: QuestionOptionService) {}
 
-  @Mutation(() => QuestionOption)
-  createQuestionOption(
+  @Mutation(() => QuestionOption, { name: 'createQuestionOption' })
+  create(
     @Args('createQuestionOptionInput')
-    createQuestionOptionInput: CreateQuestionOptionInput,
+    input: CreateQuestionOptionInput,
   ) {
-    return this.questionOptionService.create(createQuestionOptionInput);
+    return this.questionOptionService.create(input);
   }
 
   @Query(() => [QuestionOption], { name: 'findAllQuestionOption' })
@@ -26,8 +26,8 @@ export class QuestionOptionResolver {
     return this.questionOptionService.findOne(id);
   }
 
-  @Mutation(() => QuestionOption)
-  updateQuestionOption(
+  @Mutation(() => QuestionOption, { name: 'updateQuestionOption' })
+  update(
     @Args('updateQuestionOptionInput')
     updateQuestionOptionInput: UpdateQuestionOptionInput,
   ) {
@@ -37,8 +37,8 @@ export class QuestionOptionResolver {
     );
   }
 
-  @Mutation(() => QuestionOption)
-  removeQuestionOption(@Args('id', { type: () => Int }) id: number) {
+  @Mutation(() => QuestionOption, { name: 'removeQuestionOption' })
+  remove(@Args('id', { type: () => Int }) id: number) {
     return this.questionOptionService.remove(id);
   }
 }

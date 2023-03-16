@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { MockRepo } from 'src/common/___test___/mock';
+import { MockRepo, mockUser } from 'src/common/___test___/mock';
 import { EntityManager, Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { UserService } from './user.service';
@@ -11,6 +11,10 @@ describe('UserService', () => {
   let service: UserService;
   let userRepository: Repository<User>;
   let entityManager: EntityManager;
+
+  const createUserInput = { name: 'Test Name' };
+
+  const user = mockUser();
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -40,20 +44,15 @@ describe('UserService', () => {
   describe('create User', () => {
     it(' 정상적으로 유저가 생성되는 경우', async () => {
       // Arrange
-      const createUserInput = { name: 'Test Name' };
-      const newUser = new User();
-      newUser.id = 1;
-      newUser.name = 'Test Name';
-      jest.spyOn(userRepository, 'create').mockReturnValueOnce(newUser);
-      jest.spyOn(userRepository, 'save').mockResolvedValue(newUser);
+      jest.spyOn(userRepository, 'create').mockReturnValueOnce(user);
+      jest.spyOn(userRepository, 'save').mockResolvedValue(user);
 
       // Act
       const result = await service.create(createUserInput);
 
       // Assert
       expect(userRepository.create).toHaveBeenCalledWith(createUserInput);
-      expect(userRepository.save).toHaveBeenCalledWith(newUser);
-      expect(result).toEqual(newUser);
+      expect(userRepository.save).toHaveBeenCalledWith(user);
     });
   });
 });

@@ -5,10 +5,10 @@ import { UpdateSurveyInput } from './dto/update-survey.input';
 export declare class SurveyResolver {
     private readonly surveyService;
     constructor(surveyService: SurveyService);
-    createSurvey(createSurveyInput: CreateSurveyInput): Promise<Survey>;
+    create(input: CreateSurveyInput): Promise<Survey>;
     findAll(): Promise<Survey[]>;
     findOne(id: number): Promise<Survey>;
-    findDetail(id: number): Promise<Survey[]>;
-    updateSurvey(updateSurveyInput: UpdateSurveyInput): Promise<import("typeorm").UpdateResult>;
-    removeSurvey(id: number): Promise<Survey>;
+    findQuestionAndOptionOfSurvey(id: number): Promise<Survey[]>;
+    update(updateSurveyInput: UpdateSurveyInput): Promise<import("typeorm").UpdateResult>;
+    remove(id: number): Promise<Survey>;
 }

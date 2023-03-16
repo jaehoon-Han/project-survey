@@ -5,10 +5,10 @@ import { UpdateUserInput } from './dto/update-user.input';
 export declare class UserResolver {
     private readonly userService;
     constructor(userService: UserService);
-    createUser(createUserInput: CreateUserInput): Promise<User>;
+    create(input: CreateUserInput): Promise<User>;
     findAll(): Promise<User[]>;
     getUserWithResponse(id: number): Promise<User>;
     findOne(id: number): Promise<User>;
-    updateUser(updateUserInput: UpdateUserInput): Promise<import("typeorm").UpdateResult>;
-    removeUser(id: number): Promise<User>;
+    update(updateUserInput: UpdateUserInput): Promise<import("typeorm").UpdateResult>;
+    remove(id: number): Promise<User>;
 }

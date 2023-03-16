@@ -6,11 +6,10 @@ export declare class UserService {
     private userRepository;
     private entityManager;
     constructor(userRepository: Repository<User>, entityManager: EntityManager);
-    private readonly logger;
     create(createUserInput: CreateUserInput): Promise<User>;
     findAll(): Promise<User[]>;
-    getUserWithResponse(id: number): Promise<User>;
     findOne(id: number): Promise<User>;
+    getUserWithResponse(id: number): Promise<User>;
     update(id: number, updateUserInput: UpdateUserInput): Promise<import("typeorm").UpdateResult>;
     remove(id: number): Promise<User>;
     removeSurveyResponse(id: number): Promise<import("typeorm").DeleteResult>;

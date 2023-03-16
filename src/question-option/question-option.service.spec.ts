@@ -5,26 +5,26 @@ import { Question } from '../question/entities/question.entity';
 import { QuestionOption } from './entities/question-option.entity';
 import { QuestionOptionService } from './question-option.service';
 import { CreateQuestionOptionInput } from './dto/create-question-option.input';
-import { MockQuestionOption, MockRepo } from 'src/common/___test___/mock';
+import {
+  mockQuestion,
+  mockQuestionOption,
+  MockRepo,
+} from 'src/common/___test___/mock';
+
+const mockRepository = MockRepo;
 
 describe('QuestionOptionService', () => {
   let service: QuestionOptionService;
   let entityManager: EntityManager;
   let questionOptionRepository: Repository<QuestionOption>;
 
-  const mockRepository = MockRepo;
-
-  const createQuestionOptionInput: CreateQuestionOptionInput =
-    MockQuestionOption;
-
-  const questionOption = new QuestionOption();
-  questionOption.id = 1;
-  questionOption.content = createQuestionOptionInput.content;
-  questionOption.score = createQuestionOptionInput.score;
-
-  const question = new Question();
-  question.id = createQuestionOptionInput.questionId;
-  questionOption.question = question;
+  const questionOption = mockQuestionOption();
+  const question = mockQuestion();
+  const input: CreateQuestionOptionInput = {
+    questionId: 1,
+    score: 10,
+    content: 'TEST',
+  };
 
   beforeEach(async () => {
     const module = await Test.createTestingModule({
@@ -62,15 +62,13 @@ describe('QuestionOptionService', () => {
       jest.spyOn(entityManager, 'save').mockResolvedValueOnce(questionOption);
 
       // Act
-      const result = await service.create(createQuestionOptionInput);
+      const result = await service.create(input);
 
       // Assert
       expect(entityManager.findOneBy).toHaveBeenCalledWith(Question, {
-        id: createQuestionOptionInput.questionId,
+        id: input.questionId,
       });
-      expect(questionOptionRepository.create).toHaveBeenCalledWith(
-        createQuestionOptionInput,
-      );
+      expect(questionOptionRepository.create).toHaveBeenCalledWith(input);
       expect(entityManager.save).toHaveBeenCalledWith(questionOption);
       expect(result).toEqual(questionOption);
     });

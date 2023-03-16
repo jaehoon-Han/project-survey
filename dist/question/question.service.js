@@ -11,35 +11,30 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-var QuestionService_1;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.QuestionService = void 0;
 const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
+const question_category_entity_1 = require("../question-category/entities/question-category.entity");
+const question_option_entity_1 = require("../question-option/entities/question-option.entity");
 const survey_entity_1 = require("../survey/entities/survey.entity");
 const typeorm_2 = require("typeorm");
 const question_entity_1 = require("./entities/question.entity");
-let QuestionService = QuestionService_1 = class QuestionService {
+let QuestionService = class QuestionService {
     constructor(questionRepository, entityManager) {
         this.questionRepository = questionRepository;
         this.entityManager = entityManager;
-        this.logger = new common_1.Logger(QuestionService_1.name);
     }
-    async create(createQuestionInput) {
-        const newQuestion = this.questionRepository.create(createQuestionInput);
-        const survey = await this.validSurvey(createQuestionInput.surveyId);
+    async create(input) {
+        const newQuestion = this.questionRepository.create(input);
+        const survey = await this.validSurvey(input.surveyId);
         newQuestion.survey = survey;
         survey.amountQuestion = survey.amountQuestion + 1;
-        this.entityManager.update(survey_entity_1.Survey, createQuestionInput.surveyId, survey);
+        this.entityManager.update(survey_entity_1.Survey, input.surveyId, survey);
         return this.entityManager.save(newQuestion);
     }
     async findAll() {
-        const result = await this.questionRepository
-            .createQueryBuilder('question')
-            .leftJoinAndSelect('question.questionOption', 'questionOption')
-            .innerJoinAndSelect('question.survey', 'survey')
-            .getMany();
-        return result;
+        return this.questionRepository.find();
     }
     async findOne(id) {
         return this.validQuestion(id);
@@ -53,6 +48,23 @@ let QuestionService = QuestionService_1 = class QuestionService {
             .getMany();
         return result;
     }
+    async findOneCategoryOfQuestion(id) {
+        const result = await this.questionRepository
+            .createQueryBuilder('question')
+            .leftJoinAndSelect('question.questionCategory', 'questionCategory')
+            .innerJoinAndSelect('questionCategory.category', 'category')
+            .where('question.id= :id', { id: id })
+            .getMany();
+        return result;
+    }
+    async findAllCategoryOfQuestion(surveyId) {
+        return await this.questionRepository
+            .createQueryBuilder('question')
+            .leftJoinAndSelect('question.questionCategory', 'questionCategory')
+            .innerJoinAndSelect('questionCategory.category', 'category')
+            .andWhere(`question.surveyId = ${surveyId}`)
+            .getMany();
+    }
     async update(id, updateQuestionInput) {
         const question = await this.findOne(id);
         this.questionRepository.merge(question, updateQuestionInput);
@@ -61,6 +73,49 @@ let QuestionService = QuestionService_1 = class QuestionService {
     async remove(id) {
         const question = await this.findOne(id);
         return this.entityManager.remove(question);
+    }
+    async duplicateQuestion(id) {
+        const question = await this.questionRepository.findOneBy({ id });
+        const survey = await this.validSurvey(question.surveyId);
+        const newQuestion = new question_entity_1.Question();
+        newQuestion.content = question.content;
+        newQuestion.survey = question.survey;
+        newQuestion.surveyId = question.surveyId;
+        const copyQuestion = await this.entityManager.save(newQuestion);
+        this.duplicateQuestionOption(id, copyQuestion);
+        this.duplicateQuestionCategory(id, copyQuestion);
+        newQuestion.survey = survey;
+        survey.amountQuestion = survey.amountQuestion + 1;
+        this.entityManager.update(survey_entity_1.Survey, question.surveyId, survey);
+        return copyQuestion;
+    }
+    async duplicateQuestionOption(id, copyQuestion) {
+        const questionOptions = await this.entityManager.findBy(question_option_entity_1.QuestionOption, {
+            questionId: id,
+        });
+        questionOptions.map((questionOption) => {
+            const copyQuestionOption = this.entityManager.create(question_option_entity_1.QuestionOption, {
+                content: questionOption.content,
+                question: copyQuestion,
+                score: questionOption.score,
+            });
+            this.entityManager.save(copyQuestionOption);
+        });
+    }
+    async duplicateQuestionCategory(id, copyQuestion) {
+        const questionCategory = await this.entityManager.findBy(question_category_entity_1.QuestionCategory, {
+            questionId: id,
+        });
+        questionCategory.map((questionCategory) => {
+            const copyQuestionCategory = this.entityManager.create(question_category_entity_1.QuestionCategory, {
+                categoryId: questionCategory.categoryId,
+                questionId: copyQuestion.id,
+                question: copyQuestion,
+                category: questionCategory.category,
+                categoryName: questionCategory.categoryName,
+            });
+            this.entityManager.save(copyQuestionCategory);
+        });
     }
     async validQuestion(id) {
         const question = await this.questionRepository.findOneBy({ id });
@@ -76,12 +131,10 @@ let QuestionService = QuestionService_1 = class QuestionService {
         if (!survey) {
             throw new Error(`CAN NOT FIND THE SURVEY! ID: ${surveyId}`);
         }
-        else {
-            return survey;
-        }
+        return survey;
     }
 };
-QuestionService = QuestionService_1 = __decorate([
+QuestionService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(question_entity_1.Question)),
     __metadata("design:paramtypes", [typeorm_2.Repository,

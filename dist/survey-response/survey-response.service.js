@@ -11,7 +11,6 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-var SurveyResponseService_1;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SurveyResponseService = void 0;
 const common_1 = require("@nestjs/common");
@@ -20,29 +19,33 @@ const survey_entity_1 = require("../survey/entities/survey.entity");
 const user_entity_1 = require("../user/entities/user.entity");
 const typeorm_2 = require("typeorm");
 const survey_response_entity_1 = require("./entities/survey-response.entity");
-let SurveyResponseService = SurveyResponseService_1 = class SurveyResponseService {
+let SurveyResponseService = class SurveyResponseService {
     constructor(surveyResponseRepository, entityManager) {
         this.surveyResponseRepository = surveyResponseRepository;
         this.entityManager = entityManager;
-        this.logger = new common_1.Logger(SurveyResponseService_1.name);
     }
-    async create(createSurveyResponseInput) {
-        const newSurveyResponse = this.surveyResponseRepository.create(createSurveyResponseInput);
+    async create(input) {
+        const newSurveyResponse = this.surveyResponseRepository.create(input);
         const user = new user_entity_1.User();
-        user.id = createSurveyResponseInput.userId;
+        user.id = input.userId;
         newSurveyResponse.user = user;
         newSurveyResponse.survey = await this.entityManager.findOneBy(survey_entity_1.Survey, {
-            id: createSurveyResponseInput.surveyId,
+            id: input.surveyId,
         });
         newSurveyResponse.amountQuestion = newSurveyResponse.survey.amountQuestion;
         return await this.surveyResponseRepository.save(newSurveyResponse);
     }
     async findAll() {
-        const surveyResponse = await this.surveyResponseRepository.find();
-        return surveyResponse;
+        return this.surveyResponseRepository.find();
     }
     async findOne(id) {
         return this.validSurveyResponse(id);
+    }
+    async findComplete() {
+        const surveyResponse = await this.surveyResponseRepository.findBy({
+            isComplete: true,
+        });
+        return surveyResponse;
     }
     async findDetail(id) {
         const result = await this.surveyResponseRepository
@@ -59,25 +62,33 @@ let SurveyResponseService = SurveyResponseService_1 = class SurveyResponseServic
     }
     async updateScore(id) {
         const surveyResponse = await this.findOne(id);
-        this.logger.debug('call totalScore');
         surveyResponse.totalScore = await this.countScore(id);
-        this.logger.debug(surveyResponse.totalScore);
         return this.surveyResponseRepository.update(id, surveyResponse);
     }
     async countScore(id) {
-        const count = await this.surveyResponseRepository
+        return await this.surveyResponseRepository
             .createQueryBuilder('surveyResponse')
             .leftJoinAndSelect('surveyResponse.answer', 'answer')
             .select('sum(answer.score)', 'sum')
             .where('answer.surveyResponseId= :id', { id: id })
             .groupBy('surveyResponse.userId')
             .getRawOne();
-        this.logger.debug(count);
-        return count.sum;
     }
     async remove(id) {
         const surveyResponse = await this.findOne(id);
         return this.entityManager.remove(surveyResponse);
+    }
+    async findTotalScoreOfCategorys(id) {
+        const result = await this.surveyResponseRepository
+            .createQueryBuilder('surveyResponse')
+            .leftJoinAndSelect('surveyResponse.survey', 'survey')
+            .leftJoinAndSelect('survey.question', 'question')
+            .leftJoinAndSelect('question.questionCategory', 'questionCategory')
+            .where('surveyResponse.id= :id', {
+            id: id,
+        })
+            .getMany();
+        return result;
     }
     async validSurveyResponse(id) {
         const surveyResponse = await this.surveyResponseRepository.findOneBy({
@@ -89,7 +100,7 @@ let SurveyResponseService = SurveyResponseService_1 = class SurveyResponseServic
         return surveyResponse;
     }
 };
-SurveyResponseService = SurveyResponseService_1 = __decorate([
+SurveyResponseService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(survey_response_entity_1.SurveyResponse)),
     __metadata("design:paramtypes", [typeorm_2.Repository,

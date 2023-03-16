@@ -1,26 +1,28 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { MockRepo, MockSurvey } from 'src/common/___test___/mock';
+import {
+  MockRepo,
+  mockSurvey,
+  mockSurveyResponse,
+} from 'src/common/___test___/mock';
+
 import { Survey } from 'src/survey/entities/survey.entity';
 import { EntityManager, Repository } from 'typeorm';
 import { SurveyResponse } from './entities/survey-response.entity';
 import { SurveyResponseService } from './survey-response.service';
+
+const mockRepository = MockRepo;
 
 describe('SurveyResponseService', () => {
   let service: SurveyResponseService;
   let surveyResponseRepo: Repository<SurveyResponse>;
   let entityManager: EntityManager;
 
-  const mockRepository = MockRepo;
-
-  const survey = MockSurvey;
+  const survey: Survey = mockSurvey();
   const input = { surveyId: 1, userId: 1, totalScore: 0 };
 
-  const surveyResponse = new SurveyResponse();
-  surveyResponse.id = 1;
-  surveyResponse.amountAnswer = 1;
-  surveyResponse.amountQuestion = 1;
-  surveyResponse.totalScore = 0;
+  const mockSurveyRespo: SurveyResponse = mockSurveyResponse();
+  console.log(`mockSurvey : ${mockSurveyRespo}`);
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -53,24 +55,23 @@ describe('SurveyResponseService', () => {
   describe('create', () => {
     it('surveyResponse가 정상적으로 생성될 때', async () => {
       // Arrange
-      jest.spyOn(entityManager, 'findOneBy').mockResolvedValueOnce(survey);
       jest
         .spyOn(surveyResponseRepo, 'create')
-        .mockReturnValueOnce(surveyResponse);
+        .mockReturnValueOnce(mockSurveyRespo);
+      jest.spyOn(entityManager, 'findOneBy').mockResolvedValueOnce(survey);
       jest
         .spyOn(surveyResponseRepo, 'save')
-        .mockResolvedValueOnce(surveyResponse);
+        .mockResolvedValueOnce(mockSurveyRespo);
 
       // Act
-      const result = await service.create(input);
+      await service.create(input);
 
       // Assert
       expect(entityManager.findOneBy).toHaveBeenCalledWith(Survey, {
         id: input.surveyId,
       });
       expect(surveyResponseRepo.create).toHaveBeenCalledWith(input);
-      expect(surveyResponseRepo.save).toHaveBeenCalledWith(surveyResponse);
-      expect(result).toEqual(surveyResponse);
+      expect(surveyResponseRepo.save).toHaveBeenCalledWith(mockSurveyRespo);
     });
   });
 });

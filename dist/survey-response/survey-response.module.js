@@ -13,11 +13,16 @@ const survey_response_resolver_1 = require("./survey-response.resolver");
 const typeorm_1 = require("@nestjs/typeorm");
 const survey_response_entity_1 = require("./entities/survey-response.entity");
 const answer_module_1 = require("../answer/answer.module");
+const response_category_module_1 = require("../response-category/response-category.module");
 let SurveyResponseModule = class SurveyResponseModule {
 };
 SurveyResponseModule = __decorate([
     (0, common_1.Module)({
-        imports: [answer_module_1.AnswerModule, typeorm_1.TypeOrmModule.forFeature([survey_response_entity_1.SurveyResponse])],
+        imports: [
+            typeorm_1.TypeOrmModule.forFeature([survey_response_entity_1.SurveyResponse]),
+            answer_module_1.AnswerModule,
+            response_category_module_1.ResponseCategoryModule,
+        ],
         providers: [survey_response_resolver_1.SurveyResponseResolver, survey_response_service_1.SurveyResponseService],
     })
 ], SurveyResponseModule);

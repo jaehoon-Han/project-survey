@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EntityManager, Repository } from 'typeorm';
 import { CreateSurveyInput } from './dto/create-survey.input';
@@ -12,7 +12,6 @@ export class SurveyService {
     private surveyRepository: Repository<Survey>,
     private entityManager: EntityManager,
   ) {}
-  private readonly logger = new Logger(SurveyService.name);
 
   async create(createSurveyInput: CreateSurveyInput): Promise<Survey> {
     const newSurvey = this.surveyRepository.create(createSurveyInput);
@@ -21,25 +20,19 @@ export class SurveyService {
     return newSurvey;
   }
 
-  async findAll(): Promise<Survey[]> {
-    const result = await this.surveyRepository
-      .createQueryBuilder('survey')
-      .leftJoinAndSelect('survey.question', 'question')
-      .getMany();
-
-    return result;
+  async findAll() {
+    return this.surveyRepository.find();
   }
 
-  async findOne(id: number): Promise<Survey> {
+  async findOne(id: number) {
     return this.validSurvey(id);
   }
-
   /**
    * @description "선택한 설문의 질문 조회"
    * @param id
    * @returns
    */
-  async findDetail(id: number) {
+  async findQuestionAndOptionOfSurvey(id: number) {
     const result = await this.surveyRepository
       .createQueryBuilder('survey')
       .leftJoinAndSelect('survey.question', 'question')
@@ -47,7 +40,6 @@ export class SurveyService {
       .where('survey.id= :id', { id: id })
       .getMany();
     if (!result) {
-      this.logger.error(new Error(`NOT FOUND SURVEY ID: ${id}`));
       throw new Error(`CAN NOT FOUND SURVEY ID: ${id}`);
     }
     return result;

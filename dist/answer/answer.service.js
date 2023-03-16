@@ -11,43 +11,43 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-var AnswerService_1;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AnswerService = void 0;
 const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
+const question_category_entity_1 = require("../question-category/entities/question-category.entity");
 const question_option_entity_1 = require("../question-option/entities/question-option.entity");
 const question_entity_1 = require("../question/entities/question.entity");
 const survey_response_entity_1 = require("../survey-response/entities/survey-response.entity");
 const typeorm_2 = require("typeorm");
 const answer_entity_1 = require("./entities/answer.entity");
-let AnswerService = AnswerService_1 = class AnswerService {
+let AnswerService = class AnswerService {
     constructor(answerRepository, entityManager) {
         this.answerRepository = answerRepository;
         this.entityManager = entityManager;
-        this.logger = new common_1.Logger(AnswerService_1.name);
     }
-    async create(createAnswerInput, questionOptionId) {
-        const newAnswer = this.answerRepository.create(createAnswerInput);
-        const surveyResponse = await this.validSurveyResponse(createAnswerInput.surveyResponseId);
-        this.checkComplete(surveyResponse, createAnswerInput.surveyResponseId);
+    async create(input, questionOptionId) {
+        const newAnswer = this.answerRepository.create(input);
+        const surveyResponse = await this.validSurveyResponse(input.surveyResponseId);
+        this.checkComplete(surveyResponse, input.surveyResponseId);
         const findQuestionOptionInfo = await this.findQuestionOption(questionOptionId);
+        const questionInfo = await this.findQuestionContent(findQuestionOptionInfo.questionId);
         newAnswer.questionOption = findQuestionOptionInfo.content;
         newAnswer.score = findQuestionOptionInfo.score;
-        newAnswer.question = await this.findQuestionContent(findQuestionOptionInfo.questionId);
+        newAnswer.question = questionInfo.content;
         return this.entityManager.save(newAnswer);
     }
     async findAll() {
-        const answers = await this.answerRepository.find();
-        return answers;
+        return this.answerRepository.find();
     }
     async findOne(id) {
         return this.validAnswer(id);
     }
-    async update(id, updateAnswerInput) {
-        const answer = await this.findOne(id);
-        this.answerRepository.merge(answer, updateAnswerInput);
-        return this.answerRepository.update(id, answer);
+    async update(input) {
+        const answer = await this.findOne(input.id);
+        const result = this.answerRepository.merge(answer, input);
+        this.answerRepository.update(input.id, answer);
+        return result;
     }
     async remove(id) {
         const answer = await this.findOne(id);
@@ -57,13 +57,16 @@ let AnswerService = AnswerService_1 = class AnswerService {
         return this.validQuestion(questionId);
     }
     async findQuestionContent(questionId) {
-        return (await this.findQuestion(questionId)).content;
+        return await this.findQuestion(questionId);
     }
     async findQuestionOption(questionOptionId) {
         return this.validQuestionOption(questionOptionId);
     }
+    async findQuestionCategory(questionId) {
+        return (await this.validQuestion(questionId)).questionCategory;
+    }
     async checkComplete(surveyResponse, surveyResponseId) {
-        if (surveyResponse.amountAnswer >= surveyResponse.amountQuestion) {
+        if (surveyResponse.amountAnswer === surveyResponse.amountQuestion) {
             surveyResponse.isComplete = true;
         }
         surveyResponse.amountAnswer = surveyResponse.amountAnswer + 1;
@@ -83,9 +86,7 @@ let AnswerService = AnswerService_1 = class AnswerService {
         if (!surveyResponse) {
             throw new Error(`CAN NOT FIND THE SURVEY! ID: ${surveyResponseId}`);
         }
-        else {
-            return surveyResponse;
-        }
+        return surveyResponse;
     }
     async validQuestion(questionId) {
         const question = await this.entityManager.findOneBy(question_entity_1.Question, {
@@ -94,9 +95,7 @@ let AnswerService = AnswerService_1 = class AnswerService {
         if (!question) {
             throw new Error(`CAN NOT FIND THE QUESTION! ID: ${question}`);
         }
-        else {
-            return question;
-        }
+        return question;
     }
     async validQuestionOption(questionOptionId) {
         const questionOption = await this.entityManager.findOneBy(question_option_entity_1.QuestionOption, {
@@ -105,12 +104,19 @@ let AnswerService = AnswerService_1 = class AnswerService {
         if (!questionOption) {
             throw new Error(`CAN NOT FIND THE QUESTION OPTION! ID: ${questionOption}`);
         }
-        else {
-            return questionOption;
+        return questionOption;
+    }
+    async validQuestionCategory(questionCategoryId) {
+        const questionCategory = await this.entityManager.findBy(question_category_entity_1.QuestionCategory, {
+            questionId: questionCategoryId,
+        });
+        if (!questionCategory) {
+            throw new Error(`CAN NOT FIND THE QUESTION CATEGORY! ID: ${questionCategory}`);
         }
+        return questionCategory;
     }
 };
-AnswerService = AnswerService_1 = __decorate([
+AnswerService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(answer_entity_1.Answer)),
     __metadata("design:paramtypes", [typeorm_2.Repository,

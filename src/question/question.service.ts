@@ -1,5 +1,7 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { QuestionCategory } from 'src/question-category/entities/question-category.entity';
+import { QuestionOption } from 'src/question-option/entities/question-option.entity';
 import { Survey } from 'src/survey/entities/survey.entity';
 import { EntityManager, Repository } from 'typeorm';
 import { CreateQuestionInput } from './dto/create-question.input';
@@ -13,32 +15,23 @@ export class QuestionService {
     private questionRepository: Repository<Question>,
     private entityManager: EntityManager,
   ) {}
-  private readonly logger = new Logger(QuestionService.name);
 
-  async create(createQuestionInput: CreateQuestionInput) {
-    const newQuestion = this.questionRepository.create(createQuestionInput);
-
-    const survey = await this.validSurvey(createQuestionInput.surveyId);
+  async create(input: CreateQuestionInput) {
+    const newQuestion = this.questionRepository.create(input);
+    const survey = await this.validSurvey(input.surveyId);
 
     newQuestion.survey = survey;
-
     survey.amountQuestion = survey.amountQuestion + 1;
 
-    this.entityManager.update(Survey, createQuestionInput.surveyId, survey);
+    this.entityManager.update(Survey, input.surveyId, survey);
     return this.entityManager.save(newQuestion);
   }
 
-  async findAll(): Promise<Question[]> {
-    const result = await this.questionRepository
-      .createQueryBuilder('question')
-      .leftJoinAndSelect('question.questionOption', 'questionOption')
-      .innerJoinAndSelect('question.survey', 'survey')
-      .getMany();
-
-    return result;
+  async findAll() {
+    return this.questionRepository.find();
   }
 
-  async findOne(id: number): Promise<Question> {
+  async findOne(id: number) {
     return this.validQuestion(id);
   }
 
@@ -58,6 +51,36 @@ export class QuestionService {
     return result;
   }
 
+  /**
+   * @description "특정 질문의 Category 조회"
+   * @param id
+   * @returns
+   */
+  async findOneCategoryOfQuestion(id: number) {
+    const result = await this.questionRepository
+      .createQueryBuilder('question')
+      .leftJoinAndSelect('question.questionCategory', 'questionCategory')
+      .innerJoinAndSelect('questionCategory.category', 'category')
+      .where('question.id= :id', { id: id })
+      .getMany();
+
+    return result;
+  }
+
+  /**
+   * @description "특정 설문의 질문들의 Category 조회"
+   * @param id
+   * @returns
+   */
+  async findAllCategoryOfQuestion(surveyId: number) {
+    return await this.questionRepository
+      .createQueryBuilder('question')
+      .leftJoinAndSelect('question.questionCategory', 'questionCategory')
+      .innerJoinAndSelect('questionCategory.category', 'category')
+      .andWhere(`question.surveyId = ${surveyId}`)
+      .getMany();
+  }
+
   async update(id: number, updateQuestionInput: UpdateQuestionInput) {
     const question = await this.findOne(id);
     this.questionRepository.merge(question, updateQuestionInput);
@@ -67,6 +90,71 @@ export class QuestionService {
   async remove(id: number) {
     const question = await this.findOne(id);
     return this.entityManager.remove(question);
+  }
+
+  /**
+   * @description "질문 복사"
+   * @param id
+   * @returns
+   */
+  async duplicateQuestion(id: number) {
+    const question = await this.questionRepository.findOneBy({ id });
+    const survey = await this.validSurvey(question.surveyId);
+
+    const newQuestion = new Question();
+    newQuestion.content = question.content;
+    newQuestion.survey = question.survey;
+    newQuestion.surveyId = question.surveyId;
+
+    const copyQuestion = await this.entityManager.save(newQuestion);
+    this.duplicateQuestionOption(id, copyQuestion);
+    this.duplicateQuestionCategory(id, copyQuestion);
+
+    newQuestion.survey = survey;
+    survey.amountQuestion = survey.amountQuestion + 1;
+    this.entityManager.update(Survey, question.surveyId, survey);
+
+    return copyQuestion;
+  }
+
+  /**
+   * @description "질문의 선택항목 복사"
+   * @param id
+   * @returns
+   */
+  async duplicateQuestionOption(id: number, copyQuestion: Question) {
+    const questionOptions = await this.entityManager.findBy(QuestionOption, {
+      questionId: id,
+    });
+    questionOptions.map((questionOption) => {
+      const copyQuestionOption = this.entityManager.create(QuestionOption, {
+        content: questionOption.content,
+        question: copyQuestion,
+        score: questionOption.score,
+      });
+      this.entityManager.save(copyQuestionOption);
+    });
+  }
+  /**
+   * @description "질문 복사"
+   * @param id
+   * @returns
+   */
+  async duplicateQuestionCategory(id: number, copyQuestion: Question) {
+    const questionCategory = await this.entityManager.findBy(QuestionCategory, {
+      questionId: id,
+    });
+
+    questionCategory.map((questionCategory) => {
+      const copyQuestionCategory = this.entityManager.create(QuestionCategory, {
+        categoryId: questionCategory.categoryId,
+        questionId: copyQuestion.id,
+        question: copyQuestion,
+        category: questionCategory.category,
+        categoryName: questionCategory.categoryName,
+      });
+      this.entityManager.save(copyQuestionCategory);
+    });
   }
 
   async validQuestion(id: number) {
@@ -83,8 +171,7 @@ export class QuestionService {
     });
     if (!survey) {
       throw new Error(`CAN NOT FIND THE SURVEY! ID: ${surveyId}`);
-    } else {
-      return survey;
     }
+    return survey;
   }
 }

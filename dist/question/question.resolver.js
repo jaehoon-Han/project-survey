@@ -25,7 +25,7 @@ let QuestionResolver = class QuestionResolver {
     createQuestion(createQuestionInput) {
         return this.questionService.create(createQuestionInput);
     }
-    findAllQuestion() {
+    findAll() {
         return this.questionService.findAll();
     }
     findOne(id) {
@@ -34,15 +34,24 @@ let QuestionResolver = class QuestionResolver {
     findDetail(id) {
         return this.questionService.findDetail(id);
     }
-    updateQuestion(updateQuestionInput) {
+    findOneCategoryOfQuestion(id) {
+        return this.questionService.findOneCategoryOfQuestion(id);
+    }
+    findAllCategoryOfQuestion(surveyId) {
+        return this.questionService.findAllCategoryOfQuestion(surveyId);
+    }
+    update(updateQuestionInput) {
         return this.questionService.update(updateQuestionInput.id, updateQuestionInput);
     }
-    removeQuestion(id) {
+    remove(id) {
         return this.questionService.remove(id);
+    }
+    replicateQuestion(id) {
+        return this.questionService.duplicateQuestion(id);
     }
 };
 __decorate([
-    (0, graphql_1.Mutation)(() => question_entity_1.Question),
+    (0, graphql_1.Mutation)(() => question_entity_1.Question, { name: 'createQuestion' }),
     __param(0, (0, graphql_1.Args)('createQuestionInput')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_question_input_1.CreateQuestionInput]),
@@ -53,7 +62,7 @@ __decorate([
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
-], QuestionResolver.prototype, "findAllQuestion", null);
+], QuestionResolver.prototype, "findAll", null);
 __decorate([
     (0, graphql_1.Query)(() => question_entity_1.Question, { name: 'findOneQuestion' }),
     __param(0, (0, graphql_1.Args)('id', { type: () => graphql_1.Int })),
@@ -69,19 +78,40 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], QuestionResolver.prototype, "findDetail", null);
 __decorate([
-    (0, graphql_1.Mutation)(() => question_entity_1.Question),
+    (0, graphql_1.Query)(() => [question_entity_1.Question], { name: 'findOneCategoryOfQuestion' }),
+    __param(0, (0, graphql_1.Args)('questionId', { type: () => graphql_1.Int })),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number]),
+    __metadata("design:returntype", void 0)
+], QuestionResolver.prototype, "findOneCategoryOfQuestion", null);
+__decorate([
+    (0, graphql_1.Query)(() => [question_entity_1.Question], { name: 'findAllCategoryOfQuestion' }),
+    __param(0, (0, graphql_1.Args)('surveyId', { type: () => graphql_1.Int })),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number]),
+    __metadata("design:returntype", void 0)
+], QuestionResolver.prototype, "findAllCategoryOfQuestion", null);
+__decorate([
+    (0, graphql_1.Mutation)(() => question_entity_1.Question, { name: 'updateQuestion' }),
     __param(0, (0, graphql_1.Args)('updateQuestionInput')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [update_question_input_1.UpdateQuestionInput]),
     __metadata("design:returntype", void 0)
-], QuestionResolver.prototype, "updateQuestion", null);
+], QuestionResolver.prototype, "update", null);
 __decorate([
-    (0, graphql_1.Mutation)(() => question_entity_1.Question),
+    (0, graphql_1.Mutation)(() => question_entity_1.Question, { name: 'removeQuestion' }),
     __param(0, (0, graphql_1.Args)('id', { type: () => graphql_1.Int })),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", void 0)
-], QuestionResolver.prototype, "removeQuestion", null);
+], QuestionResolver.prototype, "remove", null);
+__decorate([
+    (0, graphql_1.Mutation)(() => question_entity_1.Question, { name: 'duplicateQuestion' }),
+    __param(0, (0, graphql_1.Args)('id', { type: () => graphql_1.Int })),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number]),
+    __metadata("design:returntype", void 0)
+], QuestionResolver.prototype, "replicateQuestion", null);
 QuestionResolver = __decorate([
     (0, graphql_1.Resolver)(() => question_entity_1.Question),
     __metadata("design:paramtypes", [question_service_1.QuestionService])

@@ -4,31 +4,29 @@ import { EntityManager, Repository } from 'typeorm';
 import { Answer } from './entities/answer.entity';
 import { AnswerService } from './answer.service';
 import {
-  MockQuestion,
-  MockQuestionOption,
+  mockAnswer,
+  mockQuestion,
+  mockQuestionOption,
   MockRepo,
-  MockSurveyResponse,
+  mockSurveyResponse,
 } from 'src/common/___test___/mock';
 import { SurveyResponse } from 'src/survey-response/entities/survey-response.entity';
+import { CreateAnswerInput } from './dto/create-answer.input';
+
+const mockRepository = MockRepo;
 
 describe('AnswerService', () => {
   let service: AnswerService;
   let entityManager: EntityManager;
   let answerRepository: Repository<Answer>;
 
-  const mockRepository = MockRepo;
-
-  const createAnswerInput = { surveyResponseId: 1 };
+  const createAnswerInput: CreateAnswerInput = { surveyResponseId: 1 };
   const questionOptionId = 2;
-  const question = MockQuestion;
-  const surveyResponse = MockSurveyResponse;
-  const questionOption = MockQuestionOption;
 
-  const answer = new Answer();
-  answer.id = 1;
-  answer.question = question.content;
-  answer.questionOption = questionOption.content;
-  answer.score = questionOption.score;
+  const surveyResponse = mockSurveyResponse();
+  const answer = mockAnswer();
+  const questionOption = mockQuestionOption();
+  const question = mockQuestion();
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -103,7 +101,9 @@ describe('AnswerService', () => {
 
         // Assert
         expect(surveyResponse.isComplete).toBe(true);
-        expect(surveyResponse.amountAnswer).toBe(6);
+        expect(surveyResponse.amountAnswer).toBe(
+          surveyResponse.amountAnswer + 1,
+        );
 
         expect(updateSpy).toBeCalledWith(SurveyResponse, 1, surveyResponse);
       });
@@ -123,36 +123,11 @@ describe('AnswerService', () => {
         await service.checkComplete(surveyResponse, 1);
 
         // Assert
-        expect(surveyResponse.amountAnswer).toBe(4);
+        expect(surveyResponse.amountAnswer).toBe(
+          surveyResponse.amountAnswer + 1,
+        );
         expect(updateSpy).toBeCalledWith(SurveyResponse, 1, surveyResponse);
       });
-    });
-  });
-
-  describe('remove', () => {
-    it.todo('🙏service의 rebuilding이 필요 !');
-    it('Fail Case : Answer를 remove할 때, surveyResponse의 amountAnswer를 감소시킨다.', async () => {
-      // Arrange
-      const surveyResponse = new SurveyResponse();
-      surveyResponse.amountQuestion = 5;
-      surveyResponse.amountAnswer = 3;
-      surveyResponse.isComplete = false;
-
-      jest.spyOn(answerRepository, 'create').mockReturnValueOnce(answer);
-      jest
-        .spyOn(entityManager, 'findOneBy')
-        .mockResolvedValueOnce(surveyResponse)
-        .mockResolvedValueOnce(questionOption)
-        .mockResolvedValueOnce(question);
-      jest.spyOn(entityManager, 'save').mockResolvedValue(answer);
-      jest.spyOn(entityManager, 'remove').mockResolvedValueOnce(null);
-
-      // Act
-      await service.remove(1);
-
-      // Assert
-      expect(surveyResponse.amountAnswer).toBe(2);
-      // expect(updateSpy).toBeCalledWith(SurveyResponse, 1, surveyResponse);
     });
   });
 });

@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { SurveyResponse } from 'src/survey-response/entities/survey-response.entity';
 import { EntityManager, Repository } from 'typeorm';
@@ -14,15 +14,17 @@ export class UserService {
     private entityManager: EntityManager,
   ) {}
 
-  private readonly logger = new Logger(UserService.name);
   async create(createUserInput: CreateUserInput): Promise<User> {
     const newUser = this.userRepository.create(createUserInput);
     return await this.userRepository.save(newUser);
   }
 
-  async findAll(): Promise<User[]> {
-    const users = await this.userRepository.find();
-    return users;
+  async findAll() {
+    return this.userRepository.find();
+  }
+
+  async findOne(id: number): Promise<User> {
+    return this.validUser(id);
   }
 
   /**
@@ -36,12 +38,7 @@ export class UserService {
       .leftJoinAndSelect('user.surveyResponse', 'surveyResponse')
       .where('user.id= :id', { id: id })
       .getOne();
-
     return result;
-  }
-
-  async findOne(id: number): Promise<User> {
-    return this.validUser(id);
   }
 
   async update(id: number, updateUserInput: UpdateUserInput) {

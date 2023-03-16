@@ -13,11 +13,16 @@ const question_resolver_1 = require("./question.resolver");
 const typeorm_1 = require("@nestjs/typeorm");
 const question_entity_1 = require("./entities/question.entity");
 const question_option_module_1 = require("../question-option/question-option.module");
+const question_category_module_1 = require("../question-category/question-category.module");
 let QuestionModule = class QuestionModule {
 };
 QuestionModule = __decorate([
     (0, common_1.Module)({
-        imports: [typeorm_1.TypeOrmModule.forFeature([question_entity_1.Question]), question_option_module_1.QuestionOptionModule],
+        imports: [
+            typeorm_1.TypeOrmModule.forFeature([question_entity_1.Question]),
+            question_option_module_1.QuestionOptionModule,
+            question_category_module_1.QuestionCategoryModule,
+        ],
         providers: [question_resolver_1.QuestionResolver, question_service_1.QuestionService],
     })
 ], QuestionModule);

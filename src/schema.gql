@@ -2,6 +2,15 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type CategoryScore {
+  id: Int!
+  maxScore: Int!
+  minScore: Int!
+  message: String!
+  categoryId: Int!
+  category: Category!
+}
+
 type QuestionOption {
   id: Int!
   questionId: Int!
@@ -13,8 +22,28 @@ type QuestionOption {
 type Question {
   id: Int!
   content: String!
+  surveyId: Int!
   survey: Survey!
   questionOption: [QuestionOption!]!
+  questionCategory: [QuestionCategory!]!
+}
+
+type QuestionCategory {
+  id: Int!
+  categoryId: Int!
+  questionId: Int!
+  categoryName: String!
+  question: Question!
+  category: Category!
+}
+
+type Category {
+  id: Int!
+  categoryName: String!
+  surveyId: Int!
+  categoryScore: [CategoryScore!]
+  questionCategory: [QuestionCategory!]
+  survey: Survey!
 }
 
 type User {
@@ -32,28 +61,32 @@ type Answer {
   surveyResponse: SurveyResponse!
 }
 
+type ResponseCategory {
+  id: Int!
+  categoryName: String!
+  totalScore: Int!
+  message: String!
+  surveyResponse: SurveyResponse!
+}
+
 type SurveyResponse {
   id: Int!
   totalScore: Int!
   amountAnswer: Int!
   amountQuestion: Int!
-  answer: [Answer!]!
   isComplete: Boolean!
+  answer: [Answer!]!
+  responseCategory: [ResponseCategory!]!
 }
 
 type Survey {
   id: Int!
-
-  """survey title"""
   title: String!
-
-  """survey description"""
   description: String!
-
-  """question amount"""
   amountQuestion: Int!
   question: [Question!]
   surveyResponse: [SurveyResponse!]
+  category: [Category!]
 }
 
 type Query {
@@ -63,37 +96,63 @@ type Query {
   findAllSurveyResponse: [SurveyResponse!]!
   findSurveyResponse(id: Int!): SurveyResponse!
   findDetail(id: Int!): [Question!]!
+  findComplete: [SurveyResponse!]!
   findAllAnswer: [Answer!]!
   findOneAnswer(id: Int!): Answer!
+  testFindQuestionCategory(id: Int!): [Category!]!
+  findAllResponseCategory: [ResponseCategory!]!
+  findOneResponseCategory(id: Int!): ResponseCategory!
+  findCategoryScoreWithCategory(categoryId: Int!): ResponseCategory!
   findAllSurvey: [Survey!]!
   findOneSurvey(id: Int!): Survey!
   findDetailSurvey(id: Int!): [Survey!]!
   findAllQuestion: [Question!]!
   findOneQuestion(id: Int!): Question!
+  findOneCategoryOfQuestion(questionId: Int!): [Question!]!
+  findAllCategoryOfQuestion(surveyId: Int!): [Question!]!
   findAllQuestionOption: [QuestionOption!]!
   findOneQuestionOption(id: Int!): QuestionOption!
+  findAllQuestionCategory: [QuestionCategory!]!
+  findOneQuestionCategory(id: Float!): QuestionCategory!
+  findAllCategory: [Category!]!
+  findOneCategory(id: Int!): Category!
+  findScoreOfCategory(id: Int!): Category!
+  findQuestionOfCategory(id: Int!): [Category!]!
+  findCategoryOfSurvey(surveyId: Int!): [Category!]!
+  findAllCategoryScore: [CategoryScore!]!
+  findOneCategoryScore(id: Int!): CategoryScore!
 }
 
 type Mutation {
-  createUser(createUserInput: CreateUserInput!): User!
+  createUser(input: CreateUserInput!): User!
   updateUser(updateUserInput: UpdateUserInput!): User!
   removeUser(id: Int!): User!
-  createSurveyResponse(createSurveyResponseInput: CreateSurveyResponseInput!): SurveyResponse!
+  createSurveyResponse(input: CreateSurveyResponseInput!): SurveyResponse!
   updateSurveyResponse(updateSurveyResponseInput: UpdateSurveyResponseInput!): SurveyResponse!
   updateCount(id: Int!): SurveyResponse!
   removeSurveyResponse(id: Int!): SurveyResponse!
   createAnswer(createAnswerInput: CreateAnswerInput!, questionOptionId: Float!): Answer!
   updateAnswer(updateAnswerInput: UpdateAnswerInput!): Answer!
   removeAnswer(id: Int!): Answer!
-  createSurvey(createSurveyInput: CreateSurveyInput!): Survey!
+  createResponseCategory(input: CreateResponseCategoryInput!): ResponseCategory!
+  createSurvey(input: CreateSurveyInput!): Survey!
   updateSurvey(updateSurveyInput: UpdateSurveyInput!): Survey!
   removeSurvey(id: Int!): Survey!
   createQuestion(createQuestionInput: CreateQuestionInput!): Question!
   updateQuestion(updateQuestionInput: UpdateQuestionInput!): Question!
   removeQuestion(id: Int!): Question!
+  duplicateQuestion(id: Int!): Question!
   createQuestionOption(createQuestionOptionInput: CreateQuestionOptionInput!): QuestionOption!
   updateQuestionOption(updateQuestionOptionInput: UpdateQuestionOptionInput!): QuestionOption!
   removeQuestionOption(id: Int!): QuestionOption!
+  createQuestionCategory(input: CreateQuestionCategoryInput!): QuestionCategory!
+  updateQuestioncategory(input: UpdateQuestionCategoryInput!): QuestionCategory!
+  removeQuestionCategory(id: Int!): QuestionCategory!
+  createCategory(createCategoryInput: CreateCategoryInput!): Category!
+  updateCategory(input: UpdateCategoryInput!): Category!
+  removeCategory(id: Int!): Category!
+  createCategoryScore(input: CreateCategoryScoreInput!): CategoryScore!
+  removeCategoryScore(id: Float!): CategoryScore!
 }
 
 input CreateUserInput {
@@ -125,6 +184,11 @@ input CreateAnswerInput {
 input UpdateAnswerInput {
   surveyResponseId: Int
   id: Int!
+}
+
+input CreateResponseCategoryInput {
+  surveyResponseId: Int!
+  surveyId: Int!
 }
 
 input CreateSurveyInput {
@@ -160,4 +224,31 @@ input UpdateQuestionOptionInput {
   score: Int
   content: String
   id: Int!
+}
+
+input CreateQuestionCategoryInput {
+  categoryId: Int!
+  questionId: Int!
+}
+
+input UpdateQuestionCategoryInput {
+  id: Int!
+  categoryId: Int!
+  questionId: Int!
+}
+
+input CreateCategoryInput {
+  categoryName: String!
+  surveyId: Int!
+}
+
+input UpdateCategoryInput {
+  id: Float!
+}
+
+input CreateCategoryScoreInput {
+  categoryId: Int!
+  minScore: Int!
+  maxScore: Int!
+  message: String!
 }

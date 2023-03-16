@@ -8,7 +8,7 @@ import { UpdateQuestionInput } from './dto/update-question.input';
 export class QuestionResolver {
   constructor(private readonly questionService: QuestionService) {}
 
-  @Mutation(() => Question)
+  @Mutation(() => Question, { name: 'createQuestion' })
   createQuestion(
     @Args('createQuestionInput') createQuestionInput: CreateQuestionInput,
   ) {
@@ -16,7 +16,7 @@ export class QuestionResolver {
   }
 
   @Query(() => [Question], { name: 'findAllQuestion' })
-  findAllQuestion() {
+  findAll() {
     return this.questionService.findAll();
   }
 
@@ -30,8 +30,23 @@ export class QuestionResolver {
     return this.questionService.findDetail(id);
   }
 
-  @Mutation(() => Question)
-  updateQuestion(
+  @Query(() => [Question], { name: 'findOneCategoryOfQuestion' })
+  findOneCategoryOfQuestion(
+    @Args('questionId', { type: () => Int }) id: number,
+  ) {
+    return this.questionService.findOneCategoryOfQuestion(id);
+  }
+
+  // 전체 조회 테스트
+  @Query(() => [Question], { name: 'findAllCategoryOfQuestion' })
+  findAllCategoryOfQuestion(
+    @Args('surveyId', { type: () => Int }) surveyId: number,
+  ) {
+    return this.questionService.findAllCategoryOfQuestion(surveyId);
+  }
+
+  @Mutation(() => Question, { name: 'updateQuestion' })
+  update(
     @Args('updateQuestionInput') updateQuestionInput: UpdateQuestionInput,
   ) {
     return this.questionService.update(
@@ -40,8 +55,13 @@ export class QuestionResolver {
     );
   }
 
-  @Mutation(() => Question)
-  removeQuestion(@Args('id', { type: () => Int }) id: number) {
+  @Mutation(() => Question, { name: 'removeQuestion' })
+  remove(@Args('id', { type: () => Int }) id: number) {
     return this.questionService.remove(id);
+  }
+
+  @Mutation(() => Question, { name: 'duplicateQuestion' })
+  replicateQuestion(@Args('id', { type: () => Int }) id: number) {
+    return this.questionService.duplicateQuestion(id);
   }
 }

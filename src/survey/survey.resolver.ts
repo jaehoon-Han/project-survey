@@ -8,11 +8,9 @@ import { UpdateSurveyInput } from './dto/update-survey.input';
 export class SurveyResolver {
   constructor(private readonly surveyService: SurveyService) {}
 
-  @Mutation(() => Survey)
-  createSurvey(
-    @Args('createSurveyInput') createSurveyInput: CreateSurveyInput,
-  ) {
-    return this.surveyService.create(createSurveyInput);
+  @Mutation(() => Survey, { name: 'createSurvey' })
+  create(@Args('input') input: CreateSurveyInput) {
+    return this.surveyService.create(input);
   }
 
   @Query(() => [Survey], { name: 'findAllSurvey' })
@@ -27,19 +25,17 @@ export class SurveyResolver {
   }
 
   @Query(() => [Survey], { name: 'findDetailSurvey' })
-  findDetail(@Args('id', { type: () => Int }) id: number) {
-    return this.surveyService.findDetail(id);
+  findQuestionAndOptionOfSurvey(@Args('id', { type: () => Int }) id: number) {
+    return this.surveyService.findQuestionAndOptionOfSurvey(id);
   }
 
-  @Mutation(() => Survey)
-  updateSurvey(
-    @Args('updateSurveyInput') updateSurveyInput: UpdateSurveyInput,
-  ) {
+  @Mutation(() => Survey, { name: 'updateSurvey' })
+  update(@Args('updateSurveyInput') updateSurveyInput: UpdateSurveyInput) {
     return this.surveyService.update(updateSurveyInput.id, updateSurveyInput);
   }
 
-  @Mutation(() => Survey)
-  removeSurvey(@Args('id', { type: () => Int }) id: number) {
+  @Mutation(() => Survey, { name: 'removeSurvey' })
+  remove(@Args('id', { type: () => Int }) id: number) {
     return this.surveyService.remove(id);
   }
 }

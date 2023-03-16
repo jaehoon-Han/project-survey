@@ -22,8 +22,8 @@ let QuestionOptionResolver = class QuestionOptionResolver {
     constructor(questionOptionService) {
         this.questionOptionService = questionOptionService;
     }
-    createQuestionOption(createQuestionOptionInput) {
-        return this.questionOptionService.create(createQuestionOptionInput);
+    create(input) {
+        return this.questionOptionService.create(input);
     }
     findAll() {
         return this.questionOptionService.findAll();
@@ -31,20 +31,20 @@ let QuestionOptionResolver = class QuestionOptionResolver {
     findOne(id) {
         return this.questionOptionService.findOne(id);
     }
-    updateQuestionOption(updateQuestionOptionInput) {
+    update(updateQuestionOptionInput) {
         return this.questionOptionService.update(updateQuestionOptionInput.id, updateQuestionOptionInput);
     }
-    removeQuestionOption(id) {
+    remove(id) {
         return this.questionOptionService.remove(id);
     }
 };
 __decorate([
-    (0, graphql_1.Mutation)(() => question_option_entity_1.QuestionOption),
+    (0, graphql_1.Mutation)(() => question_option_entity_1.QuestionOption, { name: 'createQuestionOption' }),
     __param(0, (0, graphql_1.Args)('createQuestionOptionInput')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_question_option_input_1.CreateQuestionOptionInput]),
     __metadata("design:returntype", void 0)
-], QuestionOptionResolver.prototype, "createQuestionOption", null);
+], QuestionOptionResolver.prototype, "create", null);
 __decorate([
     (0, graphql_1.Query)(() => [question_option_entity_1.QuestionOption], { name: 'findAllQuestionOption' }),
     __metadata("design:type", Function),
@@ -59,19 +59,19 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], QuestionOptionResolver.prototype, "findOne", null);
 __decorate([
-    (0, graphql_1.Mutation)(() => question_option_entity_1.QuestionOption),
+    (0, graphql_1.Mutation)(() => question_option_entity_1.QuestionOption, { name: 'updateQuestionOption' }),
     __param(0, (0, graphql_1.Args)('updateQuestionOptionInput')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [update_question_option_input_1.UpdateQuestionOptionInput]),
     __metadata("design:returntype", void 0)
-], QuestionOptionResolver.prototype, "updateQuestionOption", null);
+], QuestionOptionResolver.prototype, "update", null);
 __decorate([
-    (0, graphql_1.Mutation)(() => question_option_entity_1.QuestionOption),
+    (0, graphql_1.Mutation)(() => question_option_entity_1.QuestionOption, { name: 'removeQuestionOption' }),
     __param(0, (0, graphql_1.Args)('id', { type: () => graphql_1.Int })),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", void 0)
-], QuestionOptionResolver.prototype, "removeQuestionOption", null);
+], QuestionOptionResolver.prototype, "remove", null);
 QuestionOptionResolver = __decorate([
     (0, graphql_1.Resolver)(() => question_option_entity_1.QuestionOption),
     __metadata("design:paramtypes", [question_option_service_1.QuestionOptionService])

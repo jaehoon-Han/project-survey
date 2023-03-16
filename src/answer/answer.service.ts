@@ -1,5 +1,6 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { QuestionCategory } from 'src/question-category/entities/question-category.entity';
 import { QuestionOption } from 'src/question-option/entities/question-option.entity';
 import { Question } from 'src/question/entities/question.entity';
 import { SurveyResponse } from 'src/survey-response/entities/survey-response.entity';
@@ -16,45 +17,46 @@ export class AnswerService {
     private entityManager: EntityManager,
   ) {}
 
-  private readonly logger = new Logger(AnswerService.name);
   async create(
-    createAnswerInput: CreateAnswerInput,
+    input: CreateAnswerInput,
     questionOptionId: number,
   ): Promise<Answer> {
-    const newAnswer = this.answerRepository.create(createAnswerInput);
+    const newAnswer = this.answerRepository.create(input);
 
     const surveyResponse = await this.validSurveyResponse(
-      createAnswerInput.surveyResponseId,
+      input.surveyResponseId,
     );
 
-    this.checkComplete(surveyResponse, createAnswerInput.surveyResponseId);
+    this.checkComplete(surveyResponse, input.surveyResponseId);
 
     const findQuestionOptionInfo = await this.findQuestionOption(
       questionOptionId,
     );
 
-    newAnswer.questionOption = findQuestionOptionInfo.content;
-    newAnswer.score = findQuestionOptionInfo.score;
-    newAnswer.question = await this.findQuestionContent(
+    const questionInfo = await this.findQuestionContent(
       findQuestionOptionInfo.questionId,
     );
+
+    newAnswer.questionOption = findQuestionOptionInfo.content;
+    newAnswer.score = findQuestionOptionInfo.score;
+    newAnswer.question = questionInfo.content;
 
     return this.entityManager.save(newAnswer);
   }
 
-  async findAll(): Promise<Answer[]> {
-    const answers = await this.answerRepository.find();
-    return answers;
+  async findAll() {
+    return this.answerRepository.find();
   }
 
-  async findOne(id: number): Promise<Answer> {
+  async findOne(id: number) {
     return this.validAnswer(id);
   }
 
-  async update(id: number, updateAnswerInput: UpdateAnswerInput) {
-    const answer = await this.findOne(id);
-    this.answerRepository.merge(answer, updateAnswerInput);
-    return this.answerRepository.update(id, answer);
+  async update(input: UpdateAnswerInput) {
+    const answer = await this.findOne(input.id);
+    const result = this.answerRepository.merge(answer, input);
+    this.answerRepository.update(input.id, answer);
+    return result;
   }
 
   async remove(id: number) {
@@ -67,12 +69,18 @@ export class AnswerService {
   }
 
   async findQuestionContent(questionId: number) {
-    return (await this.findQuestion(questionId)).content;
+    return await this.findQuestion(questionId);
   }
 
   async findQuestionOption(questionOptionId: number) {
     return this.validQuestionOption(questionOptionId);
   }
+
+  //
+  async findQuestionCategory(questionId: number) {
+    return (await this.validQuestion(questionId)).questionCategory;
+  }
+  //
 
   /**
    * @description "설문이 완료되었는지 확인"
@@ -82,7 +90,7 @@ export class AnswerService {
     surveyResponse: SurveyResponse,
     surveyResponseId: number,
   ) {
-    if (surveyResponse.amountAnswer >= surveyResponse.amountQuestion) {
+    if (surveyResponse.amountAnswer === surveyResponse.amountQuestion) {
       surveyResponse.isComplete = true;
     }
     surveyResponse.amountAnswer = surveyResponse.amountAnswer + 1;
@@ -108,9 +116,8 @@ export class AnswerService {
     });
     if (!surveyResponse) {
       throw new Error(`CAN NOT FIND THE SURVEY! ID: ${surveyResponseId}`);
-    } else {
-      return surveyResponse;
     }
+    return surveyResponse;
   }
 
   async validQuestion(questionId: number) {
@@ -119,9 +126,8 @@ export class AnswerService {
     });
     if (!question) {
       throw new Error(`CAN NOT FIND THE QUESTION! ID: ${question}`);
-    } else {
-      return question;
     }
+    return question;
   }
 
   async validQuestionOption(questionOptionId: number) {
@@ -132,8 +138,21 @@ export class AnswerService {
       throw new Error(
         `CAN NOT FIND THE QUESTION OPTION! ID: ${questionOption}`,
       );
-    } else {
-      return questionOption;
     }
+    return questionOption;
+  }
+
+  // unless?
+  async validQuestionCategory(questionCategoryId: number) {
+    const questionCategory = await this.entityManager.findBy(QuestionCategory, {
+      // id: questionCategoryId,
+      questionId: questionCategoryId,
+    });
+    if (!questionCategory) {
+      throw new Error(
+        `CAN NOT FIND THE QUESTION CATEGORY! ID: ${questionCategory}`,
+      );
+    }
+    return questionCategory;
   }
 }
