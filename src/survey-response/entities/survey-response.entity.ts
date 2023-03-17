@@ -35,9 +35,11 @@ export class SurveyResponse extends CommonEntity {
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'surveyId' })
+  @Field(() => Survey)
   survey: Survey;
 
   @ManyToOne(() => User, (user) => user.surveyResponse, { onDelete: 'CASCADE' })
+  @Field(() => User)
   @JoinColumn({ name: 'userId' })
   user: User;
 

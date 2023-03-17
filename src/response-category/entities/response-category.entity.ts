@@ -9,7 +9,6 @@ import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 export class ResponseCategory extends CommonEntity {
   // @Field(() => Int)
   @Column()
-  @IsNumber()
   surveyResponseId: number;
 
   @Field(() => String)

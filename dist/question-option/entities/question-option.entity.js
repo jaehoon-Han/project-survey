@@ -18,9 +18,7 @@ const typeorm_1 = require("typeorm");
 let QuestionOption = class QuestionOption extends commonentity_interface_1.CommonEntity {
 };
 __decorate([
-    (0, graphql_1.Field)(() => graphql_1.Int),
     (0, typeorm_1.Column)(),
-    (0, class_validator_1.IsNumber)(),
     __metadata("design:type", Number)
 ], QuestionOption.prototype, "questionId", void 0);
 __decorate([

@@ -32,6 +32,17 @@ export class CategoryScoreService {
     return this.validCategoryScore(id);
   }
 
+  async update(input: UpdateCategoryScoreInput) {
+    const categoryScore = await this.validCategoryScore(input.id);
+    if (input.categoryId) {
+      const category = await this.validCategory(input.categoryId);
+      categoryScore.category = category;
+    }
+    const result = this.categoryScoreRepository.merge(categoryScore, input);
+    this.categoryScoreRepository.update(input.id, categoryScore);
+    return result;
+  }
+
   remove(id: number) {
     const categoryScore = this.validCategoryScore(id);
     this.categoryScoreRepository.delete(id);

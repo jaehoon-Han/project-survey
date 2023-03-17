@@ -36,7 +36,6 @@ __decorate([
     __metadata("design:type", Number)
 ], Answer.prototype, "score", void 0);
 __decorate([
-    (0, graphql_1.Field)(() => graphql_1.Int),
     (0, typeorm_1.Column)(),
     (0, class_validator_1.IsNumber)(),
     __metadata("design:type", Number)

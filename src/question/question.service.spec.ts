@@ -22,7 +22,7 @@ type MockRepository<T = any> = Partial<Record<keyof Repository<T>, jest.Mock>>;
 
 describe(' Question Service', () => {
   let service: QuestionService;
-  let questionRepository: MockRepository<Question>;
+  let repository: MockRepository<Question>;
   let entityManager: EntityManager;
 
   // Arrange
@@ -51,14 +51,14 @@ describe(' Question Service', () => {
     }).compile();
 
     service = module.get<QuestionService>(QuestionService);
-    questionRepository = module.get<MockRepository<Question>>(
+    repository = module.get<MockRepository<Question>>(
       getRepositoryToken(Question),
     );
     entityManager = module.get<EntityManager>(EntityManager);
   });
 
   it('TO BE DEFINED ?', () => {
-    expect(questionRepository).toBeDefined();
+    expect(repository).toBeDefined();
     expect(service).toBeDefined();
     expect(entityManager).toBeDefined();
   });
@@ -69,7 +69,7 @@ describe(' Question Service', () => {
       const beforeAmountQuestion = (survey.amountQuestion = 1);
 
       // Act
-      jest.spyOn(questionRepository, 'create').mockReturnValue(question);
+      jest.spyOn(repository, 'create').mockReturnValue(question);
       jest.spyOn(entityManager, 'findOneBy').mockResolvedValueOnce(survey);
       jest.spyOn(entityManager, 'update').mockReturnValueOnce(undefined);
       jest.spyOn(entityManager, 'save').mockResolvedValue(question);
@@ -83,20 +83,46 @@ describe(' Question Service', () => {
       expect(survey.amountQuestion).toBe(beforeAmountQuestion + 1);
     });
   });
+
   describe('Duplicate', () => {
+    it('질문이 복제됐을때 survey의 amountQuestion도 같이 증가했는지?', async () => {
+      // Arrange
+      const id = 1;
+      const newQuestion = new Question();
+      const beforeAmount = survey.amountQuestion;
+
+      jest.spyOn(repository, 'findOneBy').mockResolvedValue(question);
+      jest.spyOn(entityManager, 'findOneBy').mockResolvedValue(survey);
+      newQuestion.content = question.content;
+      newQuestion.survey = question.survey;
+      newQuestion.surveyId = question.surveyId;
+      jest.spyOn(repository, 'save').mockResolvedValueOnce(newQuestion);
+      const updateSpy = jest
+        .spyOn(entityManager, 'update')
+        .mockResolvedValueOnce(undefined);
+
+      // Act
+      await service.duplicateQuestion(id);
+
+      // Assert
+      expect(survey.amountQuestion).toBe(beforeAmount + 1);
+      expect(updateSpy).toBeCalledTimes(1);
+    });
+
+    it.todo('⛔️ 질문의 연관컬럼들까지 복사하는 테스트, Map Test 필요');
     it(' 질문의 복제에 성공했을때 연관 컬럼들도 복제 성공했는지', async () => {
       // Act
+      jest.spyOn(repository, 'findOneBy').mockResolvedValueOnce(question);
       jest
-        .spyOn(entityManager, 'findOneBy')
-        .mockResolvedValueOnce(questionOption);
-      jest.spyOn(entityManager, 'save').mockResolvedValueOnce(question);
-      jest.spyOn(entityManager, 'findOneBy').mockResolvedValueOnce(question);
-
+        .spyOn(entityManager, 'findBy')
+        .mockResolvedValueOnce([questionOption]);
       const questionOptionSpy = jest
         .spyOn(entityManager, 'save')
+        .mockResolvedValueOnce(questionOption)
         .mockResolvedValueOnce(questionOption);
       const questionCategorySpy = jest
         .spyOn(entityManager, 'save')
+        .mockResolvedValueOnce(questionCategory)
         .mockResolvedValueOnce(questionCategory);
 
       await service.duplicateQuestion(1);
@@ -112,20 +138,6 @@ describe(' Question Service', () => {
         1,
         questionCategory,
       );
-    });
-
-    it('질문이 복제됐을때 survey의 amountQuestion도 같이 증가했는지??', async () => {
-      // 기능 구현 완료
-      // Arrange
-      // Act
-      // Assert
-    });
-
-    it('map Test', async () => {
-      // 기능 구현 완료
-      // Arrange
-      // Act
-      // Assert
     });
   });
 });

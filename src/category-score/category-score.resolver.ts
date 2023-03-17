@@ -26,6 +26,14 @@ export class CategoryScoreResolver {
     return this.categoryScoreService.findOne(id);
   }
 
+  @Mutation(() => CategoryScore, { name: 'updateCategoryScore' })
+  update(
+    @Args('input')
+    input: UpdateCategoryScoreInput,
+  ) {
+    return this.categoryScoreService.update(input);
+  }
+
   @Mutation(() => CategoryScore, { name: 'removeCategoryScore' })
   remove(@Args('id') id: number) {
     return this.categoryScoreService.remove(id);

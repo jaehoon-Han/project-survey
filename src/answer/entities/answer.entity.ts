@@ -22,7 +22,6 @@ export class Answer extends CommonEntity {
   @IsNumber()
   score: number;
 
-  @Field(() => Int)
   @Column()
   @IsNumber()
   surveyResponseId: number;

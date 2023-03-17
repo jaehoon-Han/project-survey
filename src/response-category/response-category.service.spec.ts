@@ -54,6 +54,10 @@ describe('ResponseCategoryService', () => {
     expect(repository).toBeDefined();
   });
 
+  it.todo('유형별로 분류된 점수들의 합산이 제대로 이루어지고 바인딩 되는지');
+  it.todo('합산된 점수로 비교한 후, 그에 맞는 안내메세지가 제대로 저장되는지');
+  it.todo('Map, new Map, 익숙해지고 Test도 ');
+
   describe('Create', () => {
     it('유형별로 분류가 정상적으로 되어서 바인딩 되는지', async () => {
       // Arrange
@@ -64,35 +68,11 @@ describe('ResponseCategoryService', () => {
       jest.spyOn(entityManager, 'findOne').mockResolvedValueOnce(category);
       jest.spyOn(repository, 'create').mockReturnValueOnce(responseCategory);
       jest.spyOn(entityManager, 'save').mockResolvedValue(responseCategory);
-
       // Act
       await service.create(input);
-
       // Assert
       expect(repository.create).toHaveBeenCalledWith(input);
       expect(repository.save).toHaveBeenCalledWith(responseCategory);
-    });
-
-    // it('map Unit Test', async () => {
-
-    // });
-    it('유형별로 분류된 점수들의 합산이 제대로 이루어지고 바인딩 되는지', async () => {
-      // QUERY BUILDER가 사용되는데..
-      // Arrange
-      // Act
-      // Assert
-    });
-    it('합산된 점수로 비교한 후, 그에 맞는 안내메세지가 제대로 저장되는지', async () => {
-      // Arrange
-      // Act
-      // Assert
-    });
-
-    it('정상적으로 생성되는 경우', async () => {
-      // Arrange
-      // jest.spyOn.findOne해서 survey하고 create surveyResponse하고
-      // Act
-      // Assert
     });
   });
 });

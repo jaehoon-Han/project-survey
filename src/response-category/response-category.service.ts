@@ -30,19 +30,15 @@ export class ResponseCategoryService {
         this.createResponseCategory(input, category, surveyResponse),
       ),
     );
-    //
-    const test = await this.findQuestionOfSurveyWithCategory(input.surveyId);
-    const testArray = [];
-    testArray.push(test.map((question) => question.questionCategory));
 
-    const testName = [];
-    testName.push(
-      testArray.map((questionCategory) => questionCategory.categoryName),
-    );
-    console.log(`testArray :`, testArray);
-    console.log(test);
-    console.log(`testName :`, testName);
-    //
+    // const test = await this.findQuestionOfSurveyWithCategory(input.surveyId);
+    // const testArray = [];
+    // testArray.push(test.map((question) => question.questionCategory));
+
+    // const testName = [];
+    // testName.push(
+    //   testArray.map((questionCategory) => questionCategory.categoryName),
+    // );
 
     return this.repository.save(responseCategories);
   }

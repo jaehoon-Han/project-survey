@@ -105,16 +105,7 @@ describe('CategoryService', () => {
 
       // Assert
       expect(repository.createQueryBuilder().getMany).toHaveBeenCalled();
-      expect(result).toEqual({
-        id: 1,
-        categoryName: '테스트',
-        createdAt: undefined,
-        updatedAt: undefined,
-        categoryScore: undefined,
-        questionCategory: undefined,
-        surveyId: undefined,
-        survey: undefined,
-      });
+      expect(result).toEqual(category);
     });
   });
 });

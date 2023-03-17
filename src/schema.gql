@@ -4,16 +4,13 @@
 
 type CategoryScore {
   id: Int!
-  maxScore: Int!
-  minScore: Int!
+  score: Int!
   message: String!
-  categoryId: Int!
   category: Category!
 }
 
 type QuestionOption {
   id: Int!
-  questionId: Int!
   content: String!
   score: Int!
   question: Question!
@@ -22,7 +19,6 @@ type QuestionOption {
 type Question {
   id: Int!
   content: String!
-  surveyId: Int!
   survey: Survey!
   questionOption: [QuestionOption!]!
   questionCategory: [QuestionCategory!]!
@@ -30,8 +26,6 @@ type Question {
 
 type QuestionCategory {
   id: Int!
-  categoryId: Int!
-  questionId: Int!
   categoryName: String!
   question: Question!
   category: Category!
@@ -40,7 +34,6 @@ type QuestionCategory {
 type Category {
   id: Int!
   categoryName: String!
-  surveyId: Int!
   categoryScore: [CategoryScore!]
   questionCategory: [QuestionCategory!]
   survey: Survey!
@@ -57,7 +50,6 @@ type Answer {
   question: String!
   questionOption: String!
   score: Int!
-  surveyResponseId: Int!
   surveyResponse: SurveyResponse!
 }
 
@@ -75,6 +67,8 @@ type SurveyResponse {
   amountAnswer: Int!
   amountQuestion: Int!
   isComplete: Boolean!
+  survey: Survey!
+  user: User!
   answer: [Answer!]!
   responseCategory: [ResponseCategory!]!
 }
@@ -154,6 +148,7 @@ type Mutation {
   updateCategory(input: UpdateCategoryInput!): Category!
   removeCategory(id: Int!): Category!
   createCategoryScore(input: CreateCategoryScoreInput!): CategoryScore!
+  updateCategoryScore(input: UpdateCategoryScoreInput!): CategoryScore!
   removeCategoryScore(id: Float!): CategoryScore!
 }
 
@@ -257,4 +252,8 @@ input CreateCategoryScoreInput {
   minScore: Int!
   maxScore: Int!
   message: String!
+}
+
+input UpdateCategoryScoreInput {
+  id: Float!
 }

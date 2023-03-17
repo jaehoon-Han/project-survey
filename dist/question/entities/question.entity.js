@@ -26,14 +26,13 @@ __decorate([
     __metadata("design:type", String)
 ], Question.prototype, "content", void 0);
 __decorate([
-    (0, graphql_1.Field)(() => graphql_1.Int),
     (0, typeorm_1.Column)(),
-    (0, class_validator_1.IsNumber)(),
     __metadata("design:type", Number)
 ], Question.prototype, "surveyId", void 0);
 __decorate([
     (0, graphql_1.Field)(() => survey_entity_1.Survey),
     (0, typeorm_1.ManyToOne)(() => survey_entity_1.Survey, (survey) => survey.question, { onDelete: 'CASCADE' }),
+    (0, typeorm_1.JoinColumn)({ name: 'surveyId' }),
     __metadata("design:type", survey_entity_1.Survey)
 ], Question.prototype, "survey", void 0);
 __decorate([

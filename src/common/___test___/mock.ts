@@ -67,7 +67,7 @@ export const mockSurvey = (): Survey => {
     updatedAt: undefined,
     question: [],
     surveyResponse: [],
-    category: undefined,
+    category: [],
   };
 };
 
@@ -103,8 +103,7 @@ export const mockCategoryScore = (): CategoryScore => {
     createdAt: undefined,
     updatedAt: undefined,
     categoryId: undefined,
-    minScore: 33,
-    maxScore: 66,
+    score: undefined,
     message: 'TEST',
     category: undefined,
   };

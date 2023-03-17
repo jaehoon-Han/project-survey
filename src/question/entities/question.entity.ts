@@ -4,7 +4,7 @@ import { CommonEntity } from 'src/common/entities/commonentity.interface';
 import { QuestionCategory } from 'src/question-category/entities/question-category.entity';
 import { QuestionOption } from 'src/question-option/entities/question-option.entity';
 import { Survey } from 'src/survey/entities/survey.entity';
-import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 
 @ObjectType()
 @Entity()
@@ -14,13 +14,12 @@ export class Question extends CommonEntity {
   @MinLength(1, { message: 'Content is too short!' })
   content: string;
 
-  @Field(() => Int)
   @Column()
-  @IsNumber()
   surveyId: number;
 
   @Field(() => Survey)
   @ManyToOne(() => Survey, (survey) => survey.question, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'surveyId' })
   survey: Survey;
 
   @Field(() => [QuestionOption])

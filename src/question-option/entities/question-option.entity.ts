@@ -7,9 +7,7 @@ import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 @ObjectType()
 @Entity()
 export class QuestionOption extends CommonEntity {
-  @Field(() => Int)
   @Column()
-  @IsNumber()
   questionId: number;
 
   @Field(() => String)

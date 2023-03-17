@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { Int } from '@nestjs/graphql';
 import { InjectRepository } from '@nestjs/typeorm';
 import { QuestionCategory } from 'src/question-category/entities/question-category.entity';
 import { QuestionOption } from 'src/question-option/entities/question-option.entity';
@@ -118,7 +119,7 @@ export class QuestionService {
   }
 
   /**
-   * @description "질문의 선택항목 복사"
+   * @description "질문의 QuestionOption 복사"
    * @param id
    * @returns
    */
@@ -136,7 +137,7 @@ export class QuestionService {
     });
   }
   /**
-   * @description "질문 복사"
+   * @description "질문의 QuestionCategory 복사"
    * @param id
    * @returns
    */
@@ -153,6 +154,7 @@ export class QuestionService {
         category: questionCategory.category,
         categoryName: questionCategory.categoryName,
       });
+
       this.entityManager.save(copyQuestionCategory);
     });
   }

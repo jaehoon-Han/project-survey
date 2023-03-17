@@ -10,20 +10,13 @@ export class CategoryScore extends CommonEntity {
   @Field(() => Int)
   @Column()
   @IsNumber()
-  maxScore: number;
-
-  @Field(() => Int)
-  @Column()
-  @IsNumber()
-  minScore: number;
+  score: number;
 
   @Field(() => String)
   @Column()
   @IsString()
   message: string;
 
-  @Field(() => Int)
-  @IsNumber()
   @Column()
   categoryId: number;
 

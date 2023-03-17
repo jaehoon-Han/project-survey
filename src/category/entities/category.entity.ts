@@ -4,7 +4,7 @@ import { CategoryScore } from 'src/category-score/entities/category-score.entity
 import { CommonEntity } from 'src/common/entities/commonentity.interface';
 import { QuestionCategory } from 'src/question-category/entities/question-category.entity';
 import { Survey } from 'src/survey/entities/survey.entity';
-import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 
 @ObjectType()
 @Entity()
@@ -14,9 +14,7 @@ export class Category extends CommonEntity {
   @IsString()
   categoryName: string;
 
-  @Field(() => Int)
   @Column()
-  @IsNumber()
   surveyId: number;
 
   @OneToMany(() => CategoryScore, (categoryScore) => categoryScore.category, {
@@ -37,5 +35,6 @@ export class Category extends CommonEntity {
     onDelete: 'CASCADE',
   })
   @Field(() => Survey)
+  @JoinColumn({ name: 'surveyId' })
   survey: Survey;
 }

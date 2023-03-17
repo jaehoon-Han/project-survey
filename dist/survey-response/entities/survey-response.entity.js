@@ -52,10 +52,12 @@ __decorate([
         onDelete: 'CASCADE',
     }),
     (0, typeorm_1.JoinColumn)({ name: 'surveyId' }),
+    (0, graphql_1.Field)(() => survey_entity_1.Survey),
     __metadata("design:type", survey_entity_1.Survey)
 ], SurveyResponse.prototype, "survey", void 0);
 __decorate([
     (0, typeorm_1.ManyToOne)(() => user_entity_1.User, (user) => user.surveyResponse, { onDelete: 'CASCADE' }),
+    (0, graphql_1.Field)(() => user_entity_1.User),
     (0, typeorm_1.JoinColumn)({ name: 'userId' }),
     __metadata("design:type", user_entity_1.User)
 ], SurveyResponse.prototype, "user", void 0);
